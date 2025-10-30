@@ -1,6 +1,4 @@
 import { globalStyle } from '@vanilla-extract/css';
 
-globalStyle('html, body', {
-  display: 'block',
-  margin: 0,
-});
+globalStyle('html, body', { margin: 0 });
+

@@ -14,8 +14,9 @@ import { STUDIO_BASEPATH } from '@/sanity/constants.ts';
 import { PostCard } from '@/components/PostCard/PostCard.tsx';
 import { POSTS_PER_PAGE } from '@/constants/config.ts';
 import { previewStore } from '@/stores/previewStore.ts';
+import { CategoryPillList } from '@/components/CategoryPills/CategoryPillList.tsx';
 
-import { container, divider, featureCard, featureDescription, featureGrid, featureIcon, featureTitle, heroContent, heroDescription, heroSection, heroSubtitle, heroTitle, homeContainer, loadMoreButton, logo, logoContainer, section, sectionTitle, subtleHeading, highlightsGrid, highlightCard, highlightIcon, highlightTitle, highlightText, wideSection, twoCol, paragraph, miniBadgeRow, miniBadge, callout, codeBlock } from '@/pages/Home/Home.css.ts';
+import { callout, codeBlock, container, divider, featureCard, featureDescription, featureGrid, featureIcon, featureTitle, heroContent, heroDescription, heroSection, heroSubtitle, heroTitle, highlightCard, highlightIcon, highlightText, highlightTitle, highlightsGrid, homeContainer, loadMoreButton, logo, logoContainer, miniBadge, miniBadgeRow, paragraph, section, sectionTitle, subtleHeading, twoCol, wideSection } from '@/pages/Home/Home.css.ts';
 import { CTA } from '@/components/CTA/CTA.tsx';
 
 const Home = ({
@@ -140,17 +141,7 @@ const Home = ({
       {/* Categories Section */}
       <section className={section}>
         <h2 className={sectionTitle}>Explore Categories</h2>
-        <div className={container}>
-          {categories.map((category) => (
-            <PostCard
-              key={category.fullSlug ?? category._createdAt}
-              fullSlug={category.fullSlug}
-              title={category.title}
-              description={category.description}
-              mainImage={category.mainImage}
-            />
-          ))}
-        </div>
+        <CategoryPillList categories={categories} />
       </section>
 
       <div className={divider} />

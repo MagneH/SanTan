@@ -1,25 +1,7 @@
 import { Link } from '@tanstack/react-router';
-import { useState, useEffect, useCallback } from 'react';
-import { Menu, X, Home, Sun, Moon } from 'lucide-react';
-import {
-  header,
-  brand,
-  desktopNav,
-  navLink,
-  navLinkActive,
-  spacer,
-  mobileMenuButton,
-  mobilePanel,
-  mobilePanelHidden,
-  mobilePanelHeader,
-  closeButton,
-  mobileNavList,
-  mobileNavLink,
-  mobileNavLinkActive,
-  overlay,
-  overlayHidden,
-  themeToggle,
-} from './Header.css.ts';
+import { useCallback, useEffect, useState } from 'react';
+import { Home, Menu, Moon, Sun, X } from 'lucide-react';
+import * as styles from './Header.css.ts';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Home', icon: Home },
@@ -28,14 +10,23 @@ const NAV_ITEMS = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') return 'light';
-    const stored = localStorage.getItem('theme');
-    if (stored === 'light' || stored === 'dark') return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
+  // Deterministic initial theme to avoid SSR/client mismatch. Real preference applied after mount.
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
-  useEffect(() => { setMounted(true); }, []);
+  // On mount, determine preferred theme from existing data-theme attr or storage / media
+  useEffect(() => {
+    setMounted(true);
+    try {
+      let preferred: 'light' | 'dark' = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      if (preferred === 'light') {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'dark' || stored === 'light') preferred = stored;
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) preferred = 'dark';
+      }
+      if (preferred !== theme) setTheme(preferred);
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Prevent background scroll when mobile menu open
   useEffect(() => {
@@ -47,16 +38,13 @@ export default function Header() {
     }
   }, [open, mounted]);
 
-  // Apply theme to <html>
+  // Apply theme to <html> when theme changes
   useEffect(() => {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.setAttribute('data-theme', 'dark');
-    } else {
-      root.removeAttribute('data-theme');
-    }
-    localStorage.setItem('theme', theme);
+    if (theme === 'dark') root.setAttribute('data-theme', 'dark');
+    else root.removeAttribute('data-theme');
+    try { localStorage.setItem('theme', theme); } catch {}
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
@@ -65,31 +53,34 @@ export default function Header() {
 
   return (
     <>
-      <header className={header}>
-        <Link to="/" className={brand}>SanTan</Link>
-        <nav className={desktopNav} aria-label="Main navigation">
+      <header className={styles.header}>
+        <Link to="/" className={styles.brand}>SanTan</Link>
+        <nav className={styles.desktopNav} aria-label="Main navigation">
           {NAV_ITEMS.map(({ to, label }) => (
             <Link
               key={to}
               to={to}
-              activeProps={{ className: navLinkActive }}
+              activeProps={{ className: styles.navLinkActive }}
               activeOptions={{ exact: true }}
-              className={navLink}
+              className={styles.navLink}
             >
               {label}
             </Link>
           ))}
         </nav>
-        <div className={spacer} />
+        <div className={styles.spacer} />
         <button
-          className={themeToggle}
-          aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+          className={styles.themeToggle}
+          aria-label="Toggle color theme"
           onClick={toggleTheme}
         >
-          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          <span className={styles.themeIconWrapper} aria-hidden>
+            <Sun size={18} className={styles.sunIcon} />
+            <Moon size={18} className={styles.moonIcon} />
+          </span>
         </button>
         <button
-          className={mobileMenuButton}
+          className={styles.mobileMenuButton}
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           aria-controls="mobile-nav"
@@ -101,7 +92,7 @@ export default function Header() {
 
       {/* Overlay */}
       <div
-        className={open ? overlay : overlayHidden}
+        className={open ? styles.overlay : styles.overlayHidden}
         onClick={() => setOpen(false)}
         aria-hidden={!open}
       />
@@ -109,29 +100,29 @@ export default function Header() {
       {/* Mobile Panel */}
       <aside
         id="mobile-nav"
-        className={open ? mobilePanel : mobilePanelHidden}
+        className={open ? styles.mobilePanel : styles.mobilePanelHidden}
         aria-hidden={!open}
         aria-label="Mobile navigation"
       >
-        <div className={mobilePanelHeader}>
-          <Link to="/" className={brand} onClick={() => setOpen(false)}>SanTan</Link>
+        <div className={styles.mobilePanelHeader}>
+          <Link to="/" className={styles.brand} onClick={() => setOpen(false)}>SanTan</Link>
           <button
-            className={closeButton}
+            className={styles.closeButton}
             aria-label="Close menu"
             onClick={() => setOpen(false)}
           >
             <X size={20} />
           </button>
         </div>
-        <nav className={mobileNavList}>
+        <nav className={styles.mobileNavList}>
           {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}
               onClick={() => setOpen(false)}
-              activeProps={{ className: mobileNavLinkActive }}
+              activeProps={{ className: styles.mobileNavLinkActive }}
               activeOptions={{ exact: true }}
-              className={mobileNavLink}
+              className={styles.mobileNavLink}
             >
               <Icon size={18} /> {label}
             </Link>

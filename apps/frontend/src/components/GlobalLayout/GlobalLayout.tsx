@@ -1,7 +1,7 @@
 import { ClientOnly, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { useStore } from '@tanstack/react-store';
 import TanStackQueryDevtools from '@/integrations/tanstack-query/devtools.tsx';
 import Header from '@/components/Header/Header.tsx';
@@ -15,16 +15,13 @@ import './GlobalLayout.css.ts';
 const ExitPreview = lazy(() => import('@/components/ExitPreview.tsx'));
 
 const VisualEditing = lazy(() => import('@/sanity/VisualEditing.tsx'));
+import { Footer } from '@/components/Footer/Footer.tsx';
 
 export const GlobalLayout = () => {
   const { sanity } = Route.useLoaderData();
   const { isPreview, isDraftsPerspective } = useStore(previewStore);
-  const [preHydration, setPreHydration] = useState(true);
 
-  // Initialize store with server-side preview state
-  useEffect(() => {
-    setPreviewMode(sanity.isPreview);
-  }, [sanity.isPreview]);
+  useEffect(() => { setPreviewMode(sanity.isPreview); }, [sanity.isPreview]);
 
   // Re-check preview mode on client mount
   // (handles case where request context is unavailable after redirects)
@@ -89,31 +86,40 @@ export const GlobalLayout = () => {
     };
   }, [isPreview]);
 
-  // Remove preload class after hydration
   useEffect(() => {
-    // Remove preload after hydration tick
-    const id = requestAnimationFrame(() => setPreHydration(false));
-    return () => cancelAnimationFrame(id);
+    // Mark UI as ready after mount to enable transitions
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.add('ui-ready');
+    }
   }, []);
 
   return (
     <html lang="no" suppressHydrationWarning>
       <head>
-        {/* Theme bootstrap (kept) */}
+        <title>SanTan Starter</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {/* Set ui-ready class as soon as possible after stylesheets load */}
+        <script dangerouslySetInnerHTML={{__html:`(function(){var check=function(){if(document.styleSheets.length>0){document.documentElement.classList.add('ui-ready');}else{setTimeout(check,50);}};if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',check);}else{check();}})();`}} />
+        {/* Early theme bootstrap - runs before any paint */}
+        <script dangerouslySetInnerHTML={{__html:`(function(){try{var s=localStorage.getItem('theme');var m=window.matchMedia('(prefers-color-scheme:dark)').matches;var t=s||(m?'dark':'light');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}})();`}} />
+        {/* Router-managed head (injects global stylesheet, meta, etc.) */}
         <HeadContent />
+        {/* Preconnect to Google Fonts for faster loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Preload key assets */}
+        <link rel="preload" as="image" href="/tanstack-word-logo-white.svg" />
+        <link rel="preload" as="image" href="/sanity_logo_light.png" />
         <FavIcons />
-        <script dangerouslySetInnerHTML={{__html:`(function(){try{var s=localStorage.getItem('theme');var m=window.matchMedia('(prefers-color-scheme:dark)').matches;var t=s|| (m?'dark':'light');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');} }catch(e){}})();`}} />
-        <style>{`:root{color-scheme: light dark}`}</style>
-        <noscript><style>{`body.preload{opacity:1 !important}`}</style></noscript>
       </head>
-      <body className={preHydration ? 'preload' : undefined} style={{opacity: preHydration ? 0 : 1, transition:'opacity .35s ease, background-color .4s, color .4s'}}>
-        {/* Skip link */}
+      <body suppressHydrationWarning>
         <a href="#main" style={{position:'absolute',left:'-999px',top:'-999px',background:'#000',color:'#fff',padding:'8px 12px',borderRadius:4,transform:'translateY(-8px)'}} onFocus={(e)=>{e.currentTarget.style.left='12px';e.currentTarget.style.top='12px';}} onBlur={(e)=>{e.currentTarget.style.left='-999px';e.currentTarget.style.top='-999px';}}>Hopp til innhold</a>
         <ErrorBoundary>
           <Header />
           <main id="main">
             <Outlet />
           </main>
+          <Footer />
           <TanStackDevtools
             config={{ position: 'bottom-right' }}
             plugins={[
@@ -137,10 +143,10 @@ export const GlobalLayout = () => {
               </>
             ) : (
               <div style={{position:'fixed',top:'10px',right:'10px',background:'gray',color:'white',padding:'8px 12px',borderRadius:'4px',fontSize:'12px',fontWeight:'bold',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}}>⚪ PUBLISHED MODE</div>
-            )}
-          </ClientOnly>
-        </ErrorBoundary>
-      </body>
-    </html>
-  );
+          )}
+        </ClientOnly>
+      </ErrorBoundary>
+    </body>
+  </html>
+);
 };

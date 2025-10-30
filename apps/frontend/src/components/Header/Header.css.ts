@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { style, globalStyle } from '@vanilla-extract/css';
 import { vars } from '@/styles/theme.css.ts';
 
 export const header = style({
@@ -111,8 +111,8 @@ export const mobilePanel = style({
   display: 'flex',
   flexDirection: 'column',
   gap: '1.25rem',
-  transform: 'translateX(0)',
-  transition: 'transform .4s cubic-bezier(.4,0,.2,1)',
+  transform: 'translateX(100%)', // START HIDDEN by default
+  transition: 'none',
   zIndex: 200,
 });
 
@@ -120,6 +120,12 @@ export const mobilePanelHidden = style([
   mobilePanel,
   { transform: 'translateX(100%)' },
 ]);
+
+// Only apply transition AND translateX(0) when panel is explicitly open AND ui is ready
+globalStyle(`html.ui-ready aside[aria-hidden="false"].${mobilePanel}`, {
+  transform: 'translateX(0)',
+  transition: 'transform .4s cubic-bezier(.4,0,.2,1)'
+});
 
 export const mobilePanelHeader = style({
   display: 'flex',
@@ -184,7 +190,7 @@ export const overlay = style({
   backdropFilter: 'blur(2px)',
   WebkitBackdropFilter: 'blur(2px)',
   opacity: 1,
-  transition: 'opacity .35s ease',
+  transition: 'none',
   zIndex: 150,
 });
 
@@ -192,6 +198,8 @@ export const overlayHidden = style([
   overlay,
   { opacity: 0, pointerEvents: 'none' },
 ]);
+
+globalStyle(`html.ui-ready .${overlay}`, { transition: 'opacity .35s ease' });
 
 export const themeToggle = style({
   display: 'flex',
@@ -208,5 +216,30 @@ export const themeToggle = style({
   selectors: {
     '&:hover': { background: vars.color.accentSoft },
     '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus },
+  },
+});
+
+export const themeIconWrapper = style({
+  position: 'relative',
+  width: 18,
+  height: 18,
+  display: 'inline-block',
+});
+
+export const sunIcon = style({
+  display: 'none',
+  position: 'absolute',
+  inset: 0,
+  selectors: {
+    '[data-theme="dark"] &': { display: 'block' },
+  },
+});
+
+export const moonIcon = style({
+  display: 'block',
+  position: 'absolute',
+  inset: 0,
+  selectors: {
+    '[data-theme="dark"] &': { display: 'none' },
   },
 });
