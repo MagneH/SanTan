@@ -1,13 +1,13 @@
-# @pensjonsbloggen/shared
+# @santan/shared
 
-Shared types, utilities, and configurations used across the Pensjonsbloggen monorepo apps.
+Shared types, utilities, and configurations used across the monorepo apps.
 
 ## Usage
 
 In frontend or studio, import shared types:
 
 ```typescript
-import type { SanityDocument } from '@pensjonsbloggen/shared';
+import type { SanityDocument } from '@santan/shared';
 ```
 
 ## Adding New Shared Code

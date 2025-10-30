@@ -26,7 +26,7 @@ The Sanity types are automatically generated from the Studio schemas and shared 
 
 3. **Both frontend and studio import from the shared package:**
    ```typescript
-   import { sanityTypeLiterals, Post, Category, Author } from '@pensjonsbloggen/shared/types';
+   import { sanityTypeLiterals, Post, Category, Author } from '@santan/shared/types';
    ```
 
 ### Why This Is Better
@@ -55,10 +55,10 @@ Run `npm run generate-types` in the studio whenever you:
 
 ```typescript
 // Import specific types
-import { Post, Category, Author } from '@pensjonsbloggen/shared/types';
+import { Post, Category, Author } from '@santan/shared/types';
 
 // Import type literals enum
-import { sanityTypeLiterals } from '@pensjonsbloggen/shared/types';
+import { sanityTypeLiterals } from '@santan/shared/types';
 
 // Use in your code
 const docType = sanityTypeLiterals.post; // 'post'
@@ -92,5 +92,5 @@ export interface ApiResponse<T> {
 }
 ```
 
-These will be available alongside the generated Sanity types when importing from `@pensjonsbloggen/shared/types`.
+These will be available alongside the generated Sanity types when importing from `@santan/shared/types`.
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This system automatically computes and maintains hierarchical URL paths (`fullSlug`) for categories and posts based on their parent relationships. For example, a post under `Pensjon > AFP > Medlemskap` gets the fullSlug: `pensjon/afp/medlemskap/post-title`.
+This system automatically computes and maintains hierarchical URL paths (`fullSlug`) for categories and posts based on their parent relationships. For example, a post under `Category > Subcategory > Topic` gets the fullSlug: `category/subcategory/topic/post-title`.
 
 ## How It Works
 
@@ -85,7 +85,7 @@ export const FULL_SLUG_CONFIG = {
 
 ### Root-Level Documents
 - If no parent is set, the fullSlug equals the slug
-- Example: slug `pensjon` → fullSlug `pensjon`
+- Example: slug `technology` → fullSlug `technology`
 
 ## Performance Metrics
 
@@ -103,7 +103,7 @@ Set `NODE_ENV=development` to enable detailed logging:
 [computeFullSlug] Computing for docId: ...
 [computeFullSlug] Using explicit slug and parent ref, skipping document fetch
 [computeFullSlug] Processing parent at depth 0: ...
-[computeFullSlug] Final fullSlug: pensjon/afp/medlemskap/test
+[computeFullSlug] Final fullSlug: category/subcategory/topic/test
 ```
 
 ### Production Mode

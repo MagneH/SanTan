@@ -1,4 +1,4 @@
-# Getting Started with Pensjonsbloggen Monorepo
+# Getting Started with Santan Monorepo
 
 This guide provides step-by-step instructions for setting up and running the monorepo. For a complete overview, see [README.md](README.md).
 
@@ -18,7 +18,7 @@ Before you begin, ensure you have:
 ## Step 1: Clone or Navigate to the Repository
 
 ```bash
-cd /Users/magnehustveit/code/pensjonsbloggen-monorepo
+cd /path/to/santan-monorepo
 ```
 
 ---
@@ -124,7 +124,7 @@ npm run dev
 
 **You should see:**
 ```
-• Packages in scope: @pensjonsbloggen/frontend, @pensjonsbloggen/shared, @pensjonsbloggen/studio
+• Packages in scope: @santan/frontend, @santan/shared, @santan/studio
 • Running dev in 3 packages
 ```
 
@@ -159,17 +159,17 @@ Open [http://localhost:3333](http://localhost:3333) in your browser.
 
 **Frontend only:**
 ```bash
-npm run dev --workspace=@pensjonsbloggen/frontend
+npm run dev --workspace=@santan/frontend
 ```
 
 **Studio only:**
 ```bash
-npm run dev --workspace=@pensjonsbloggen/studio
+npm run dev --workspace=@santan/studio
 ```
 
 **Shared package only (watch mode):**
 ```bash
-npm run dev --workspace=@pensjonsbloggen/shared
+npm run dev --workspace=@santan/shared
 ```
 
 ### Building for Production
@@ -181,8 +181,8 @@ npm run build
 
 Build individual apps:
 ```bash
-npm run build --workspace=@pensjonsbloggen/frontend
-npm run build --workspace=@pensjonsbloggen/studio
+npm run build --workspace=@santan/frontend
+npm run build --workspace=@santan/studio
 ```
 
 ### Type Checking
@@ -232,14 +232,14 @@ npm run clean
 
 3. **Use types in Frontend:**
    ```typescript
-   import { YourNewType } from '@pensjonsbloggen/shared/types';
+   import { YourNewType } from '@santan/shared/types';
    ```
 
 ### Querying Content in Frontend
 
 ```typescript
 import { sanityClient } from '@/sanity/client';
-import { Post } from '@pensjonsbloggen/shared/types';
+import { Post } from '@santan/shared/types';
 
 const posts = await sanityClient.fetch<Post[]>(`
   *[_type == "post"] {
@@ -256,7 +256,7 @@ const posts = await sanityClient.fetch<Post[]>(`
 ## Project Structure Overview
 
 ```
-pensjonsbloggen-monorepo/
+santan-monorepo/
 ├── apps/
 │   ├── frontend/              # React app
 │   │   ├── src/
@@ -311,7 +311,7 @@ npm run dev
 
 ### Types Not Found
 
-**Error:** `Cannot find module '@pensjonsbloggen/shared/types'`
+**Error:** `Cannot find module '@santan/shared/types'`
 
 **Solution:**
 ```bash
@@ -391,7 +391,7 @@ Now that you're set up:
 
 ---
 
-**Welcome to the Pensjonsbloggen Monorepo! Happy coding! 🚀**
+**Welcome to the Santan Monorepo! Happy coding! 🚀**
 
 ## Prerequisites
 
@@ -453,12 +453,12 @@ This will start:
 
 **Frontend only:**
 ```bash
-npm run dev --workspace=@pensjonsbloggen/frontend
+npm run dev --workspace=@santan/frontend
 ```
 
 **Studio only:**
 ```bash
-npm run dev --workspace=@pensjonsbloggen/studio
+npm run dev --workspace=@santan/studio
 ```
 
 ## Building
@@ -470,28 +470,28 @@ npm run build
 
 Build individual apps:
 ```bash
-npm run build --workspace=@pensjonsbloggen/frontend
-npm run build --workspace=@pensjonsbloggen/studio
+npm run build --workspace=@santan/frontend
+npm run build --workspace=@santan/studio
 ```
 
 ## Other Commands
 
 ### Linting
 ```bash
-npm run lint                                        # Lint all apps
-npm run lint --workspace=@pensjonsbloggen/frontend # Lint frontend only
+npm run lint                                  # Lint all apps
+npm run lint --workspace=@santan/frontend # Lint frontend only
 ```
 
 ### Type Checking
 ```bash
-npm run type-check                                        # Type check all apps
-npm run type-check --workspace=@pensjonsbloggen/frontend # Type check frontend only
+npm run type-check                                  # Type check all apps
+npm run type-check --workspace=@santan/frontend # Type check frontend only
 ```
 
 ### Formatting
 ```bash
-npm run format                                        # Format all apps
-npm run format --workspace=@pensjonsbloggen/frontend # Format frontend only
+npm run format                                  # Format all apps
+npm run format --workspace=@santan/frontend # Format frontend only
 ```
 
 ### Cleaning
@@ -502,7 +502,7 @@ npm run clean # Clean build artifacts from all apps
 ## Project Structure
 
 ```
-pensjonsbloggen-monorepo/
+santan-monorepo/
 ├── apps/
 │   ├── frontend/           # React frontend with TanStack Router
 │   │   ├── src/
@@ -524,14 +524,14 @@ pensjonsbloggen-monorepo/
 
 ## Working with the Shared Package
 
-The `@pensjonsbloggen/shared` package contains types and utilities shared between apps.
+The `@santan/shared` package contains types and utilities shared between apps.
 
 To add shared types:
 1. Add them to `packages/shared/src/types/`
 2. Export them from `packages/shared/src/index.ts`
 3. Use them in your apps:
    ```typescript
-   import { SanityDocument } from '@pensjonsbloggen/shared';
+   import { SanityDocument } from '@santan/shared';
    ```
 
 ## Turborepo Benefits

@@ -24,11 +24,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           content: 'width=device-width, initial-scale=1',
         },
         {
-          title: 'Pensjonsbloggen - Din guide til pensjon og økonomi',
+          title: 'Santan App - Your Content Platform',
         },
         {
           name: 'description',
-          content: 'Les de nyeste artiklene om pensjon, økonomi og pensjonssparing i Norge.',
+          content: 'Your content platform built with React, Sanity, and TanStack Router.',
         },
       ],
       links: [

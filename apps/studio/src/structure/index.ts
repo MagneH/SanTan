@@ -2,7 +2,7 @@ import { Home, Tags, Users } from 'lucide-react';
 import type { DefaultDocumentNodeResolver, StructureBuilder, StructureResolver } from 'sanity/structure';
 import DocumentsPane from 'sanity-plugin-documents-pane';
 
-import { sanityTypeLiterals } from '@pensjonsbloggen/shared/types';
+import { sanityTypeLiterals } from '@santan/shared/types';
 import { JSONPreview } from './components/JSONPreview';
 
 export const structure: StructureResolver = (S) =>

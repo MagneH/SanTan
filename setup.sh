@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Monorepo Setup Script for Pensjonsbloggen
+# Monorepo Setup Script
 
-echo "🚀 Setting up Pensjonsbloggen Monorepo..."
+echo "🚀 Setting up Santan Monorepo..."
 echo ""
 
 # Check if .env files exist
@@ -34,7 +34,7 @@ echo "  npm run lint       - Lint all apps"
 echo "  npm run type-check - Type check all apps"
 echo ""
 echo "Run individual apps:"
-echo "  npm run dev --workspace=@pensjonsbloggen/frontend"
-echo "  npm run dev --workspace=@pensjonsbloggen/studio"
+echo "  npm run dev --workspace=@santan/frontend"
+echo "  npm run dev --workspace=@santan/studio"
 echo ""
 

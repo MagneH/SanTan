@@ -1,6 +1,5 @@
 import { style } from '@vanilla-extract/css';
 import { calc } from '@vanilla-extract/css-utils';
-import svg from '../../../public/headerart.svg';
 
 export const header = style({
   padding: calc.multiply('var(--spacing)', 4),
@@ -12,18 +11,6 @@ export const header = style({
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // shadow-lg
   height: '73px',
   width: '100%',
-  '::after': {
-    content: '""',
-    width: '200px',
-    height: '200px',
-    backgroundImage: `url(${svg})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'contain',
-    pointerEvents: 'none',
-    right: -20,
-    position: 'relative',
-    top: '50px',
-  },
   overflow: 'hidden',
 });
 

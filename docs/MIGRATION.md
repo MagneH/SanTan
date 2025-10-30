@@ -8,25 +8,25 @@ This document explains what changed when moving to the monorepo structure.
 
 **Before:**
 ```
-/code/pensjonsbloggen/     # Frontend repo
-/code/sanity/              # Studio repo
+/code/frontend/     # Frontend repo
+/code/studio/       # Studio repo
 ```
 
 **After:**
 ```
-/code/pensjonsbloggen-monorepo/
+/code/santan-monorepo/
 ├── apps/
-│   ├── frontend/          # Frontend (was pensjonsbloggen/)
-│   └── studio/            # Studio (was sanity/)
+│   ├── frontend/          # React frontend
+│   └── studio/            # Sanity Studio
 └── packages/
     └── shared/            # New shared package
 ```
 
 ### Package Names
 
-- **Frontend**: `pensjonsbloggen` → `@pensjonsbloggen/frontend`
-- **Studio**: `pensjonsbloggen` → `@pensjonsbloggen/studio`
-- **New**: `@pensjonsbloggen/shared` for shared code
+- **Frontend**: → `@santan/frontend`
+- **Studio**: → `@santan/studio`
+- **New**: `@santan/shared` for shared code
 
 ### Scripts
 
@@ -35,8 +35,8 @@ Scripts are now standardized across apps:
 | Task | Command |
 |------|---------|
 | Dev (all) | `npm run dev` |
-| Dev (frontend) | `npm run dev --workspace=@pensjonsbloggen/frontend` |
-| Dev (studio) | `npm run dev --workspace=@pensjonsbloggen/studio` |
+| Dev (frontend) | `npm run dev --workspace=@santan/frontend` |
+| Dev (studio) | `npm run dev --workspace=@santan/studio` |
 | Build (all) | `npm run build` |
 | Lint (all) | `npm run lint` |
 | Type-check (all) | `npm run type-check` |
@@ -44,8 +44,8 @@ Scripts are now standardized across apps:
 ### Environment Variables
 
 `.env.local` files should be in:
-- `apps/frontend/.env.local` (was at root of pensjonsbloggen/)
-- `apps/studio/.env.local` (was at root of sanity/)
+- `apps/frontend/.env.local`
+- `apps/studio/.env.local`
 
 ## Benefits of Monorepo
 
@@ -75,7 +75,7 @@ The monorepo preserves git history from both repos in their respective directori
 
 Update your deployment configuration:
 - **Root directory**: `apps/frontend`
-- **Build command**: `cd ../.. && npm run build --workspace=@pensjonsbloggen/frontend`
+- **Build command**: `cd ../.. && npm run build --workspace=@santan/frontend`
 - **Output directory**: `apps/frontend/dist` or `apps/frontend/.output`
 
 ### Studio (Sanity)
@@ -88,7 +88,7 @@ npm run deploy
 
 Or from root:
 ```bash
-npm run deploy --workspace=@pensjonsbloggen/studio
+npm run deploy --workspace=@santan/studio
 ```
 
 ## Sharing Code Between Apps
@@ -100,19 +100,17 @@ Before monorepo, you might have duplicated types. Now:
 3. **Import in apps**:
    ```typescript
    // In frontend or studio
-   import { SanityDocument } from '@pensjonsbloggen/shared';
+   import { SanityDocument } from '@santan/shared';
    ```
 
 ## Rollback Plan
 
-If you need to go back to separate repos:
-1. The original repos still exist at `/code/pensjonsbloggen/` and `/code/sanity/`
-2. Or copy from monorepo:
-   ```bash
-   cp -r apps/frontend /code/pensjonsbloggen-standalone
-   cp -r apps/studio /code/sanity-standalone
-   ```
-3. Update package names back to original in package.json files
+If you need to go back to separate repos, copy from monorepo:
+```bash
+cp -r apps/frontend /code/frontend-standalone
+cp -r apps/studio /code/studio-standalone
+```
+Update package names back to original in package.json files
 
 ## Next Steps
 

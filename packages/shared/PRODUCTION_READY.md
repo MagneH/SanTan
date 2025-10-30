@@ -2,7 +2,7 @@
 
 ## ✅ Status: PRODUCTION READY
 
-The `@pensjonsbloggen/shared` package is now properly configured for production deployment.
+The `@santan/shared` package is now properly configured for production deployment.
 
 ---
 

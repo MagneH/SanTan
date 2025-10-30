@@ -30,7 +30,7 @@ export default function Header() {
             <Menu size={24} />
           </button>
           <h1 className={title}>
-            <Link to="/">Pensjonsbloggen</Link>
+            <Link to="/">SanTan</Link>
           </h1>
         </div>
       </header>

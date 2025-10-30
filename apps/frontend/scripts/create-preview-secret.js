@@ -14,7 +14,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const SECRET = process.argv[2] || 'preview-secret-pensjonsbloggen-2024-asdazcxhuialsdkcv';
+const SECRET = process.argv[2] || 'preview-secret-santan-2024-asdazcxhuialsdkcv';
 
 const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID || process.env.VITE_SANITY_PROJECT_ID,

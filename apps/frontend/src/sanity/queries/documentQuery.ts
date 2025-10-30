@@ -7,7 +7,7 @@ import { client } from '@/sanity/client.ts';
 import { STUDIO_BASEPATH } from '@/sanity/constants.ts';
 import { CATEGORY_QUERY_FIELDS } from '@/sanity/queries/categoryQuery.ts';
 import { POST_QUERY_FIELDS } from '@/sanity/queries/postQuery.ts';
-import { sanityTypeLiterals } from '@pensjonsbloggen/shared/types';
+import { sanityTypeLiterals } from '@santan/shared/types';
 import { categoryZ } from '@/types/category.ts';
 
 // GROQ query

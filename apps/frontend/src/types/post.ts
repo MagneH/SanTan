@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { sanityTypeLiterals } from '@pensjonsbloggen/shared/types';
+import { sanityTypeLiterals } from '@santan/shared/types';
 import { portableTextZ, sanityImageZ, seoZ } from '@/types/sanitySchemas.ts';
 
 // This is a Zod schema

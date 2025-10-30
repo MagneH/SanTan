@@ -1,4 +1,4 @@
-# Pensjonsbloggen
+# Santan Frontend
 
 A modern blog application focused on pension and financial topics, built with TanStack Start and Sanity CMS.
 
@@ -40,7 +40,7 @@ A modern blog application focused on pension and financial topics, built with Ta
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd pensjonsbloggen
+cd santan
 ```
 
 2. Install dependencies:

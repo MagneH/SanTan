@@ -1,6 +1,6 @@
 # Documentation Index
 
-Welcome to the Pensjonsbloggen Monorepo documentation!
+Welcome to the Santan Monorepo documentation!
 
 ## 📚 Main Documentation
 

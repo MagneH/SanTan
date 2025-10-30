@@ -2,7 +2,7 @@
 
 ## Summary
 
-Sanity types are now generated once in the Studio and automatically shared with the Frontend via the `@pensjonsbloggen/shared` package.
+Sanity types are now generated once in the Studio and automatically shared with the Frontend via the `@santan/shared` package.
 
 ---
 
@@ -27,8 +27,8 @@ Sanity types are now generated once in the Studio and automatically shared with 
 
 - [x] Updated `sanity-typegen.json` to output to shared package
 - [x] Fixed `extractZodLiterals.ts` for ES modules and updated paths
-- [x] Updated all imports in Frontend to use `@pensjonsbloggen/shared/types`
-- [x] Updated imports in Studio to use `@pensjonsbloggen/shared/types`
+- [x] Updated all imports in Frontend to use `@santan/shared/types`
+- [x] Updated imports in Studio to use `@santan/shared/types`
 - [x] Removed duplicate type files from Frontend
 - [x] Removed duplicate type files from Studio
 - [x] Created placeholder files in shared package
@@ -81,7 +81,7 @@ import { sanityTypeLiterals } from '../../types/sanityTypeLiterals';
 ### After
 ```typescript
 // Frontend AND Studio - same imports!
-import { sanityTypeLiterals, Post, Category, Author } from '@pensjonsbloggen/shared/types';
+import { sanityTypeLiterals, Post, Category, Author } from '@santan/shared/types';
 ```
 
 ---
@@ -145,7 +145,7 @@ Both frontend and studio will immediately have access to the updated types.
 
 ## Troubleshooting
 
-### "Cannot find module '@pensjonsbloggen/shared/types'"
+### "Cannot find module '@santan/shared/types'"
 
 The shared package might not be linked. Run:
 ```bash

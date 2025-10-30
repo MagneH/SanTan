@@ -1,5 +1,5 @@
 {
-  "name": "pensjonsbloggen-monorepo",
+  "name": "santan-monorepo",
   "private": true,
   "packageManager": "npm@10.2.4",
   "scripts": {

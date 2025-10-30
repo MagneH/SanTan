@@ -13,7 +13,7 @@ const slugAwareTypes = ['category', 'post'];
 
 export default defineConfig({
   name: 'default',
-  title: 'Pensjonsbloggen',
+  title: 'Santan Studio',
 
   projectId: projectDetails().projectId,
   dataset: projectDetails().dataset,

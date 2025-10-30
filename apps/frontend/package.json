@@ -1,5 +1,5 @@
 {
-  "name": "@pensjonsbloggen/frontend",
+  "name": "@santan/frontend",
   "private": true,
   "type": "module",
   "scripts": {

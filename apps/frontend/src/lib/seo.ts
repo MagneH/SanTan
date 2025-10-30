@@ -1,4 +1,4 @@
-import SPKLogo from '../../public/web-app-manifest-512x512.png?url';
+import AppLogo from '../../public/web-app-manifest-512x512.png?url';
 
 const basePath = import.meta.env.VITE_BASE_PATH || process.env.VITE_BASE_PATH;
 
@@ -6,7 +6,7 @@ export const seo = ({
   title,
   description,
   keywords,
-  image = `${basePath}${SPKLogo.replace('/public', '')}`,
+  image = `${basePath}${AppLogo.replace('/public', '')}`,
   relativeUrl,
 }: {
   title: string;

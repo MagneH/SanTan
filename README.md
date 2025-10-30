@@ -1,6 +1,6 @@
-# Pensjonsbloggen Monorepo
+# Santan Monorepo
 
-A production-ready monorepo containing the Pensjonsbloggen frontend and Sanity Studio, powered by Turborepo.
+A production-ready monorepo combining a React frontend with Sanity Studio, powered by Turborepo.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
 [![Turborepo](https://img.shields.io/badge/Turborepo-2.3-red)](https://turbo.build/repo)
@@ -24,7 +24,7 @@ A production-ready monorepo containing the Pensjonsbloggen frontend and Sanity S
 
 ## Overview
 
-This monorepo combines the Pensjonsbloggen frontend and Sanity Studio into a single, optimized workspace with:
+This monorepo combines a React frontend and Sanity Studio into a single, optimized workspace with:
 
 ✅ **Shared type system** - Auto-generated Sanity types used across both apps  
 ✅ **Turborepo caching** - Lightning-fast builds with intelligent caching  
@@ -64,7 +64,7 @@ This monorepo combines the Pensjonsbloggen frontend and Sanity Studio into a sin
 ### 1. Clone and Install
 
 ```bash
-cd /path/to/pensjonsbloggen-monorepo
+cd /path/to/santan-monorepo
 npm install
 ```
 
@@ -110,7 +110,7 @@ This starts:
 ## Project Structure
 
 ```
-pensjonsbloggen-monorepo/
+santan-monorepo/
 ├── apps/
 │   ├── frontend/              # React frontend
 │   │   ├── src/
@@ -119,7 +119,7 @@ pensjonsbloggen-monorepo/
 │   │   │   ├── sanity/       # Sanity queries and loaders
 │   │   │   └── types/        # Frontend-specific types
 │   │   ├── .env.local        # Environment variables (not in git)
-│   │   └── package.json      # @pensjonsbloggen/frontend
+│   │   └── package.json      # @santan/frontend
 │   │
 │   └── studio/                # Sanity Studio
 │       ├── src/
@@ -127,7 +127,7 @@ pensjonsbloggen-monorepo/
 │       │   ├── structure/    # Studio structure
 │       │   └── scripts/      # Type generation scripts
 │       ├── .env.local        # Environment variables (not in git)
-│       └── package.json      # @pensjonsbloggen/studio
+│       └── package.json      # @santan/studio
 │
 ├── packages/
 │   └── shared/                # Shared package (auto-generated types)
@@ -137,7 +137,7 @@ pensjonsbloggen-monorepo/
 │       │   │   └── sanityTypeLiterals.ts # Type literal enums
 │       │   └── index.ts      # Main export
 │       ├── dist/             # Compiled output (generated)
-│       └── package.json      # @pensjonsbloggen/shared
+│       └── package.json      # @santan/shared
 │
 ├── turbo.json                 # Turborepo configuration
 ├── package.json               # Root package with workspaces
@@ -166,18 +166,18 @@ Starts all workspaces with hot reloading:
 
 ```bash
 # Frontend only
-npm run dev --workspace=@pensjonsbloggen/frontend
+npm run dev --workspace=@santan/frontend
 
 # Studio only
-npm run dev --workspace=@pensjonsbloggen/studio
+npm run dev --workspace=@santan/studio
 
 # Shared package only (watch mode)
-npm run dev --workspace=@pensjonsbloggen/shared
+npm run dev --workspace=@santan/shared
 ```
 
 ### Working with Shared Types
 
-The `@pensjonsbloggen/shared` package contains auto-generated Sanity types:
+The `@santan/shared` package contains auto-generated Sanity types:
 
 ```typescript
 // Import in Frontend or Studio
@@ -186,7 +186,7 @@ import {
   Category, 
   Author,
   sanityTypeLiterals 
-} from '@pensjonsbloggen/shared/types';
+} from '@santan/shared/types';
 
 // Type-safe document checking
 if (doc._type === sanityTypeLiterals.post) {
@@ -231,7 +231,7 @@ npm run deploy
 
 Or from root:
 ```bash
-npm run deploy --workspace=@pensjonsbloggen/studio
+npm run deploy --workspace=@santan/studio
 ```
 
 **See [`packages/shared/PRODUCTION_READY.md`](packages/shared/PRODUCTION_READY.md) for complete deployment guide.**
@@ -285,12 +285,12 @@ Run commands in specific packages:
 
 ```bash
 # Pattern
-npm run <command> --workspace=@pensjonsbloggen/<package>
+npm run <command> --workspace=@santan/<package>
 
 # Examples
-npm run dev --workspace=@pensjonsbloggen/frontend
-npm run build --workspace=@pensjonsbloggen/studio
-npm run type-check --workspace=@pensjonsbloggen/shared
+npm run dev --workspace=@santan/frontend
+npm run build --workspace=@santan/studio
+npm run type-check --workspace=@santan/shared
 ```
 
 ---

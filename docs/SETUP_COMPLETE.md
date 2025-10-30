@@ -1,21 +1,21 @@
-# Pensjonsbloggen Monorepo - Setup Summary
+# Santan Monorepo - Setup Summary
 
 ## ✅ Completed Setup
 
 Your Turborepo monorepo has been successfully created at:
-`/Users/magnehustveit/code/pensjonsbloggen-monorepo/`
+`/path/to/santan-monorepo/`
 
 ## 📁 Structure Created
 
 ```
-pensjonsbloggen-monorepo/
+santan-monorepo/
 ├── apps/
-│   ├── frontend/              # Your React frontend (was pensjonsbloggen/)
+│   ├── frontend/              # Your React frontend
 │   │   ├── .env.example      # Environment template
-│   │   └── package.json       # @pensjonsbloggen/frontend
-│   └── studio/                # Your Sanity Studio (was sanity/)
+│   │   └── package.json       # @santan/frontend
+│   └── studio/                # Your Sanity Studio
 │       ├── .env.example      # Environment template
-│       └── package.json       # @pensjonsbloggen/studio
+│       └── package.json       # @santan/studio
 ├── packages/
 │   └── shared/                # NEW: Shared types and utilities
 │       └── src/
@@ -29,7 +29,7 @@ pensjonsbloggen-monorepo/
 ├── GETTING_STARTED.md         # Detailed setup guide
 ├── MIGRATION.md               # Migration explanation
 ├── setup.sh                   # Automated setup script
-└── pensjonsbloggen.code-workspace  # VS Code workspace
+└── santan.code-workspace  # VS Code workspace
 
 ✅ 2293 packages installed
 ✅ npm workspaces configured
@@ -56,8 +56,8 @@ cp apps/studio/.env.example apps/studio/.env.local
 npm run dev
 
 # Or run individually
-npm run dev --workspace=@pensjonsbloggen/frontend  # http://localhost:3000
-npm run dev --workspace=@pensjonsbloggen/studio    # http://localhost:3333
+npm run dev --workspace=@santan/frontend  # http://localhost:3000
+npm run dev --workspace=@santan/studio    # http://localhost:3333
 ```
 
 ## 📚 Documentation
@@ -75,7 +75,7 @@ npm run dev --workspace=@pensjonsbloggen/studio    # http://localhost:3333
 ✅ **Task pipelines** - Define dependencies between tasks
 
 ### Monorepo Benefits
-✅ **Shared code** - Use `@pensjonsbloggen/shared` for types and utilities
+✅ **Shared code** - Use `@santan/shared` for types and utilities
 ✅ **Atomic commits** - Change frontend and studio together
 ✅ **Single source of truth** - One repo for everything
 ✅ **Simplified dependencies** - Manage all packages in one place
@@ -93,13 +93,13 @@ From the root directory:
 | `npm run format` | Format all code |
 | `npm run clean` | Clean build artifacts |
 
-For individual apps, add `--workspace=@pensjonsbloggen/frontend` or `--workspace=@pensjonsbloggen/studio`
+For individual apps, add `--workspace=@santan/frontend` or `--workspace=@santan/studio`
 
 ## 📝 Next Steps
 
 1. **Copy environment variables** from your existing projects
 2. **Test running both apps**: `npm run dev`
-3. **Open the VS Code workspace**: `pensjonsbloggen.code-workspace`
+3. **Open the VS Code workspace**: `santan.code-workspace`
 4. **Start sharing types** between apps using `packages/shared/`
 5. **Update your deployment** configurations (see MIGRATION.md)
 
@@ -107,7 +107,7 @@ For individual apps, add `--workspace=@pensjonsbloggen/frontend` or `--workspace
 
 Open the workspace file for a better development experience:
 ```bash
-code pensjonsbloggen.code-workspace
+code santan.code-workspace
 ```
 
 This provides:
@@ -135,7 +135,7 @@ npm run build
 
 1. **Use Turbo's caching**: After first build, subsequent builds are much faster
 2. **Share types**: Put common types in `packages/shared/src/types/`
-3. **Run specific tasks**: `npm run dev --workspace=@pensjonsbloggen/frontend`
+3. **Run specific tasks**: `npm run dev --workspace=@santan/frontend`
 4. **Check Turbo logs**: Add `--verbose` to any command for detailed logs
 
 ## 🆘 Troubleshooting
@@ -155,11 +155,6 @@ If you encounter issues:
 
 ---
 
-**Your original repos are still intact at:**
-- `/Users/magnehustveit/code/pensjonsbloggen/`
-- `/Users/magnehustveit/code/sanity/`
-
-They serve as a backup if needed.
 
 Happy coding! 🎉
 

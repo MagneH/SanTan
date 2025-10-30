@@ -4,7 +4,7 @@ import type { PageProps } from '@/types/PageProps.ts';
 import type { DocumentType } from '@/types/documentType.ts';
 import { Route } from '@/routes/$.tsx';
 import { withPreviewData, withPublishedData } from '@/components/withDocument.tsx';
-import { sanityTypeLiterals } from '@pensjonsbloggen/shared/types';
+import { sanityTypeLiterals } from '@santan/shared/types';
 import { documentQuery } from '@/sanity/queries/documentQuery.ts';
 import { PostPage } from '@/pages/Post/Post.tsx';
 import { CategoryPage } from '@/pages/Category/Category.tsx';
