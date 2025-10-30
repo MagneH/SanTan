@@ -1,4 +1,4 @@
-import { container, ingress as ingressStyle, textContainer } from './Category.css.ts';
+import { container, ingress as ingressStyle, keywordItem, keywordsList, keywordsSection, keywordsTitle, textContainer } from './Category.css.ts';
 import type { PageProps } from '@/types/PageProps.ts';
 import type { CategoryDocument } from '@/types/category.ts';
 import { MainImage } from '@/components/MainImage/MainImage.tsx';
@@ -22,13 +22,15 @@ export const CategoryPage = ({ data, encodeDataAttribute }: PageProps<CategoryDo
       <div className={textContainer}>
         <header>{title ? <Title>{title}</Title> : null}</header>
         {description ? <p className={ingressStyle}>{description}</p> : null}
-        <h2>Keywords</h2>
-        {seo?.keywords ? (
-          <ul>
-            {seo?.keywords.map((keyword: string | undefined) => (
-              <li>{keyword}</li>
-            ))}
-          </ul>
+        {seo?.keywords && seo.keywords.length > 0 ? (
+          <div className={keywordsSection}>
+            <h2 className={keywordsTitle}>Topics</h2>
+            <ul className={keywordsList}>
+              {seo.keywords.map((keyword: string | undefined, index: number) => (
+                <li key={index} className={keywordItem}>{keyword}</li>
+              ))}
+            </ul>
+          </div>
         ) : null}
       </div>
     </article>

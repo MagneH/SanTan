@@ -3,26 +3,28 @@ import { globalStyle, style } from '@vanilla-extract/css';
 export const postCard = style({
   display: 'block',
   textDecoration: 'none',
-  backgroundColor: 'rgba(15, 23, 42, 0.5)',
-  backdropFilter: 'blur(10px)',
-  border: '1px solid rgba(100, 116, 139, 1)',
-  borderRadius: '1rem',
-  padding: '1.5rem',
+  background: 'rgba(255, 255, 255, 0.6)',
+  backdropFilter: 'blur(20px)',
+  border: '1px solid rgba(0, 102, 204, 0.08)',
+  borderRadius: '1.15rem',
+  padding: '0',
   overflow: 'hidden',
+  transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: '0 1px 3px rgba(0, 102, 204, 0.04)',
   ':hover': {
-    borderColor: 'rgba(6, 182, 212, 0.5)',
-    boxShadow: '0 10px 15px -3px rgba(6, 182, 212, 0.1), 0 4px 6px -2px rgba(6, 182, 212, 0.05)',
-    transform: 'translateY(-2px)',
+    background: 'rgba(255, 255, 255, 0.9)',
+    borderColor: 'rgba(0, 102, 204, 0.15)',
+    transform: 'translateY(-5px)',
+    boxShadow: '0 10px 34px rgba(0, 102, 204, 0.10)',
   },
 });
 
 export const imageContainer = style({
   position: 'relative',
   width: '100%',
-  paddingBottom: '100%', // Creates a square aspect ratio (1:1)
+  paddingBottom: '66.67%', // 3:2 aspect ratio
   overflow: 'hidden',
-  backgroundColor: '#F9FAFB',
-  marginBottom: '1rem',
+  backgroundColor: 'rgba(0, 102, 204, 0.03)',
 });
 
 export const image = style({
@@ -32,7 +34,7 @@ export const image = style({
   height: '100%',
   width: '100%',
   objectFit: 'cover',
-  transition: 'transform 0.3s ease',
+  transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
 });
 
 export const missingImage = style({
@@ -44,23 +46,46 @@ export const missingImage = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: '#E5E7EB',
-  color: '#6B7280',
+  backgroundColor: 'rgba(0, 102, 204, 0.03)',
+  color: 'rgba(0, 102, 204, 0.25)',
+  fontSize: '4rem',
 });
 
-// Apply hover effect to images inside postCard
 globalStyle(`${postCard}:hover img`, {
-  transform: 'scale(1.04)',
+  transform: 'scale(1.06)',
+});
+
+export const postCardContent = style({
+  padding: '2rem',
+  '@media': {
+    'screen and (max-width: 768px)': {
+      padding: '1.5rem',
+    },
+  },
 });
 
 export const postCardTitle = style({
-  fontSize: '1.25rem',
+  fontSize: '1.625rem',
   fontWeight: 600,
-  color: 'white',
-  marginBottom: '0.75rem',
+  color: '#0066cc',
+  marginBottom: '1.25rem',
+  lineHeight: 1.35,
+  letterSpacing: '-0.02em',
+  '@media': {
+    'screen and (max-width: 768px)': {
+      fontSize: '1.5rem',
+    },
+  },
 });
 
 export const postCardIngress = style({
-  color: 'rgba(156, 163, 175, 1)',
-  lineHeight: 1.625,
+  color: 'rgba(29, 29, 31, 0.65)',
+  lineHeight: 1.8,
+  fontSize: '1.0625rem',
+  display: '-webkit-box',
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+  letterSpacing: '-0.008em',
+  fontWeight: 300,
 });

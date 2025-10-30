@@ -1,132 +1,212 @@
 import { style } from '@vanilla-extract/css';
-import { calc } from '@vanilla-extract/css-utils';
+import { vars } from '@/styles/theme.css.ts';
 
 export const header = style({
-  padding: calc.multiply('var(--spacing)', 4),
+  position: 'sticky',
+  top: 0,
+  insetInline: 0,
+  zIndex: 100,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  backgroundColor: '#1F2937', // gray-800
-  color: 'white',
-  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // shadow-lg
-  height: '73px',
-  width: '100%',
-  overflow: 'hidden',
+  gap: '2rem',
+  height: '70px',
+  padding: '0 2.25rem',
+  background: vars.color.glass,
+  borderBottom: `1px solid ${vars.color.borderSoft}`,
+  boxShadow: `${vars.shadow.subtle}, 0 0 0 0.5px rgba(255,255,255,0.4) inset`,
 });
 
-export const menuAndTitleContainer = style({
-  display: 'flex',
-  alignItems: 'center',
-});
-
-export const button = style({
-  padding: calc.multiply('var(--spacing)', 2),
-  borderRadius: 8, // rounded-lg
-  transition: 'background-color 0.3s',
+export const brand = style({
+  fontSize: '1.35rem',
+  fontWeight: 600,
+  letterSpacing: '-0.03em',
+  background: `linear-gradient(135deg,${vars.color.primary},${vars.color.primaryDeep})`,
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  textDecoration: 'none',
   selectors: {
-    '&:hover': {
-      backgroundColor: '#374151', // gray-700
-    },
+    '&:hover': { opacity: 0.9 },
   },
 });
 
-export const title = style({
-  marginLeft: 16, // ml-4
-  fontSize: 20, // text-xl
-  fontWeight: 600, // font-semibold
+export const desktopNav = style({
+  display: 'none',
+  alignItems: 'center',
+  gap: '2.25rem',
+  fontSize: '0.95rem',
+  '@media': {
+    'screen and (min-width: 840px)': { display: 'flex' },
+  },
 });
 
-export const aside = style({
+export const navLink = style({
+  position: 'relative',
+  color: 'rgba(29,29,31,0.75)',
+  fontWeight: 500,
+  letterSpacing: '-0.01em',
+  textDecoration: 'none',
+  transition: 'color .25s ease',
+  selectors: {
+    '&:hover': { color: '#0066cc' },
+  },
+});
+
+export const navLinkActive = style([
+  navLink,
+  {
+    color: '#0066cc',
+    selectors: {
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: '-6px',
+        height: '2px',
+        borderRadius: '2px',
+        background: 'linear-gradient(90deg,#0066cc,#004c99)',
+      },
+    },
+  },
+]);
+
+export const spacer = style({ flex: 1 });
+
+export const mobileMenuButton = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 44,
+  height: 44,
+  borderRadius: '12px',
+  border: '1px solid rgba(0,102,204,0.15)',
+  background: 'rgba(255,255,255,0.55)',
+  backdropFilter: 'blur(12px)',
+  WebkitBackdropFilter: 'blur(12px)',
+  cursor: 'pointer',
+  color: '#004c99',
+  transition: 'all .3s ease',
+  selectors: {
+    '&:hover': { background: 'rgba(255,255,255,0.8)' },
+    '&:active': { transform: 'scale(.94)' },
+  },
+  '@media': {
+    'screen and (min-width: 840px)': { display: 'none' },
+  },
+});
+
+export const mobilePanel = style({
   position: 'fixed',
   top: 0,
-  left: 0,
-  height: '100%',
-  width: '20rem',
-  background: '#1a202c',
-  color: 'white',
-  boxShadow: '0 0 32px 0 rgba(0,0,0,0.5)',
-  zIndex: 50,
+  right: 0,
+  bottom: 0,
+  width: 'min(320px,85vw)',
+  background: 'rgba(255,255,255,0.72)',
+  backdropFilter: 'blur(28px) saturate(180%)',
+  WebkitBackdropFilter: 'blur(28px) saturate(180%)',
+  borderLeft: '1px solid rgba(0,102,204,0.08)',
+  boxShadow: '-8px 0 24px -8px rgba(0,0,0,0.08)',
+  padding: '1.5rem 1.75rem 2.5rem',
   display: 'flex',
   flexDirection: 'column',
-  transform: 'translateX(-100%)',
+  gap: '1.25rem',
+  transform: 'translateX(0)',
+  transition: 'transform .4s cubic-bezier(.4,0,.2,1)',
+  zIndex: 200,
 });
 
-export const asideOpen = style([
-  aside,
-  {
-    transform: 'translateX(0)',
-    transition: 'transform 300ms ease-in-out',
-  },
+export const mobilePanelHidden = style([
+  mobilePanel,
+  { transform: 'translateX(100%)' },
 ]);
 
-export const asideClosed = style([
-  aside,
-  {
-    // No need to set transform again, already set in aside
-    transition: 'transform 300ms ease-in-out',
-  },
-]);
-
-export const asideButtonContainer = style({
+export const mobilePanelHeader = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: calc.multiply('var(--spacing)', 4),
-  borderBottom: '1px solid #374151',
+  marginBottom: '0.5rem',
 });
 
-export const asideHeader = style({
-  fontSize: 20,
-  fontWeight: 700,
-});
-
-export const closeMenuButton = style({
-  padding: calc.multiply('var(--spacing)', 2),
-  borderRadius: 8,
-  transition: 'background-color 0.3s',
-  selectors: {
-    '&:hover': {
-      backgroundColor: '#1F2937',
-    },
-  },
-});
-
-export const navigationContainer = style({
-  flex: 1,
-  padding: calc.multiply('var(--spacing)', 4),
-  overflowY: 'auto',
-});
-
-export const navigationLink = style({
+export const closeButton = style({
   display: 'flex',
   alignItems: 'center',
-  gap: 12,
-  padding: calc.multiply('var(--spacing)', 3),
-  borderRadius: 8,
-  marginBottom: 8,
-  transition: 'background-color 0.3s',
-  selectors: {
-    '&:hover': {
-      backgroundColor: '#374151',
-    },
-  },
+  justifyContent: 'center',
+  width: 40,
+  height: 40,
+  borderRadius: '50%',
+  border: '1px solid rgba(0,102,204,0.15)',
+  background: 'rgba(255,255,255,0.55)',
+  cursor: 'pointer',
+  color: '#004c99',
+  transition: 'all .3s ease',
+  selectors: { '&:hover': { background: 'rgba(255,255,255,0.85)' } },
 });
 
-export const activeNavigationLink = style({
+export const mobileNavList = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.25rem',
+  marginTop: '0.5rem',
+});
+
+export const mobileNavLink = style({
+  padding: '0.875rem 1rem',
+  borderRadius: '14px',
   display: 'flex',
   alignItems: 'center',
-  gap: 12,
-  padding: calc.multiply('var(--spacing)', 3),
-  borderRadius: 8,
-  marginBottom: 8,
-  backgroundColor: '#0891b2', // cyan-600
-  selectors: {
-    '&:hover': {
-      backgroundColor: '#0e7490', // cyan-700
-    },
-  },
-});
-
-export const navigationLinkTitle = style({
+  gap: '0.75rem',
+  textDecoration: 'none',
   fontWeight: 500,
+  fontSize: '0.98rem',
+  color: 'rgba(29,29,31,0.78)',
+  transition: 'background .3s,color .3s',
+  selectors: {
+    '&:hover': { background: 'rgba(0,102,204,0.07)', color: '#0066cc' },
+  },
+});
+
+export const mobileNavLinkActive = style([
+  mobileNavLink,
+  {
+    background: 'linear-gradient(90deg, rgba(0,102,204,0.15), rgba(0,102,204,0.05))',
+    color: '#0066cc',
+    selectors: {
+      '&:hover': { background: 'linear-gradient(90deg, rgba(0,102,204,0.22), rgba(0,102,204,0.1))' },
+    },
+  },
+]);
+
+export const overlay = style({
+  position: 'fixed',
+  inset: 0,
+  background: 'rgba(0,0,0,0.25)',
+  backdropFilter: 'blur(2px)',
+  WebkitBackdropFilter: 'blur(2px)',
+  opacity: 1,
+  transition: 'opacity .35s ease',
+  zIndex: 150,
+});
+
+export const overlayHidden = style([
+  overlay,
+  { opacity: 0, pointerEvents: 'none' },
+]);
+
+export const themeToggle = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 44,
+  height: 44,
+  borderRadius: vars.radius.md,
+  border: `1px solid ${vars.color.borderSoft}`,
+  background: 'transparent',
+  cursor: 'pointer',
+  color: vars.color.primaryDeep,
+  transition: 'background .25s, color .25s',
+  selectors: {
+    '&:hover': { background: vars.color.accentSoft },
+    '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus },
+  },
 });

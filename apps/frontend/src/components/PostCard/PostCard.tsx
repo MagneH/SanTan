@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { stegaClean } from '@sanity/client/stega';
 import urlBuilder from '@sanity/image-url';
-import { image, imageContainer, missingImage, postCard, postCardIngress, postCardTitle } from './PostCard.css.ts';
+import { image, imageContainer, missingImage, postCard, postCardContent, postCardIngress, postCardTitle } from './PostCard.css.ts';
 import type { SanityImageType } from '@/types/image.ts';
 import { dataset, projectId } from '@/sanity/projectDetails.ts';
 import { Route as FullSlugRoute } from '@/routes/$.tsx';
@@ -31,11 +31,19 @@ export function PostCard({ fullSlug, title, description, mainImage }: PostCardPr
             loading="lazy"
           />
         ) : (
-          <div className={missingImage}>Missing Image</div>
+          <div className={missingImage} aria-hidden>
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" role="img" aria-label="Placeholder">
+              <rect x="3" y="4" width="18" height="14" rx="2" ry="2" />
+              <path d="M3 14l4-4 4 4 4-4 4 4" />
+              <circle cx="8.5" cy="8.5" r="1.25" />
+            </svg>
+          </div>
         )}
       </div>
-      <h3 className={postCardTitle}>{title}</h3>
-      {description && <p className={postCardIngress}>{description}</p>}
+      <div className={postCardContent}>
+        <h3 className={postCardTitle}>{title}</h3>
+        {description && <p className={postCardIngress}>{description}</p>}
+      </div>
     </Link>
   );
 }

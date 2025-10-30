@@ -1,7 +1,7 @@
 import { ClientOnly, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { useStore } from '@tanstack/react-store';
 import TanStackQueryDevtools from '@/integrations/tanstack-query/devtools.tsx';
 import Header from '@/components/Header/Header.tsx';
@@ -19,6 +19,7 @@ const VisualEditing = lazy(() => import('@/sanity/VisualEditing.tsx'));
 export const GlobalLayout = () => {
   const { sanity } = Route.useLoaderData();
   const { isPreview, isDraftsPerspective } = useStore(previewStore);
+  const [preHydration, setPreHydration] = useState(true);
 
   // Initialize store with server-side preview state
   useEffect(() => {
@@ -88,25 +89,35 @@ export const GlobalLayout = () => {
     };
   }, [isPreview]);
 
+  // Remove preload class after hydration
+  useEffect(() => {
+    // Remove preload after hydration tick
+    const id = requestAnimationFrame(() => setPreHydration(false));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   return (
-    <html lang="no">
+    <html lang="no" suppressHydrationWarning>
       <head>
+        {/* Theme bootstrap (kept) */}
         <HeadContent />
         <FavIcons />
+        <script dangerouslySetInnerHTML={{__html:`(function(){try{var s=localStorage.getItem('theme');var m=window.matchMedia('(prefers-color-scheme:dark)').matches;var t=s|| (m?'dark':'light');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');} }catch(e){}})();`}} />
+        <style>{`:root{color-scheme: light dark}`}</style>
+        <noscript><style>{`body.preload{opacity:1 !important}`}</style></noscript>
       </head>
-      <body>
+      <body className={preHydration ? 'preload' : undefined} style={{opacity: preHydration ? 0 : 1, transition:'opacity .35s ease, background-color .4s, color .4s'}}>
+        {/* Skip link */}
+        <a href="#main" style={{position:'absolute',left:'-999px',top:'-999px',background:'#000',color:'#fff',padding:'8px 12px',borderRadius:4,transform:'translateY(-8px)'}} onFocus={(e)=>{e.currentTarget.style.left='12px';e.currentTarget.style.top='12px';}} onBlur={(e)=>{e.currentTarget.style.left='-999px';e.currentTarget.style.top='-999px';}}>Hopp til innhold</a>
         <ErrorBoundary>
           <Header />
-          <Outlet />
+          <main id="main">
+            <Outlet />
+          </main>
           <TanStackDevtools
-            config={{
-              position: 'bottom-right',
-            }}
+            config={{ position: 'bottom-right' }}
             plugins={[
-              {
-                name: 'Tanstack Router',
-                render: <TanStackRouterDevtoolsPanel />,
-              },
+              { name: 'Tanstack Router', render: <TanStackRouterDevtoolsPanel /> },
               TanStackQueryDevtools,
             ]}
           />
@@ -114,43 +125,10 @@ export const GlobalLayout = () => {
           <ClientOnly>
             {isPreview ? (
               <>
-                {/* Visual debug indicator - changes based on Studio perspective */}
                 {isDraftsPerspective ? (
-                  <div
-                    style={{
-                      position: 'fixed',
-                      top: '10px',
-                      right: '10px',
-                      background: 'orange',
-                      color: 'black',
-                      padding: '8px 12px',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      zIndex: 999999,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    🟠 PREVIEW MODE (Drafts)
-                  </div>
+                  <div style={{position:'fixed',top:'10px',right:'10px',background:'orange',color:'black',padding:'8px 12px',borderRadius:'4px',fontSize:'12px',fontWeight:'bold',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}}>🟠 PREVIEW MODE (Drafts)</div>
                 ) : (
-                  <div
-                    style={{
-                      position: 'fixed',
-                      top: '10px',
-                      right: '10px',
-                      background: 'lime',
-                      color: 'black',
-                      padding: '8px 12px',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      zIndex: 999999,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    🟢 PREVIEW MODE (Published)
-                  </div>
+                  <div style={{position:'fixed',top:'10px',right:'10px',background:'lime',color:'black',padding:'8px 12px',borderRadius:'4px',fontSize:'12px',fontWeight:'bold',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}}>🟢 PREVIEW MODE (Published)</div>
                 )}
                 <Suspense fallback={null}>
                   <ExitPreview />
@@ -158,26 +136,7 @@ export const GlobalLayout = () => {
                 </Suspense>
               </>
             ) : (
-              <>
-                {/* Visual debug indicator - visible in iframe */}
-                <div
-                  style={{
-                    position: 'fixed',
-                    top: '10px',
-                    right: '10px',
-                    background: 'gray',
-                    color: 'white',
-                    padding: '8px 12px',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    zIndex: 999999,
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                  }}
-                >
-                  ⚪ PUBLISHED MODE
-                </div>
-              </>
+              <div style={{position:'fixed',top:'10px',right:'10px',background:'gray',color:'white',padding:'8px 12px',borderRadius:'4px',fontSize:'12px',fontWeight:'bold',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}}>⚪ PUBLISHED MODE</div>
             )}
           </ClientOnly>
         </ErrorBoundary>
