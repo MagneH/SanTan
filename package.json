@@ -3,12 +3,14 @@
   "private": true,
   "packageManager": "npm@10.2.4",
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "type-check": "turbo run type-check",
-    "format": "turbo run format",
-    "clean": "turbo run clean"
+    "dev": "echo '🚀 Starting development servers...' && turbo run dev",
+    "dev:stream": "echo '📺 Starting development servers in stream mode...' && turbo run dev --ui=stream",
+    "dev:tui": "echo '🖥️  Starting development servers in TUI mode...' && turbo run dev --ui=tui",
+    "build": "echo '🏗️  Building all packages...' && turbo run build",
+    "lint": "echo '🔍 Linting code...' && turbo run lint",
+    "type-check": "echo '✅ Type checking...' && turbo run type-check",
+    "format": "echo '✨ Formatting code...' && turbo run format",
+    "clean": "echo '🧹 Cleaning build artifacts...' && turbo run clean"
   },
   "devDependencies": {
     "turbo": "^2.3.0"
