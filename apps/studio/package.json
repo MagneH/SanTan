@@ -1,0 +1,46 @@
+{
+  "name": "@pensjonsbloggen/studio",
+  "private": true,
+  "version": "1.0.0",
+  "main": "package.json",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "generate-types": "sanity schema extract && sanity typegen generate && npm run extract-zod-literals",
+    "extract-zod-literals": "npx ts-node src/scripts/extractZodLiterals.ts",
+    "format": "prettier --write \"**/*.{css,less,sass,scss,html,md,graphql,gql,json,ts,tsx,js,jsx,yml,yaml}\"",
+    "lint": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist .turbo"
+  },
+  "keywords": [
+    "sanity"
+  ],
+  "dependencies": {
+    "@sanity/vision": "^4.12.0",
+    "lucide-react": "^0.546.0",
+    "react": "^19.1",
+    "react-dom": "^19.1",
+    "sanity": "^4.12.0",
+    "sanity-plugin-documents-pane": "^3.0.0",
+    "styled-components": "^6.1.18"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@sanity/eslint-config-studio": "^5.0.2",
+    "@types/react": "^19.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
+    "eslint": "^9.38.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8"
+  }
+}

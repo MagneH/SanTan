@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Preview Mode Test</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .section {
+      background: #f5f5f5;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    .success { background: #d4edda; border: 2px solid #28a745; }
+    .error { background: #f8d7da; border: 2px solid #dc3545; }
+    .warning { background: #fff3cd; border: 2px solid #ffc107; }
+    code {
+      background: #333;
+      color: #0f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover { background: #0056b3; }
+    #results { white-space: pre-wrap; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Preview Mode Diagnostic Tool</h1>
+
+  <div class="section">
+    <h2>Step 1: Access Preview URL</h2>
+    <p>Click this button to enable preview mode:</p>
+    <button onclick="window.location.href='/api/preview?secret=ZWE4NzZhYjJjYzIwZThkZWQ0NzFmYWM2YThiYThjM2U&slug=/test'">
+      🚀 Enable Preview Mode
+    </button>
+  </div>
+
+  <div class="section">
+    <h2>Step 2: Check Current Status</h2>
+    <button onclick="checkStatus()">🔍 Check Cookie Status</button>
+    <div id="results"></div>
+  </div>
+
+  <div class="section">
+    <h2>Step 3: Manual Verification</h2>
+    <p>Open DevTools Console (F12) and run:</p>
+    <code>document.cookie</code>
+    <p>You should see <code>__preview=</code> in the output if preview mode is active.</p>
+  </div>
+
+  <div class="section">
+    <h2>Step 4: Test Direct URL</h2>
+    <p>Or paste this URL directly in your browser:</p>
+    <code style="display: block; padding: 10px; word-break: break-all;">
+      http://localhost:3000/api/preview?secret=ZWE4NzZhYjJjYzIwZThkZWQ0NzFmYWM2YThiYThjM2U&slug=/
+    </code>
+  </div>
+
+  <script>
+    function checkStatus() {
+      const results = document.getElementById('results');
+      const cookies = document.cookie;
+      const hasPreview = cookies.includes('__preview=');
+
+      const cookieList = cookies.split(';').map(c => c.trim());
+
+      results.innerHTML = `
+📊 Cookie Status Report
+${'='.repeat(50)}
+
+Has __preview cookie: ${hasPreview ? '✅ YES' : '❌ NO'}
+
+All Cookies (${cookieList.length}):
+${cookieList.map((c, i) => `${i + 1}. ${c}`).join('\n')}
+
+Raw cookie string:
+${cookies || '(empty)'}
+
+${hasPreview ?
+  '✅ Preview mode cookie is present!\n   The cookie exists, so preview mode should work.' :
+  '❌ Preview mode cookie is missing!\n   You need to access the preview URL first.'}
+`;
+
+      results.parentElement.className = 'section ' + (hasPreview ? 'success' : 'error');
+    }
+
+    // Auto-check on load
+    window.addEventListener('load', checkStatus);
+  </script>
+</body>
+</html>
+
