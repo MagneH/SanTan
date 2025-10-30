@@ -1,0 +1,51 @@
+{
+  "folders": [
+    {
+      "name": "🏠 Root",
+      "path": "."
+    },
+    {
+      "name": "🌐 Frontend",
+      "path": "apps/frontend"
+    },
+    {
+      "name": "🎨 Studio",
+      "path": "apps/studio"
+    },
+    {
+      "name": "📦 Shared",
+      "path": "packages/shared"
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.turbo": true,
+      "**/dist": true,
+      "**/.output": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/.turbo": true,
+      "**/dist": true,
+      "**/.output": true,
+      "**/package-lock.json": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "bradlc.vscode-tailwindcss",
+      "sanity-io.vscode-sanity"
+    ]
+  }
+}
+
