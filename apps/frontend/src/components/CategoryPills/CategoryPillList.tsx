@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router';
 import { stegaClean } from '@sanity/client/stega';
-import { pill, pillDescription, pillEmoji, pillGridFallback, pillListWrapper, pillScroller, pillTitle, pillAnimated, pillIn, srOnly } from './CategoryPill.css.ts';
+import { useEffect, useRef, useState } from 'react';
+import { pill, pillAnimated, pillDescription, pillEmoji, pillGridFallback, pillListWrapper, pillScroller, pillTitle, srOnly } from './CategoryPill.css.ts';
 import type { CategoryStub } from '@/types/category.ts';
 import { Route as FullSlugRoute } from '@/routes/$.tsx';
-import { useEffect, useRef, useState } from 'react';
 
 function emojiForCategory(title?: string | null) {
   if (!title) return '📂';
@@ -131,15 +131,15 @@ export function CategoryPillList({ categories }: CategoryPillListProps) {
       {/* Desktop fallback grid alignment */}
       <div className={pillGridFallback} aria-hidden>
         {categories.map((cat) => (
-            <Link
-              key={'grid-' + (cat.fullSlug ?? cat._createdAt)}
-              to={FullSlugRoute.to}
-              params={{ _splat: stegaClean(cat.fullSlug) || '' }}
-              className={pill}
-            >
-              <span className={pillEmoji} aria-hidden>{emojiForCategory(cat.title)}</span>
-              <span className={pillTitle}>{cat.title}</span>
-            </Link>
+          <Link
+            key={'grid-' + (cat.fullSlug ?? cat._createdAt)}
+            to={FullSlugRoute.to}
+            params={{ _splat: stegaClean(cat.fullSlug) || '' }}
+            className={pill}
+          >
+            <span className={pillEmoji} aria-hidden>{emojiForCategory(cat.title)}</span>
+            <span className={pillTitle}>{cat.title}</span>
+          </Link>
         ))}
       </div>
     </div>

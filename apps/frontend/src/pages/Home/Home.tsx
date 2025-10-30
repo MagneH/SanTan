@@ -88,8 +88,8 @@ const Home = ({
       {/* Hero Section */}
       <section className={heroSection}>
         <div className={heroContent}>
-          <h1 className={heroTitle}>Santan Starter</h1>
-          <p className={heroSubtitle}>A Modern Full-Stack Content Platform</p>
+          <h1 className={heroTitle}>{data?.homeData.title}</h1>
+          <p className={heroSubtitle}>{data?.homeData.subTitle}</p>
           <p className={heroDescription}>
             Built with the power of React 19, TanStack Start, and Sanity CMS.
             Experience lightning-fast performance, real-time content preview, and a delightful developer experience.
