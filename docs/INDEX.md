@@ -6,7 +6,6 @@ Welcome to the Santan Monorepo documentation!
 
 - **[README.md](../README.md)** - Start here! Complete overview, quick start, and reference
 - **[GETTING_STARTED.md](../GETTING_STARTED.md)** - Detailed setup guide for new developers
-- **[TYPE_MIGRATION.md](../TYPE_MIGRATION.md)** - Type generation workflow and migration guide
 
 ## 🏗️ Architecture & Features
 
@@ -21,15 +20,6 @@ Welcome to the Santan Monorepo documentation!
 
 - **[apps/frontend/README.md](../apps/frontend/README.md)** - Frontend-specific documentation
 - **[apps/studio/README.md](../apps/studio/README.md)** - Sanity Studio documentation
-
-## 📖 Archive
-
-These documents are kept for reference but may be outdated:
-
-- **[SETUP_COMPLETE.md](SETUP_COMPLETE.md)** - Original setup completion notes
-- **[MIGRATION.md](MIGRATION.md)** - Original migration guide from separate repos
-
----
 
 ## Quick Links
 

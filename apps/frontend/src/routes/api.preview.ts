@@ -90,7 +90,7 @@ export const Route = createFileRoute('/api/preview')({
             Location: '/',
             'Set-Cookie': newCookieValue,
           },
-        });
+        })
       },
     },
   },
