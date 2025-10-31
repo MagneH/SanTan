@@ -5,6 +5,7 @@ import { Suspense, lazy, useEffect } from 'react';
 import { useStore } from '@tanstack/react-store';
 import TanStackQueryDevtools from '@/integrations/tanstack-query/devtools.tsx';
 import Header from '@/components/Header/Header.tsx';
+import { Footer } from '@/components/Footer/Footer.tsx';
 import { Route } from '@/routes/__root.tsx';
 import { FavIcons } from '@/components/GlobalLayout/FavIcons.tsx';
 import { previewStore, setPreviewMode, setPreviewPerspective } from '@/stores/previewStore.ts';
@@ -13,9 +14,7 @@ import { PREVIEW_SESSION_NAME } from '@/sessions.ts';
 import './GlobalLayout.css.ts';
 
 const ExitPreview = lazy(() => import('@/components/ExitPreview.tsx'));
-
 const VisualEditing = lazy(() => import('@/sanity/VisualEditing.tsx'));
-import { Footer } from '@/components/Footer/Footer.tsx';
 
 export const GlobalLayout = () => {
   const { sanity } = Route.useLoaderData();
@@ -129,7 +128,7 @@ export const GlobalLayout = () => {
           />
           <Scripts />
           <ClientOnly>
-            {isPreview ? (
+            {isPreview && (
               <>
                 {isDraftsPerspective ? (
                   <div style={{position:'fixed',top:'10px',right:'10px',background:'orange',color:'black',padding:'8px 12px',borderRadius:'4px',fontSize:'12px',fontWeight:'bold',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}}>🟠 PREVIEW MODE (Drafts)</div>
@@ -141,10 +140,8 @@ export const GlobalLayout = () => {
                   <VisualEditing />
                 </Suspense>
               </>
-            ) : (
-              <div style={{position:'fixed',top:'10px',right:'10px',background:'gray',color:'white',padding:'8px 12px',borderRadius:'4px',fontSize:'12px',fontWeight:'bold',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}}>⚪ PUBLISHED MODE</div>
-          )}
-        </ClientOnly>
+            )}
+          </ClientOnly>
       </ErrorBoundary>
     </body>
   </html>
