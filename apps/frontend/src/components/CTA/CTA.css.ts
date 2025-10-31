@@ -41,7 +41,7 @@ export const ctaActions = style({
   flexWrap: 'wrap',
 });
 
-const baseBtn = {
+export const ctaPrimary = style({
   textDecoration: 'none',
   display: 'inline-flex',
   alignItems: 'center',
@@ -51,23 +51,36 @@ const baseBtn = {
   fontSize: '0.95rem',
   fontWeight: 500,
   borderRadius: vars.radius.pill,
-  transition: 'background .3s, color .3s, border-color .3s, box-shadow .3s',
+  transition: 'background .25s, filter .25s, box-shadow .25s',
   cursor: 'pointer',
-};
-
-export const ctaPrimary = style({
-  ...baseBtn,
-  background: `linear-gradient(90deg, ${vars.color.primary}, ${vars.color.primaryDeep})`,
+  background: vars.color.interactiveBg,
   color: '#fff',
   border: 'none',
-  selectors: { '&:hover': { filter: 'brightness(1.05)' }, '&:active': { filter: 'brightness(.92)' }, '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus } },
+  boxShadow: vars.shadow.subtle,
+  selectors: {
+    '&:hover': { background: vars.color.interactiveBgHover },
+    '&:active': { filter: 'brightness(.92)' },
+    '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus },
+  },
 });
 
 export const ctaSecondary = style({
-  ...baseBtn,
-  background: vars.color.accentSoft,
+  textDecoration: 'none',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: '3rem',
+  padding: '0 1.5rem',
+  fontSize: '0.95rem',
+  fontWeight: 500,
+  borderRadius: vars.radius.pill,
+  transition: 'background .25s, color .25s, box-shadow .25s',
+  cursor: 'pointer',
+  background: vars.color.surfaceElevated,
   color: vars.color.primaryDeep,
   border: `1px solid ${vars.color.borderSoft}`,
-  selectors: { '&:hover': { background: vars.color.accentTint }, '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus } },
+  selectors: {
+    '&:hover': { background: vars.color.surfaceHover },
+    '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus },
+  },
 });
-

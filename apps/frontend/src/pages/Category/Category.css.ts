@@ -44,11 +44,11 @@ export const ingress = style({
 export const keywordsSection = style({
   marginTop: '5rem',
   padding: '3rem',
-  background: 'rgba(255,255,255,0.55)',
+  background: vars.color.glass,
   backdropFilter: 'blur(20px)',
   border: `1px solid ${vars.color.borderSoft}`,
   borderRadius: '2rem',
-  boxShadow: '0 1px 3px rgba(0, 102, 204, 0.04)',
+  boxShadow: vars.shadow.subtle,
   '@media': {
     'screen and (max-width: 768px)': {
       padding: '2rem',

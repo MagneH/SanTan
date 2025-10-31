@@ -1,4 +1,4 @@
-import { style, globalStyle } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { vars } from '@/styles/theme.css.ts';
 
 export const header = style({
@@ -27,6 +27,7 @@ export const brand = style({
   textDecoration: 'none',
   selectors: {
     '&:hover': { opacity: 0.9 },
+    '[data-theme="dark"] &': { WebkitTextFillColor: '#F5F9FC', background: 'none', color: '#F5F9FC' },
   },
 });
 
@@ -42,20 +43,25 @@ export const desktopNav = style({
 
 export const navLink = style({
   position: 'relative',
-  color: 'rgba(29,29,31,0.75)',
+  color: vars.color.text,
   fontWeight: 500,
   letterSpacing: '-0.01em',
   textDecoration: 'none',
-  transition: 'color .25s ease',
+  transition: 'color .25s ease, background .25s',
+  padding: '.4rem .6rem',
+  borderRadius: vars.radius.sm,
   selectors: {
-    '&:hover': { color: '#0066cc' },
+    '&:hover': { color: vars.color.primary, background: vars.color.accentTint },
+    '[data-theme="dark"] &': { color: '#F5F9FC' },
+    '[data-theme="dark"] &:hover': { color: vars.color.primary },
   },
 });
 
 export const navLinkActive = style([
   navLink,
   {
-    color: '#0066cc',
+    color: vars.color.primary,
+    background: vars.color.accentSoft,
     selectors: {
       '&::after': {
         content: '""',
@@ -65,7 +71,7 @@ export const navLinkActive = style([
         bottom: '-6px',
         height: '2px',
         borderRadius: '2px',
-        background: 'linear-gradient(90deg,#0066cc,#004c99)',
+        background: vars.color.primary,
       },
     },
   },
@@ -80,15 +86,15 @@ export const mobileMenuButton = style({
   width: 44,
   height: 44,
   borderRadius: '12px',
-  border: '1px solid rgba(0,102,204,0.15)',
-  background: 'rgba(255,255,255,0.55)',
+  border: `1px solid ${vars.color.borderSoft}`,
+  background: vars.color.surfaceElevated,
   backdropFilter: 'blur(12px)',
   WebkitBackdropFilter: 'blur(12px)',
   cursor: 'pointer',
-  color: '#004c99',
-  transition: 'all .3s ease',
+  color: vars.color.primary,
+  transition: 'background .25s,color .25s,transform .25s',
   selectors: {
-    '&:hover': { background: 'rgba(255,255,255,0.8)' },
+    '&:hover': { background: vars.color.surfaceHover },
     '&:active': { transform: 'scale(.94)' },
   },
   '@media': {
@@ -102,11 +108,11 @@ export const mobilePanel = style({
   right: 0,
   bottom: 0,
   width: 'min(320px,85vw)',
-  background: 'rgba(255,255,255,0.72)',
+  background: vars.color.bgAlt,
   backdropFilter: 'blur(28px) saturate(180%)',
   WebkitBackdropFilter: 'blur(28px) saturate(180%)',
-  borderLeft: '1px solid rgba(0,102,204,0.08)',
-  boxShadow: '-8px 0 24px -8px rgba(0,0,0,0.08)',
+  borderLeft: `1px solid ${vars.color.borderSoft}`,
+  boxShadow: vars.shadow.float,
   padding: '1.5rem 1.75rem 2.5rem',
   display: 'flex',
   flexDirection: 'column',
@@ -141,12 +147,12 @@ export const closeButton = style({
   width: 40,
   height: 40,
   borderRadius: '50%',
-  border: '1px solid rgba(0,102,204,0.15)',
-  background: 'rgba(255,255,255,0.55)',
+  border: `1px solid ${vars.color.borderSoft}`,
+  background: vars.color.surfaceElevated,
   cursor: 'pointer',
-  color: '#004c99',
-  transition: 'all .3s ease',
-  selectors: { '&:hover': { background: 'rgba(255,255,255,0.85)' } },
+  color: vars.color.primary,
+  transition: 'background .25s,color .25s,transform .25s',
+  selectors: { '&:hover': { background: vars.color.surfaceHover } },
 });
 
 export const mobileNavList = style({
@@ -165,20 +171,22 @@ export const mobileNavLink = style({
   textDecoration: 'none',
   fontWeight: 500,
   fontSize: '0.98rem',
-  color: 'rgba(29,29,31,0.78)',
+  color: vars.color.text,
   transition: 'background .3s,color .3s',
   selectors: {
-    '&:hover': { background: 'rgba(0,102,204,0.07)', color: '#0066cc' },
+    '&:hover': { background: vars.color.accentSoft, color: vars.color.primary },
+    '[data-theme="dark"] &': { color: '#F5F9FC' },
+    '[data-theme="dark"] &:hover': { color: vars.color.primary },
   },
 });
 
 export const mobileNavLinkActive = style([
   mobileNavLink,
   {
-    background: 'linear-gradient(90deg, rgba(0,102,204,0.15), rgba(0,102,204,0.05))',
-    color: '#0066cc',
+    background: vars.color.accentTint,
+    color: vars.color.primary,
     selectors: {
-      '&:hover': { background: 'linear-gradient(90deg, rgba(0,102,204,0.22), rgba(0,102,204,0.1))' },
+      '&:hover': { background: vars.color.accentTint },
     },
   },
 ]);
@@ -216,6 +224,7 @@ export const themeToggle = style({
   selectors: {
     '&:hover': { background: vars.color.accentSoft },
     '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus },
+    '[data-theme="dark"] &': { color: '#F5F9FC', borderColor: vars.color.borderSoft },
   },
 });
 

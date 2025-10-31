@@ -1,21 +1,22 @@
 import { globalStyle, style } from '@vanilla-extract/css';
+import { vars } from '@/styles/theme.css.ts';
 
 export const postCard = style({
   display: 'block',
   textDecoration: 'none',
-  background: 'rgba(255, 255, 255, 0.6)',
+  background: vars.color.surfaceElevated,
   backdropFilter: 'blur(20px)',
-  border: '1px solid rgba(0, 102, 204, 0.08)',
+  border: `1px solid ${vars.color.borderSoft}`,
   borderRadius: '1.15rem',
   padding: '0',
   overflow: 'hidden',
-  transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-  boxShadow: '0 1px 3px rgba(0, 102, 204, 0.04)',
+  transition: 'background .25s, transform .35s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: vars.shadow.subtle,
   ':hover': {
-    background: 'rgba(255, 255, 255, 0.9)',
-    borderColor: 'rgba(0, 102, 204, 0.15)',
+    background: vars.color.surfaceHover,
+    borderColor: vars.color.border,
     transform: 'translateY(-5px)',
-    boxShadow: '0 10px 34px rgba(0, 102, 204, 0.10)',
+    boxShadow: vars.shadow.float,
   },
 });
 
@@ -24,7 +25,7 @@ export const imageContainer = style({
   width: '100%',
   paddingBottom: '66.67%', // 3:2 aspect ratio
   overflow: 'hidden',
-  backgroundColor: 'rgba(0, 102, 204, 0.03)',
+  backgroundColor: vars.color.accentSoft,
 });
 
 export const image = style({
@@ -46,9 +47,15 @@ export const missingImage = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: 'rgba(0, 102, 204, 0.03)',
-  color: 'rgba(0, 102, 204, 0.25)',
+  backgroundColor: vars.color.accentSoft,
+  color: vars.color.borderSoft,
   fontSize: '4rem',
+  selectors: {
+    '[data-theme="dark"] &': {
+      backgroundColor: vars.color.surfaceElevated,
+      color: '#2F5470',
+    },
+  },
 });
 
 globalStyle(`${postCard}:hover img`, {
@@ -67,7 +74,7 @@ export const postCardContent = style({
 export const postCardTitle = style({
   fontSize: '1.625rem',
   fontWeight: 600,
-  color: '#0066cc',
+  color: vars.color.primary,
   marginBottom: '1.25rem',
   lineHeight: 1.35,
   letterSpacing: '-0.02em',
@@ -79,13 +86,32 @@ export const postCardTitle = style({
 });
 
 export const postCardIngress = style({
-  color: 'rgba(29, 29, 31, 0.65)',
-  lineHeight: 1.8,
-  fontSize: '1.0625rem',
+  color: vars.color.textDim,
+  lineHeight: 1.7,
+  fontSize: '1.02rem',
   display: '-webkit-box',
   WebkitLineClamp: 3,
   WebkitBoxOrient: 'vertical',
   overflow: 'hidden',
   letterSpacing: '-0.008em',
   fontWeight: 300,
+});
+
+globalStyle(`${postCardContent} h1, ${postCardContent} h2, ${postCardContent} h3`, {
+  color: vars.color.text,
+  lineHeight: 1.25,
+  letterSpacing: '-0.015em',
+  fontWeight: 600,
+});
+
+globalStyle(`${postCardContent} h1`, { fontSize: 'clamp(1.6rem, 1.3rem + 1vw, 2.1rem)' });
+globalStyle(`${postCardContent} h2`, { fontSize: 'clamp(1.35rem, 1.15rem + .7vw, 1.75rem)' });
+globalStyle(`${postCardContent} h3`, { fontSize: 'clamp(1.15rem, 1rem + .5vw, 1.45rem)', fontWeight: 600 });
+
+globalStyle(`${postCardContent} h1, ${postCardContent} h2, ${postCardContent} h3`, {
+  transition: 'color .25s',
+});
+
+globalStyle(`${postCardContent} h1:hover, ${postCardContent} h2:hover, ${postCardContent} h3:hover`, {
+  color: vars.color.primaryAlt,
 });

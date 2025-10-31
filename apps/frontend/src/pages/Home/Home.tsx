@@ -15,8 +15,10 @@ import { PostCard } from '@/components/PostCard/PostCard.tsx';
 import { POSTS_PER_PAGE } from '@/constants/config.ts';
 import { previewStore } from '@/stores/previewStore.ts';
 import { CategoryPillList } from '@/components/CategoryPills/CategoryPillList.tsx';
+import { TanStackLogo } from '@/components/Logos/TanStackLogo.tsx';
+import { SanityLogo } from '@/components/Logos/SanityLogo.tsx';
 
-import { callout, codeBlock, container, divider, featureCard, featureDescription, featureGrid, featureIcon, featureTitle, heroContent, heroDescription, heroSection, heroSubtitle, heroTitle, highlightCard, highlightIcon, highlightText, highlightTitle, highlightsGrid, homeContainer, loadMoreButton, logo, logoContainer, miniBadge, miniBadgeRow, paragraph, section, sectionTitle, subtleHeading, twoCol, wideSection } from '@/pages/Home/Home.css.ts';
+import { callout, codeBlock, container, divider, featureCard, featureDescription, featureGrid, featureIcon, featureTitle, heroContent, heroDescription, heroSection, heroSubtitle, heroTitle, highlightCard, highlightIcon, highlightText, highlightTitle, highlightsGrid, homeContainer, loadMoreButton, logo, logoContainer, logoSeparator, miniBadge, miniBadgeRow, paragraph, section, sectionTitle, subtleHeading, twoCol, wideSection } from './Home.css.ts';
 import { CTA } from '@/components/CTA/CTA.tsx';
 
 const Home = ({
@@ -96,18 +98,11 @@ const Home = ({
           </p>
 
           <div className={logoContainer}>
-            <img
-              src="/tanstack-word-logo-white.svg"
-              alt="TanStack"
-              className={logo}
-            />
-            <span style={{ color: 'rgba(0, 0, 0, 0.2)', fontSize: '2.5rem', fontWeight: '100' }}>×</span>
-            <img
-              src="/sanity_logo_light.png"
-              alt="Sanity"
-              className={logo}
-              style={{ height: '40px' }}
-            />
+            <div style={{ display:'flex', alignItems:'center', gap:'3rem' }}>
+              <TanStackLogo height={40} className={logo} />
+              <span className={logoSeparator}>×</span>
+              <SanityLogo height={40} className={logo} />
+            </div>
           </div>
 
           {/* Feature Cards */}

@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css';
+import { vars } from '@/styles/theme.css.ts';
 
 export const container = style({
   display: 'flex',
@@ -13,14 +14,17 @@ export const container = style({
 export const title = style({
   fontSize: '6rem',
   fontWeight: 700,
-  color: '#0f172a',
+  color: vars.color.primary,
   marginBottom: '1rem',
+  letterSpacing: '-0.03em',
 });
 
 export const description = style({
   fontSize: '1.5rem',
-  color: '#64748b',
+  color: vars.color.textDim,
   marginBottom: '2rem',
+  maxWidth: '46rem',
+  lineHeight: 1.6,
 });
 
 export const buttonContainer = style({
@@ -30,21 +34,37 @@ export const buttonContainer = style({
   justifyContent: 'center',
 });
 
-export const button = style({
+const baseBtn = {
   display: 'flex',
   alignItems: 'center',
   gap: '0.5rem',
   padding: '0.75rem 1.5rem',
   fontSize: '1rem',
   fontWeight: 600,
-  color: 'white',
-  backgroundColor: '#0ea5e9',
-  border: 'none',
-  borderRadius: '0.5rem',
-  cursor: 'pointer',
+  borderRadius: vars.radius.md,
   textDecoration: 'none',
-  transition: 'background-color 0.2s',
-  ':hover': {
-    backgroundColor: '#0284c7',
+  cursor: 'pointer',
+  transition: 'background .25s, color .25s, box-shadow .25s',
+};
+
+export const buttonPrimary = style({
+  ...baseBtn,
+  background: vars.color.interactiveBg,
+  color: '#fff',
+  boxShadow: vars.shadow.subtle,
+  selectors: {
+    '&:hover': { background: vars.color.interactiveBgHover },
+    '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus },
+  },
+});
+
+export const buttonGhost = style({
+  ...baseBtn,
+  background: 'transparent',
+  color: vars.color.primary,
+  border: `1px solid ${vars.color.borderSoft}`,
+  selectors: {
+    '&:hover': { background: vars.color.accentSoft },
+    '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus },
   },
 });

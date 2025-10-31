@@ -11,6 +11,7 @@ import { FavIcons } from '@/components/GlobalLayout/FavIcons.tsx';
 import { previewStore, setPreviewMode, setPreviewPerspective } from '@/stores/previewStore.ts';
 import { ErrorBoundary } from '@/components/ErrorBoundary.tsx';
 import { PREVIEW_SESSION_NAME } from '@/sessions.ts';
+import { lightTheme, darkTheme } from '@/styles/theme.css.ts';
 import './GlobalLayout.css.ts';
 
 const ExitPreview = lazy(() => import('@/components/ExitPreview.tsx'));
@@ -100,7 +101,7 @@ export const GlobalLayout = () => {
         {/* Set ui-ready class as soon as possible after stylesheets load */}
         <script dangerouslySetInnerHTML={{__html:`(function(){var check=function(){if(document.styleSheets.length>0){document.documentElement.classList.add('ui-ready');}else{setTimeout(check,50);}};if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',check);}else{check();}})();`}} />
         {/* Early theme bootstrap - runs before any paint */}
-        <script dangerouslySetInnerHTML={{__html:`(function(){try{var s=localStorage.getItem('theme');var m=window.matchMedia('(prefers-color-scheme:dark)').matches;var t=s||(m?'dark':'light');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');}}catch(e){}})();`}} />
+        <script dangerouslySetInnerHTML={{__html:`(function(){try{var s=localStorage.getItem('theme');var m=window.matchMedia('(prefers-color-scheme:dark)').matches;var t=s||(m?'dark':'light');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');document.documentElement.classList.add('${darkTheme}');}else{document.documentElement.classList.add('${lightTheme}');}}catch(e){document.documentElement.classList.add('${lightTheme}');}})();`}} />
         {/* Router-managed head (injects global stylesheet, meta, etc.) */}
         <HeadContent />
         {/* Preconnect to Google Fonts for faster loading */}

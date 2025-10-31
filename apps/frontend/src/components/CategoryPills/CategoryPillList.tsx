@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { stegaClean } from '@sanity/client/stega';
 import { useEffect, useRef, useState } from 'react';
-import { pill, pillAnimated, pillDescription, pillEmoji, pillGridFallback, pillListWrapper, pillScroller, pillTitle, srOnly } from './CategoryPill.css.ts';
+import { pill, pillAnimated, pillDescription, pillEmoji, pillGridFallback, pillListWrapper, pillScroller, pillTitle, srOnly, pillIn } from './CategoryPill.css.ts';
 import type { CategoryStub } from '@/types/category.ts';
 import { Route as FullSlugRoute } from '@/routes/$.tsx';
 
@@ -26,6 +26,7 @@ export function CategoryPillList({ categories }: CategoryPillListProps) {
   if (!categories.length) return null;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [animateIn, setAnimateIn] = useState(false);
   const hoverTimers = useRef<Record<string, number>>({});
   const liveRef = useRef<HTMLDivElement | null>(null);
 
@@ -97,6 +98,22 @@ export function CategoryPillList({ categories }: CategoryPillListProps) {
     return () => scroller.removeEventListener('wheel', handler);
   }, []);
 
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      setAnimateIn(true);
+      return;
+    }
+    requestAnimationFrame(() => setAnimateIn(true));
+  }, []);
+
+  // Ved resize: sørg for at pillene alltid har synlig klassestatus
+  useEffect(() => {
+    const onResize = () => setAnimateIn(true);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   return (
     <div className={pillListWrapper} ref={containerRef}>
       <div ref={liveRef} className={srOnly} aria-live="polite" aria-atomic="true" />
@@ -107,7 +124,7 @@ export function CategoryPillList({ categories }: CategoryPillListProps) {
             key={cat.fullSlug ?? cat._createdAt}
             to={FullSlugRoute.to}
             params={{ _splat: stegaClean(cat.fullSlug) || '' }}
-            className={`${pill} ${pillAnimated}`}
+            className={`${pill} ${animateIn ? pillIn : pillAnimated}`}
             data-pill
             data-active={activeId === (cat.fullSlug ?? cat._createdAt) ? 'true' : 'false'}
             role="listitem"

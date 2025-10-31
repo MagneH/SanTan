@@ -4,13 +4,14 @@ import { vars } from '@/styles/theme.css.ts';
 export const footer = style({
   marginTop: '6rem',
   borderTop: `1px solid ${vars.color.borderSoft}`,
-  background: 'rgba(255,255,255,0.55)',
+  background: vars.color.surfaceElevated,
   backdropFilter: 'blur(18px) saturate(160%)',
   WebkitBackdropFilter: 'blur(18px) saturate(160%)',
   padding: '3.5rem clamp(1.5rem,3vw,3rem)',
   display: 'flex',
   flexDirection: 'column',
   gap: '2.5rem',
+  transition: 'background .25s',
   '@media': {
     'screen and (min-width: 900px)': {
       gap: '3rem',
@@ -59,7 +60,7 @@ export const groupTitle = style({
   textTransform: 'uppercase',
   letterSpacing: '.16em',
   fontWeight: 600,
-  color: 'rgba(0,0,0,0.55)',
+  color: vars.color.textDim,
 });
 
 export const footerLink = style({
@@ -67,9 +68,11 @@ export const footerLink = style({
   textDecoration: 'none',
   fontWeight: 500,
   letterSpacing: '-0.01em',
-  transition: 'color .25s',
+  transition: 'color .25s, background .25s',
+  padding: '.35rem .5rem',
+  borderRadius: vars.radius.sm,
   selectors: {
-    '&:hover': { color: vars.color.primary },
+    '&:hover': { color: vars.color.primary, background: vars.color.accentTint },
     '&:focus-visible': { outline: 'none', boxShadow: vars.shadow.focus },
   },
 });
@@ -104,4 +107,3 @@ export const metaItem = style({
 export const heart = style({
   color: vars.color.primary,
 });
-

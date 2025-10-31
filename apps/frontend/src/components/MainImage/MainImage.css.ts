@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css';
+import { vars } from '@/styles/theme.css.ts';
 
 export const container = style({
   width: '100%',
@@ -19,6 +20,12 @@ export const missingImage = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: '#E5E7EB',
-  color: '#6B7280',
+  backgroundColor: vars.color.bgSoft,
+  color: vars.color.textDim,
+  selectors: {
+    '[data-theme="dark"] &': {
+      backgroundColor: vars.color.surfaceElevated,
+      color: '#C2D4E2',
+    },
+  },
 });

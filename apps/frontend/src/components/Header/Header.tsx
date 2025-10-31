@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Home, Menu, Moon, Sun, X } from 'lucide-react';
 import * as styles from './Header.css.ts';
+import { darkTheme, lightTheme } from '@/styles/theme.css.ts';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Home', icon: Home },
@@ -25,7 +26,6 @@ export default function Header() {
       }
       if (preferred !== theme) setTheme(preferred);
     } catch {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Prevent background scroll when mobile menu open
@@ -42,8 +42,15 @@ export default function Header() {
   useEffect(() => {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
-    if (theme === 'dark') root.setAttribute('data-theme', 'dark');
-    else root.removeAttribute('data-theme');
+    if (theme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+      root.classList.remove(lightTheme);
+      root.classList.add(darkTheme);
+    } else {
+      root.removeAttribute('data-theme');
+      root.classList.remove(darkTheme);
+      root.classList.add(lightTheme);
+    }
     try { localStorage.setItem('theme', theme); } catch {}
   }, [theme]);
 
