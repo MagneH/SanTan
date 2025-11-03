@@ -6,6 +6,7 @@ functions = "apps/frontend/netlify/functions"
 
 [build.environment]
 NODE_VERSION = "24"
+SECRETS_SCAN_OMIT_PATHS = "README.md,scripts/**,src/**"
 
 # Static asset bypass
 [[redirects]]

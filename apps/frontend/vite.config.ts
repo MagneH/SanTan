@@ -14,11 +14,12 @@ export default ({ mode }: ConfigEnv) => {
   return defineConfig({
     define: {
       // Prevent Vite from inlining env vars - keep them as process.env references
-      'import.meta.env.VITE_SANITY_PROJECT_ID': 'process.env.VITE_SANITY_PROJECT_ID',
-      'import.meta.env.VITE_SANITY_DATASET': 'process.env.VITE_SANITY_DATASET',
-      'import.meta.env.VITE_SANITY_API_VERSION': 'process.env.VITE_SANITY_API_VERSION',
-      'import.meta.env.VITE_SANITY_STUDIO_URL': 'process.env.VITE_SANITY_STUDIO_URL',
+      'import.meta.env.VITE_SANITY_PROJECT_ID': JSON.stringify(undefined),
+      'import.meta.env.VITE_SANITY_DATASET': JSON.stringify(undefined),
+      'import.meta.env.VITE_SANITY_API_VERSION': JSON.stringify(undefined),
+      'import.meta.env.VITE_SANITY_STUDIO_URL': JSON.stringify(undefined),
     },
+    envPrefix: [], // Prevent Vite from processing VITE_ prefixed vars
     ssr: {
       noExternal: true, // Bundle everything for Netlify Functions
       external: ['node:*', 'fsevents']
