@@ -1,6 +1,6 @@
 import urlBuilder from '@sanity/image-url';
 import { container, missingImage } from './MainImage.css.ts';
-import { aspectWrapper, imgActual, skeleton } from './MainImage.css.ts';
+import { aspectWrapper, imgActual, skeleton, portraitWrapper, portraitImg } from './MainImage.css.ts';
 import { useState, useRef, useEffect } from 'react';
 
 import type { SanityImageType } from '@/types/image.ts';
@@ -61,6 +61,7 @@ export function MainImage({ image, encodeDataAttribute }: MainImageProps) {
 
   // Fallback ratio 16:9 if missing
   const ratio = originalWidth && originalHeight ? originalHeight / originalWidth : 9 / 16;
+  const isPortrait = ratio > 1.05; // litt margin for nesten-kvadrat
 
   const builder = urlBuilder({ projectId, dataset }).image(image);
   // Generate responsive widths
@@ -82,38 +83,57 @@ export function MainImage({ image, encodeDataAttribute }: MainImageProps) {
 
   return (
     <div className={container}>
-      <div
-        className={aspectWrapper}
-        data-sanity={encodeDataAttribute}
-        style={{ paddingBottom: `${ratio * 100}%` }}
-      >
-        {!loaded && (
-          <div
-            className={skeleton}
-            aria-hidden="true"
-            style={{ transition: 'opacity 0.4s ease', opacity: 0.6 }}
+      {isPortrait ? (
+        <div className={portraitWrapper} data-sanity={encodeDataAttribute}>
+          {!loaded && (
+            <div
+              className={skeleton}
+              aria-hidden="true"
+              style={{ transition: 'opacity 0.4s ease', opacity: 0.6, position: 'absolute' }}
+            />
+          )}
+          <img
+            ref={imgRef}
+            className={portraitImg}
+            src={largest}
+            srcSet={srcSet}
+            sizes="(max-width: 600px) 100vw, (max-width: 1200px) 70vw, 800px"
+            alt={image.alt || ''}
+            loading="lazy"
+            decoding="async"
+            onLoad={() => setLoaded(true)}
+            onError={() => setLoaded(true)}
+            style={{ opacity: loaded ? 1 : 0, transition: 'opacity 0.5s ease' }}
           />
-        )}
-        <img
-          ref={imgRef}
-          className={imgActual}
-          src={largest}
-          srcSet={srcSet}
-          sizes="(max-width: 600px) 100vw, (max-width: 1200px) 90vw, 1140px"
-          alt={image.alt || ''}
-          loading="lazy"
-          fetchPriority="high"
-          decoding="async"
-          onLoad={() => {
-            setLoaded(true);
-          }}
-          onError={() => setLoaded(true)}
-          style={{
-            opacity: loaded ? 1 : 0,
-            transition: 'opacity 0.5s ease',
-          }}
-        />
-      </div>
+        </div>
+      ) : (
+        <div
+          className={aspectWrapper}
+          data-sanity={encodeDataAttribute}
+          style={{ paddingBottom: `${ratio * 100}%` }}
+        >
+          {!loaded && (
+            <div
+              className={skeleton}
+              aria-hidden="true"
+              style={{ transition: 'opacity 0.4s ease', opacity: 0.6 }}
+            />
+          )}
+          <img
+            ref={imgRef}
+            className={imgActual}
+            src={largest}
+            srcSet={srcSet}
+            sizes="(max-width: 600px) 100vw, (max-width: 1200px) 90vw, 1140px"
+            alt={image.alt || ''}
+            loading="lazy"
+            decoding="async"
+            onLoad={() => setLoaded(true)}
+            onError={() => setLoaded(true)}
+            style={{ opacity: loaded ? 1 : 0, transition: 'opacity 0.5s ease' }}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -64,3 +64,27 @@ export const skeleton = style({
     },
   },
 });
+
+export const portraitWrapper = style({
+  position: 'relative',
+  width: '100%',
+  maxWidth: '1140px',
+  height: '60vh',
+  minHeight: '400px',
+  overflow: 'hidden',
+  background: vars.color.bgSoft,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  selectors: {
+    '[data-theme="dark"] &': { background: vars.color.surfaceElevated },
+  },
+});
+
+export const portraitImg = style({
+  maxHeight: '100%',
+  height: '100%',
+  width: 'auto',
+  objectFit: 'contain',
+  display: 'block',
+});
