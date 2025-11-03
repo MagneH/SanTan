@@ -1,8 +1,8 @@
 [build]
-base = "apps/frontend"
-command = "cd ../.. && npm run prebuild && cd apps/frontend && npm run build"
+base = "/"
+command = "npm ci && npm run build"
 publish = "apps/frontend/dist/client"
-functions = "netlify/functions"
+functions = "apps/frontend/netlify/functions"
 
 [build.environment]
 NODE_VERSION = "24"
