@@ -5,7 +5,6 @@ import viteTsConfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
-import netlify from '@netlify/vite-plugin-tanstack-start'
 import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin';
 import type { ConfigEnv } from 'vite';
 
@@ -14,9 +13,14 @@ export default ({ mode }: ConfigEnv) => {
   Object.assign(process.env, loadEnv(mode, process.cwd(), ''));
   return defineConfig({
     css: process.env.TAILWIND_DISABLE_LIGHTNINGCSS ? { minify: 'esbuild' } : undefined,
+    resolve: {
+      alias: {
+        '@santan/shared': '/packages/shared/src',
+        '@santan/shared/types': '/packages/shared/src/types'
+      }
+    },
     ssr: {
-      noExternal: ['@santan/shared'],
-      external: ['xstate']
+      noExternal: ['@santan/shared']
     },
     build: {
       rollupOptions: {
@@ -24,11 +28,17 @@ export default ({ mode }: ConfigEnv) => {
       }
     },
     optimizeDeps: {
-      include: ['@santan/shared', '@santan/shared/types', 'xstate']
+      include: ['@santan/shared', 'xstate']
     },
     plugins: [
-      tanstackStart({ ssr: true }),
-      nitroV2Plugin({ preset: 'node-server', output: { dir: '.output' } }),
+      tanstackStart(),
+      nitroV2Plugin({
+        preset: 'node-server',
+        output: { dir: '.output' },
+        externals: {
+          inline: ['@santan/shared']
+        }
+      }),
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       viteReact(),
       tailwindcss(),
