@@ -6,9 +6,8 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "prebuild": "cd ../../packages/shared && npm run build",
-    "build:client": "NODE_ENV=production vite build",
+    "build": "vite build",
     "serve": "vite preview",
-    "start": "node .output/server/index.mjs",
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{css,less,sass,scss,html,md,graphql,gql,json,ts,tsx,js,jsx,yml,yaml}\"",
@@ -18,10 +17,7 @@
     "setup:preview-secret": "node scripts/create-preview-secret.js",
     "get:preview-secret": "node scripts/get-preview-secret.js",
     "cleanup:preview-secrets": "node scripts/cleanup-preview-secrets.js",
-    "publish:preview-secret": "node scripts/publish-secret.js",
-    "ensure:lightningcss": "node scripts/ensure-lightningcss.cjs",
-    "build": "npm run ensure:lightningcss && npm run build:client",
-    "postinstall": "npm rebuild lightningcss --build-from-source || echo 'lightningcss rebuild skipped'"
+    "publish:preview-secret": "node scripts/publish-secret.js"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.4.0",

@@ -15,24 +15,10 @@ export default ({ mode }: ConfigEnv) => {
   const isProduction = mode === 'production';
 
   return defineConfig({
-    ssr: {
-      // Bundle most things but exclude packages that need Node.js APIs
-      noExternal: /^(?!(@tanstack\/router-core|stream|node:)).*$/,
-      external: ['@tanstack/router-core', 'stream', 'node:stream', 'node:stream/web', 'node:*', 'fsevents']
-    },
-    build: {
-      rollupOptions: {
-        // Externalize Node.js builtins for SSR builds
-        external: ['node:stream', 'node:stream/web', 'node:async_hooks', 'path', 'os', 'crypto', 'stream']
-      }
-    },
-    optimizeDeps: {
-      include: ['@santan/shared', 'xstate']
-    },
     plugins: [
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       tanstackStart({ srcDirectory: 'src' }),
-      // Netlify plugin handles SSR deployment
+      // Netlify plugin handles SSR deployment automatically in production
       isProduction ? netlifyPlugin() : null,
       viteReact(),
       tailwindcss(),
