@@ -14,7 +14,13 @@ export default ({ mode }: ConfigEnv) => {
 
   return defineConfig({
     ssr: {
-      noExternal: ['@santan/shared', 'xstate', 'tslib', '@emotion/is-prop-valid', '@emotion/unitless']
+      noExternal: ['@santan/shared'],
+      external: ['xstate', 'tslib', '@emotion/is-prop-valid', '@emotion/unitless', 'styled-components']
+    },
+    build: {
+      rollupOptions: {
+        external: ['xstate', 'tslib', '@emotion/is-prop-valid', '@emotion/unitless', 'styled-components']
+      }
     },
     optimizeDeps: {
       include: ['@santan/shared', 'xstate']
@@ -25,17 +31,7 @@ export default ({ mode }: ConfigEnv) => {
         preset: 'node-server',
         output: { dir: '.output' },
         externals: {
-          inline: [
-            '@santan/shared',
-            'xstate',
-            'tslib',
-            '@emotion/is-prop-valid',
-            '@emotion/unitless',
-            'styled-components',
-            '@sanity/visual-editing',
-            '@sanity/comlink',
-            '@sanity/mutate'
-          ]
+          inline: ['@santan/shared']
         }
       }),
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
