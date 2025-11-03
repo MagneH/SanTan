@@ -16,8 +16,9 @@ export default ({ mode }: ConfigEnv) => {
 
   return defineConfig({
     ssr: {
-      noExternal: true, // Bundle everything except externals below
-      external: ['stream', 'node:stream', 'node:*', 'fsevents']
+      // Bundle most things but exclude packages that need Node.js APIs
+      noExternal: /^(?!(@tanstack\/router-core|stream|node:)).*$/,
+      external: ['@tanstack/router-core', 'stream', 'node:stream', 'node:*', 'fsevents']
     },
     optimizeDeps: {
       include: ['@santan/shared', 'xstate']
