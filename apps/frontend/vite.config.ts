@@ -25,7 +25,17 @@ export default ({ mode }: ConfigEnv) => {
         preset: 'node-server',
         output: { dir: '.output' },
         externals: {
-          inline: ['@santan/shared']
+          inline: [
+            '@santan/shared',
+            'xstate',
+            'tslib',
+            '@emotion/is-prop-valid',
+            '@emotion/unitless',
+            'styled-components',
+            '@sanity/visual-editing',
+            '@sanity/comlink',
+            '@sanity/mutate'
+          ]
         }
       }),
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
