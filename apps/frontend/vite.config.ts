@@ -16,11 +16,15 @@ const __dirname = dirname(__filename);
 export default ({ mode }: ConfigEnv) => {
   // Workaround to load secrets since it's broken in Tanstack RC0 (or similar versions)
   Object.assign(process.env, loadEnv(mode, process.cwd(), ''));
+
+  const sharedPath = resolve(__dirname, '../../packages/shared/dist/index.js');
+  const sharedTypesPath = resolve(__dirname, '../../packages/shared/dist/types/index.js');
+
   return defineConfig({
     resolve: {
       alias: {
-        '@santan/shared/types': resolve(__dirname, '../../packages/shared/dist/types'),
-        '@santan/shared': resolve(__dirname, '../../packages/shared/dist')
+        '@santan/shared/types': sharedTypesPath,
+        '@santan/shared': sharedPath
       }
     },
     ssr: {

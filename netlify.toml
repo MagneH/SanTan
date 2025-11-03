@@ -1,6 +1,6 @@
 [build]
 base = "apps/frontend"
-command = "npm --workspace=@santan/frontend run build"
+command = "cd ../.. && npm run prebuild && cd apps/frontend && npm run build"
 publish = "apps/frontend/dist/client"
 functions = "netlify/functions"
 
