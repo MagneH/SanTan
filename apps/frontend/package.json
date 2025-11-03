@@ -20,7 +20,8 @@
     "get:preview-secret": "node scripts/get-preview-secret.js",
     "cleanup:preview-secrets": "node scripts/cleanup-preview-secrets.js",
     "publish:preview-secret": "node scripts/publish-secret.js",
-    "build": "npm run build:full",
+    "ensure:lightningcss": "node scripts/ensure-lightningcss.js",
+    "build": "npm run ensure:lightningcss && ([ -f .lightningcss-missing ] && echo 'Fallback: disabling lightningcss' && TAILWIND_DISABLE_LIGHTNINGCSS=1 npm run build:full || npm run build:full)",
     "postinstall": "npm rebuild lightningcss --build-from-source || echo 'lightningcss rebuild skipped'"
   },
   "dependencies": {

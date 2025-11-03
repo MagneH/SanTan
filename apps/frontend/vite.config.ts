@@ -13,6 +13,7 @@ export default ({ mode }: ConfigEnv) => {
   // Workaround to load secrets since it's broken in Tanstack RC0 (or similar versions)
   Object.assign(process.env, loadEnv(mode, process.cwd(), ''));
   return defineConfig({
+    css: process.env.TAILWIND_DISABLE_LIGHTNINGCSS ? { minify: 'esbuild' } : undefined,
     plugins: [
       tanstackStart({ ssr: true }),
       nitroV2Plugin({ preset: 'node-server', output: { dir: '.output' } }),
