@@ -14,6 +14,14 @@ export default ({ mode }: ConfigEnv) => {
   Object.assign(process.env, loadEnv(mode, process.cwd(), ''));
   return defineConfig({
     css: process.env.TAILWIND_DISABLE_LIGHTNINGCSS ? { minify: 'esbuild' } : undefined,
+    build: {
+      rollupOptions: {
+        external: ['@santan/shared/types']
+      }
+    },
+    optimizeDeps: {
+      include: ['@santan/shared', '@santan/shared/types']
+    },
     plugins: [
       tanstackStart({ ssr: true }),
       nitroV2Plugin({ preset: 'node-server', output: { dir: '.output' } }),
