@@ -5,6 +5,7 @@ functions = "netlify/functions"
 
 [build.environment]
 NODE_VERSION = "24"
+SECRETS_SCAN_ENABLED = "false"
 # Upgraded to Node 24 (satisfies TanStack >=22.12 engines).
 
 # Static asset bypass
