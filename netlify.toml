@@ -1,8 +1,11 @@
 [build]
 base = "apps/frontend"
-command = "npm run build:full"
+command = "npm run build"
 publish = "apps/frontend/dist/client"
 functions = "netlify/functions"
+
+[build.environment]
+NODE_VERSION = "24"
 
 # Static asset bypass
 [[redirects]]
@@ -20,4 +23,3 @@ status = 200
 from = "/*"
 to = "/.netlify/functions/ssr"
 status = 200
-
