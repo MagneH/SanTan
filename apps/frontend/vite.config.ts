@@ -5,6 +5,7 @@ import viteTsConfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
+import netlifyPlugin from '@netlify/vite-plugin-tanstack-start';
 import type { ConfigEnv } from 'vite';
 
 export default ({ mode }: ConfigEnv) => {
@@ -15,7 +16,7 @@ export default ({ mode }: ConfigEnv) => {
 
   return defineConfig({
     ssr: {
-      noExternal: true, // Bundle everything for Netlify Functions
+      noExternal: true, // Bundle everything
       external: ['node:*', 'fsevents']
     },
     optimizeDeps: {
@@ -24,6 +25,8 @@ export default ({ mode }: ConfigEnv) => {
     plugins: [
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       tanstackStart({ srcDirectory: 'src' }),
+      // Netlify plugin handles SSR deployment
+      isProduction ? netlifyPlugin() : null,
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       viteReact(),
       tailwindcss(),

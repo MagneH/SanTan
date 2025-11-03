@@ -1,26 +1,7 @@
 [build]
 command = "npm run build"
 publish = "dist/client"
-functions = "netlify/functions"
 
 [build.environment]
 NODE_VERSION = "24"
 SECRETS_SCAN_ENABLED = "false"
-# Upgraded to Node 24 (satisfies TanStack >=22.12 engines).
-
-# Static asset bypass
-[[redirects]]
-from = "/assets/*"
-to = "/assets/:splat"
-status = 200
-
-[[redirects]]
-from = "/favicon.ico"
-to = "/favicon.ico"
-status = 200
-
-# All other routes -> SSR
-[[redirects]]
-from = "/*"
-to = "/.netlify/functions/ssr"
-status = 200
