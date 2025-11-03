@@ -18,7 +18,13 @@ export default ({ mode }: ConfigEnv) => {
     ssr: {
       // Bundle most things but exclude packages that need Node.js APIs
       noExternal: /^(?!(@tanstack\/router-core|stream|node:)).*$/,
-      external: ['@tanstack/router-core', 'stream', 'node:stream', 'node:*', 'fsevents']
+      external: ['@tanstack/router-core', 'stream', 'node:stream', 'node:stream/web', 'node:*', 'fsevents']
+    },
+    build: {
+      rollupOptions: {
+        // Externalize Node.js builtins for SSR builds
+        external: ['node:stream', 'node:stream/web', 'node:async_hooks', 'path', 'os', 'crypto', 'stream']
+      }
     },
     optimizeDeps: {
       include: ['@santan/shared', 'xstate']
@@ -28,7 +34,6 @@ export default ({ mode }: ConfigEnv) => {
       tanstackStart({ srcDirectory: 'src' }),
       // Netlify plugin handles SSR deployment
       isProduction ? netlifyPlugin() : null,
-      viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       viteReact(),
       tailwindcss(),
       vanillaExtractPlugin(),
