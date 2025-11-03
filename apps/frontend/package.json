@@ -2,6 +2,7 @@
   "name": "@santan/frontend",
   "private": true,
   "type": "module",
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "NODE_ENV=production vite build",

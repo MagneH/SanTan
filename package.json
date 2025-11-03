@@ -2,6 +2,7 @@
   "name": "santan-monorepo",
   "private": true,
   "packageManager": "npm@10.2.4",
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "echo '🚀 Starting development servers...' && turbo run dev",
     "dev:stream": "echo '📺 Starting development servers in stream mode...' && turbo run dev --ui=stream",
