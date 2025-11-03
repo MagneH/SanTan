@@ -29,3 +29,38 @@ export const missingImage = style({
     },
   },
 });
+
+export const aspectWrapper = style({
+  position: 'relative',
+  width: '100%',
+  paddingBottom: '56.25%' /* 16:9 default ratio fallback */,
+  overflow: 'hidden',
+  background: vars.color.bgSoft,
+  selectors: {
+    '[data-theme="dark"] &': { background: vars.color.surfaceElevated },
+  },
+});
+
+export const imgActual = style({
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  display: 'block',
+});
+
+export const skeleton = style({
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  background: `linear-gradient(90deg, ${vars.color.bgSoft} 0%, ${vars.color.bgAlt} 50%, ${vars.color.bgSoft} 100%)`,
+  animation: 'pulse 1.6s ease-in-out infinite',
+  opacity: 0.6,
+  selectors: {
+    '[data-theme="dark"] &': {
+      background: `linear-gradient(90deg, ${vars.color.surfaceElevated} 0%, ${vars.color.bgAlt} 50%, ${vars.color.surfaceElevated} 100%)`,
+    },
+  },
+});

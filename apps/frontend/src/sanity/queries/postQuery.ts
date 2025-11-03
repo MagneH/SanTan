@@ -10,6 +10,7 @@ export const POST_QUERY_FIELDS = `
   "author": author->{ name, image },
   "categories": categories[]->{ title, description, slug },
   publishedAt,
+  _updatedAt,
   mainImage,  
   ingress,
   body,

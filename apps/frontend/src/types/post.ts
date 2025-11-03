@@ -22,6 +22,8 @@ export const postZ = z.object({
   seo: seoZ.nullable(),
   _createdAt: z.string(),
   publishedAt: z.string(),
+  _updatedAt: z.string().nullable(),
+  author: z.object({ name: z.string().nullable(), image: sanityImageZ.nullable() }).nullable(),
 });
 
 export type PostDocument = z.infer<typeof postZ>;

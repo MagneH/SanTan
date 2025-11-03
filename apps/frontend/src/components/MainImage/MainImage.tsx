@@ -1,5 +1,7 @@
 import urlBuilder from '@sanity/image-url';
-import { container, imageStyle, missingImage } from './MainImage.css.ts';
+import { container, missingImage } from './MainImage.css.ts';
+import { aspectWrapper, imgActual, skeleton } from './MainImage.css.ts';
+import { useState, useRef, useEffect } from 'react';
 
 import type { SanityImageType } from '@/types/image.ts';
 import { dataset, projectId } from '@/sanity/projectDetails.ts';
@@ -10,19 +12,108 @@ type MainImageProps = {
 };
 
 export function MainImage({ image, encodeDataAttribute }: MainImageProps) {
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      // Bildet var allerede i cache ved render
+      setLoaded(true);
+    }
+  }, []);
+
+  if (!image) {
+    return (
+      <div className={container}>
+        <div className={missingImage}>Missing Record art</div>
+      </div>
+    );
+  }
+
+  // Parse dimensions from Sanity asset ref: image-<id>-<width>x<height>-<format>
+  const ref = image.asset?._ref;
+  let originalWidth: number | undefined;
+  let originalHeight: number | undefined;
+  if (ref) {
+    const parts = ref.split('-');
+    const dimsPart = parts.find((p) => /x/.test(p));
+    if (dimsPart) {
+      const [wStr, hStr] = dimsPart.split('x');
+      const w = parseInt(wStr, 10);
+      const h = parseInt(hStr, 10);
+      if (!isNaN(w) && !isNaN(h)) {
+        originalWidth = w;
+        originalHeight = h;
+      }
+    }
+  }
+
+  // Apply crop to get effective dimensions
+  const crop = image.crop;
+  if (crop && originalWidth && originalHeight) {
+    const cropLeft = crop.left ?? 0;
+    const cropRight = crop.right ?? 0;
+    const cropTop = crop.top ?? 0;
+    const cropBottom = crop.bottom ?? 0;
+    originalWidth = Math.round(originalWidth * (1 - cropLeft - cropRight));
+    originalHeight = Math.round(originalHeight * (1 - cropTop - cropBottom));
+  }
+
+  // Fallback ratio 16:9 if missing
+  const ratio = originalWidth && originalHeight ? originalHeight / originalWidth : 9 / 16;
+
+  const builder = urlBuilder({ projectId, dataset }).image(image);
+  // Generate responsive widths
+  const widths = [480, 768, 1024, 1280];
+  const srcSet = widths
+    .map((w) => {
+      const h = Math.round(w * ratio);
+      return `${builder.width(w).height(h).auto('format').url()} ${w}w`;
+    })
+    .join(', ');
+  const largestWidth = 1280;
+  const largestHeight = Math.round(largestWidth * ratio);
+  const largest = builder.width(largestWidth).height(largestHeight).auto('format').url();
+
+  // Low quality placeholder (LQIP) var tidligere brukt men fjernet nå
+  // const lqipWidth = 40;
+  // const lqipHeight = Math.max(1, Math.round(lqipWidth * ratio));
+  // const lqip = builder.width(lqipWidth).height(lqipHeight).blur(50).auto('format').url();
+
   return (
     <div className={container}>
-      {image ? (
+      <div
+        className={aspectWrapper}
+        data-sanity={encodeDataAttribute}
+        style={{ paddingBottom: `${ratio * 100}%` }}
+      >
+        {!loaded && (
+          <div
+            className={skeleton}
+            aria-hidden="true"
+            style={{ transition: 'opacity 0.4s ease', opacity: 0.6 }}
+          />
+        )}
         <img
-          data-sanity={encodeDataAttribute}
-          className={imageStyle}
-          src={urlBuilder({ projectId, dataset }).image(image).height(700).width(1140).fit('max').auto('format').url()}
-          alt={image.alt ?? ``}
+          ref={imgRef}
+          className={imgActual}
+          src={largest}
+          srcSet={srcSet}
+          sizes="(max-width: 600px) 100vw, (max-width: 1200px) 90vw, 1140px"
+          alt={image.alt || ''}
           loading="lazy"
+          fetchPriority="high"
+          decoding="async"
+          onLoad={() => {
+            setLoaded(true);
+          }}
+          onError={() => setLoaded(true)}
+          style={{
+            opacity: loaded ? 1 : 0,
+            transition: 'opacity 0.5s ease',
+          }}
         />
-      ) : (
-        <div className={missingImage}>Missing Record art</div>
-      )}
+      </div>
     </div>
   );
 }
