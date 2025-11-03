@@ -1,6 +1,6 @@
 [build]
 base = "/"
-command = "npm ci && npm run build"
+command = "npm --workspace=packages/shared run build && npm --workspace=@santan/frontend run build"
 publish = "apps/frontend/dist/client"
 functions = "apps/frontend/netlify/functions"
 
