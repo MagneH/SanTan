@@ -14,13 +14,17 @@ export default ({ mode }: ConfigEnv) => {
   Object.assign(process.env, loadEnv(mode, process.cwd(), ''));
   return defineConfig({
     css: process.env.TAILWIND_DISABLE_LIGHTNINGCSS ? { minify: 'esbuild' } : undefined,
+    ssr: {
+      noExternal: ['@santan/shared'],
+      external: ['xstate']
+    },
     build: {
       rollupOptions: {
-        external: ['@santan/shared/types']
+        external: []
       }
     },
     optimizeDeps: {
-      include: ['@santan/shared', '@santan/shared/types']
+      include: ['@santan/shared', '@santan/shared/types', 'xstate']
     },
     plugins: [
       tanstackStart({ ssr: true }),

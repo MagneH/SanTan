@@ -53,7 +53,9 @@
     "react-router": "^7.9.5",
     "tailwindcss": "^4.1.16",
     "vite-tsconfig-paths": "^5.1.4",
-    "zod": "^4.1.12"
+    "xstate": "^5.18.0",
+    "zod": "^4.1.12",
+    "@santan/shared": "workspace:*"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
