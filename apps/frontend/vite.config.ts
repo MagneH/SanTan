@@ -5,7 +5,6 @@ import viteTsConfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
-import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin';
 import type { ConfigEnv } from 'vite';
 
 export default ({ mode }: ConfigEnv) => {
@@ -14,26 +13,14 @@ export default ({ mode }: ConfigEnv) => {
 
   return defineConfig({
     ssr: {
-      noExternal: ['@santan/shared'],
-      external: ['xstate', 'tslib', '@emotion/is-prop-valid', '@emotion/unitless', 'styled-components']
-    },
-    build: {
-      rollupOptions: {
-        external: ['xstate', 'tslib', '@emotion/is-prop-valid', '@emotion/unitless', 'styled-components']
-      }
+      noExternal: true, // Bundle everything for Netlify Functions
+      external: ['node:*', 'fsevents']
     },
     optimizeDeps: {
       include: ['@santan/shared', 'xstate']
     },
     plugins: [
       tanstackStart(),
-      nitroV2Plugin({
-        preset: 'node-server',
-        output: { dir: '.output' },
-        externals: {
-          inline: ['@santan/shared']
-        }
-      }),
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       viteReact(),
       tailwindcss(),
