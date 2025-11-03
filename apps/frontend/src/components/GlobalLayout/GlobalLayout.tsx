@@ -1,7 +1,7 @@
 import { ClientOnly, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { useStore } from '@tanstack/react-store';
 import TanStackQueryDevtools from '@/integrations/tanstack-query/devtools.tsx';
 import Header from '@/components/Header/Header.tsx';
@@ -11,15 +11,15 @@ import { FavIcons } from '@/components/GlobalLayout/FavIcons.tsx';
 import { previewStore, setPreviewMode, setPreviewPerspective } from '@/stores/previewStore.ts';
 import { ErrorBoundary } from '@/components/ErrorBoundary.tsx';
 import { PREVIEW_SESSION_NAME } from '@/sessions.ts';
-import { lightTheme, darkTheme } from '@/styles/theme.css.ts';
+import { darkTheme, lightTheme } from '@/styles/theme.css.ts';
 import './GlobalLayout.css.ts';
 
-const ExitPreview = lazy(() => import('@/components/ExitPreview.tsx'));
 const VisualEditing = lazy(() => import('@/sanity/VisualEditing.tsx'));
 
 export const GlobalLayout = () => {
   const { sanity } = Route.useLoaderData();
   const { isPreview, isDraftsPerspective } = useStore(previewStore);
+  const [isEmbeddedStudio, setIsEmbeddedStudio] = useState(false);
 
   useEffect(() => { setPreviewMode(sanity.isPreview); }, [sanity.isPreview]);
 
@@ -93,6 +93,14 @@ export const GlobalLayout = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Sjekk om vi kjører i et iframe (Sanity Studio preview-pane)
+      const embedded = window.self !== window.top;
+      setIsEmbeddedStudio(embedded);
+    }
+  }, []);
+
   return (
     <html lang="no" suppressHydrationWarning>
       <head>
@@ -113,10 +121,10 @@ export const GlobalLayout = () => {
         <FavIcons />
       </head>
       <body suppressHydrationWarning>
-        <a href="#main" style={{position:'absolute',left:'-999px',top:'-999px',background:'#000',color:'#fff',padding:'8px 12px',borderRadius:4,transform:'translateY(-8px)'}} onFocus={(e)=>{e.currentTarget.style.left='12px';e.currentTarget.style.top='12px';}} onBlur={(e)=>{e.currentTarget.style.left='-999px';e.currentTarget.style.top='-999px';}}>Hopp til innhold</a>
+        <a href="#app-root" aria-label="Hopp til hovedinnhold" style={{position:'absolute',left:'-999px',top:'-999px',background:'#000',color:'#fff',padding:'8px 12px',borderRadius:4,transform:'translateY(-8px)'}} onFocus={(e)=>{e.currentTarget.style.left='12px';e.currentTarget.style.top='12px';}} onBlur={(e)=>{e.currentTarget.style.left='-999px';e.currentTarget.style.top='-999px';}}>Hopp til innhold</a>
         <ErrorBoundary>
           <Header />
-          <main id="main">
+          <main id="app-root">
             <Outlet />
           </main>
           <Footer />
@@ -129,15 +137,20 @@ export const GlobalLayout = () => {
           />
           <Scripts />
           <ClientOnly>
-            {isPreview && (
+            {isPreview && isEmbeddedStudio && (
               <>
                 {isDraftsPerspective ? (
-                  <div style={{position:'fixed',top:'10px',right:'10px',background:'orange',color:'black',padding:'8px 12px',borderRadius:'4px',fontSize:'12px',fontWeight:'bold',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}}>🟠 PREVIEW MODE (Drafts)</div>
+                  <div role="status" aria-live="polite" style={{position:'fixed',bottom:'10px',left:'10px',background:'rgba(255,165,0,0.65)',color:'#111',padding:'8px 12px',borderRadius:'6px',fontSize:'12px',fontWeight:'600',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.25)',backdropFilter:'blur(6px)',border:'1px solid rgba(255,255,255,0.3)',letterSpacing:'0.5px',pointerEvents:'none',display:'flex',alignItems:'center',gap:'6px'}}>
+                    <span aria-hidden style={{width:8,height:8,borderRadius:'50%',background:'#ff8c00',boxShadow:'0 0 0 2px rgba(255,255,255,0.4)'}} />
+                    PREVIEW MODE (Drafts)
+                  </div>
                 ) : (
-                  <div style={{position:'fixed',top:'10px',right:'10px',background:'lime',color:'black',padding:'8px 12px',borderRadius:'4px',fontSize:'12px',fontWeight:'bold',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.2)'}}>🟢 PREVIEW MODE (Published)</div>
+                  <div role="status" aria-live="polite" style={{position:'fixed',bottom:'10px',left:'10px',background:'rgba(80,220,120,0.55)',color:'#07240f',padding:'8px 12px',borderRadius:'6px',fontSize:'12px',fontWeight:'600',zIndex:999999,boxShadow:'0 2px 8px rgba(0,0,0,0.25)',backdropFilter:'blur(6px)',border:'1px solid rgba(255,255,255,0.3)',letterSpacing:'0.5px',pointerEvents:'none',display:'flex',alignItems:'center',gap:'6px'}}>
+                    <span aria-hidden style={{width:8,height:8,borderRadius:'50%',background:'#2bbf65',boxShadow:'0 0 0 2px rgba(255,255,255,0.4)'}} />
+                    PREVIEW MODE (Published)
+                  </div>
                 )}
                 <Suspense fallback={null}>
-                  <ExitPreview />
                   <VisualEditing />
                 </Suspense>
               </>
