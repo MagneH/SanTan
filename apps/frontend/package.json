@@ -20,7 +20,8 @@
     "get:preview-secret": "node scripts/get-preview-secret.js",
     "cleanup:preview-secrets": "node scripts/cleanup-preview-secrets.js",
     "publish:preview-secret": "node scripts/publish-secret.js",
-    "build": "npm run build:full"
+    "build": "npm run build:full",
+    "postinstall": "npm rebuild lightningcss --build-from-source || echo 'lightningcss rebuild skipped'"
   },
   "dependencies": {
     "@portabletext/react": "^4.0.3",
@@ -66,6 +67,7 @@
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.0",
     "jsdom": "^27.1.0",
+    "lightningcss": "^1.26.0",
     "prettier": "^3.5.3",
     "typescript": "^5.7.2",
     "vite": "^7.1.12",
