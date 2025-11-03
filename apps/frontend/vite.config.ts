@@ -16,8 +16,8 @@ export default ({ mode }: ConfigEnv) => {
 
   return defineConfig({
     ssr: {
-      noExternal: true, // Bundle everything
-      external: ['node:*', 'fsevents']
+      noExternal: true, // Bundle everything except externals below
+      external: ['stream', 'node:stream', 'node:*', 'fsevents']
     },
     optimizeDeps: {
       include: ['@santan/shared', 'xstate']
