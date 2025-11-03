@@ -19,7 +19,8 @@
     "setup:preview-secret": "node scripts/create-preview-secret.js",
     "get:preview-secret": "node scripts/get-preview-secret.js",
     "cleanup:preview-secrets": "node scripts/cleanup-preview-secrets.js",
-    "publish:preview-secret": "node scripts/publish-secret.js"
+    "publish:preview-secret": "node scripts/publish-secret.js",
+    "build": "npm run build:full"
   },
   "dependencies": {
     "@portabletext/react": "^4.0.3",
