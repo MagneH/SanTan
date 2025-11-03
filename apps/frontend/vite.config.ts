@@ -16,6 +16,13 @@ export default ({ mode }: ConfigEnv) => {
       noExternal: true, // Bundle everything for Netlify Functions
       external: ['node:*', 'fsevents']
     },
+    build: {
+      rollupOptions: {
+        output: {
+          entryFileNames: 'entry.mjs'
+        }
+      }
+    },
     optimizeDeps: {
       include: ['@santan/shared', 'xstate']
     },
