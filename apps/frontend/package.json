@@ -20,7 +20,7 @@
     "get:preview-secret": "node scripts/get-preview-secret.js",
     "cleanup:preview-secrets": "node scripts/cleanup-preview-secrets.js",
     "publish:preview-secret": "node scripts/publish-secret.js",
-    "ensure:lightningcss": "node scripts/ensure-lightningcss.js",
+    "ensure:lightningcss": "node scripts/ensure-lightningcss.cjs",
     "build": "npm run ensure:lightningcss && ([ -f .lightningcss-missing ] && echo 'LightningCSS missing -> using esbuild minify' && TAILWIND_DISABLE_LIGHTNINGCSS=1 npm run build:full || npm run build:full)",
     "postinstall": "npm rebuild lightningcss --build-from-source || echo 'lightningcss rebuild skipped'"
   },
@@ -77,7 +77,6 @@
   },
   "optionalDependencies": {
     "lightningcss-linux-arm64-musl": "^1.30.2",
-    "lightningcss-linux-x64-gnu": "^1.30.2",
-    "lightningcss-linux-x64-musl": "^1.30.2"
+    "lightningcss-linux-x64-gnu": "^1.30.2"
   }
 }
