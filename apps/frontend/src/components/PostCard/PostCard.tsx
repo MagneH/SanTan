@@ -10,24 +10,27 @@ type PostCardProps = {
   fullSlug: string | null | undefined;
   title: string | null | undefined;
   description: string | null | undefined;
-  mainImage?: SanityImageType;
+  mainImage?: SanityImageType | null | undefined;
 };
 
 export function PostCard({ fullSlug, title, description, mainImage }: PostCardProps) {
+  const imageUrl = mainImage
+    ? urlBuilder({ projectId, dataset })
+        .image(mainImage)
+        .height(700)
+        .width(1140)
+        .fit('max')
+        .auto('format')
+        .url()
+    : null;
   return (
     <Link to={FullSlugRoute.to} params={{ _splat: stegaClean(fullSlug) || '' }} className={postCard}>
       <div className={imageContainer}>
-        {mainImage ? (
+        {imageUrl ? (
           <img
             className={image}
-            src={urlBuilder({ projectId, dataset })
-              .image(mainImage)
-              .height(700)
-              .width(1140)
-              .fit('max')
-              .auto('format')
-              .url()}
-            alt={mainImage.alt ?? (title || undefined)}
+            src={imageUrl}
+            alt={mainImage?.alt ?? title ?? 'Post image'}
             loading="lazy"
           />
         ) : (

@@ -18,11 +18,19 @@ export const home = defineType({
       title: 'Undertittel',
       type: 'string',
     }),
+    defineField({
+      name: 'description',
+      title: 'Beskrivelse',
+      description: 'En kort beskrivelse som vises under undertittel på forsiden. (Valgfri)',
+      type: 'array',
+      of: [{ type: 'block' }],
+    }),
   ],
   preview: {
     select: {
       title: 'title',
       subTitle: 'subTitle',
+      description: 'description',
     },
   },
 });

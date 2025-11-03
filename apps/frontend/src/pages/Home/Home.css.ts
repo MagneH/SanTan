@@ -100,6 +100,18 @@ export const logoContainer = style({
   },
 });
 
+export const logosRow = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '3rem',
+  '@media': {
+    'screen and (max-width: 640px)': {
+      flexDirection: 'column',
+      gap: '1.25rem',
+    },
+  },
+});
+
 export const logo = style({
   height: '40px',
   opacity: 0.85,
@@ -121,6 +133,9 @@ export const logoSeparator = style({
   color: 'rgba(0,0,0,0.25)',
   selectors: {
     '[data-theme="dark"] &': { color: 'rgba(255,255,255,0.4)' },
+  },
+  '@media': {
+    'screen and (max-width: 640px)': { fontSize: '1.75rem' },
   },
 });
 
@@ -433,6 +448,17 @@ export const calloutList = style({
   color: vars.color.textDim,
   selectors: {
     '[data-theme="dark"] &': { color: '#F5F9FC' },
+  },
+});
+
+export const devExpList = style({
+  margin: 0,
+  padding: '0 0 0 1.1rem',
+  fontSize: '0.85rem',
+  lineHeight: 1.6,
+  color: 'rgba(0,0,0,0.7)',
+  selectors: {
+    '[data-theme="dark"] &': { color: vars.color.textDim },
   },
 });
 

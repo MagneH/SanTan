@@ -1,29 +1,36 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useStore } from '@tanstack/react-store';
-import { ClientOnly } from '@tanstack/react-router';
+// Stiler
+import { divider, homeContainer } from './Home.css.ts';
+// Typer
+import { HeroSection } from './sections/HeroSection.tsx';
+import { ArchitectureSection } from './sections/ArchitectureSection.tsx';
+import { DevExpSection } from './sections/DevExpSection.tsx';
+import { CategoriesSection } from './sections/CategoriesSection.tsx';
+import { PostsSection } from './sections/PostsSection.tsx';
+import { HighlightsSection } from './sections/HighlightsSection.tsx';
 import type { PageProps } from '@/types/PageProps.ts';
 import type { HomeDocument } from '@/types/home.ts';
 import type { CategoryStub } from '@/types/category.ts';
 import type { PostStub } from '@/types/post.ts';
+// Interne utilities
 import { Route } from '@/routes/index.tsx';
 import { withPreviewData, withPublishedData } from '@/components/withDocument.tsx';
 import { homeQuery } from '@/sanity/queries/homeQuery.ts';
 import { getPostsQuery } from '@/sanity/queries/postQuery.ts';
 import { client } from '@/sanity/client.ts';
 import { STUDIO_BASEPATH } from '@/sanity/constants.ts';
-import { PostCard } from '@/components/PostCard/PostCard.tsx';
 import { POSTS_PER_PAGE } from '@/constants/config.ts';
 import { previewStore } from '@/stores/previewStore.ts';
-import { CategoryPillList } from '@/components/CategoryPills/CategoryPillList.tsx';
-import { TanStackLogo } from '@/components/Logos/TanStackLogo.tsx';
-import { SanityLogo } from '@/components/Logos/SanityLogo.tsx';
-
-import { callout, codeBlock, container, divider, featureCard, featureDescription, featureGrid, featureIcon, featureTitle, heroContent, heroDescription, heroSection, heroSubtitle, heroTitle, highlightCard, highlightIcon, highlightText, highlightTitle, highlightsGrid, homeContainer, loadMoreButton, logo, logoContainer, logoSeparator, miniBadge, miniBadgeRow, paragraph, section, sectionTitle, subtleHeading, twoCol, wideSection } from './Home.css.ts';
 import { CTA } from '@/components/CTA/CTA.tsx';
 
-const Home = ({
-  data,
-}: PageProps<{ categoriesData: Array<CategoryStub>; postsData: Array<PostStub>; homeData: HomeDocument }>) => {
+type HomePagePayload = {
+  categoriesData: Array<CategoryStub>;
+  postsData: Array<PostStub>;
+  homeData: HomeDocument;
+};
+
+const Home = ({ data }: PageProps<HomePagePayload>) => {
   // Read isPreview from the reactive store instead of props
   // This ensures it updates when GlobalLayout detects preview mode
   const { isPreview } = useStore(previewStore);
@@ -82,191 +89,35 @@ const Home = ({
 
   // In preview mode, use data from server (which has live updates)
   // In production, use infinite query data (which has pagination)
-  const posts = isPreview ? (data?.postsData ?? []) : listData.pages.flat();
-  const categories = data?.categoriesData ?? [];
+  const posts: Array<PostStub> = isPreview ? (data?.postsData ?? []) : (listData.pages.flat() as Array<PostStub>);
+  const categories: Array<CategoryStub> = data?.categoriesData ?? [];
+  const homeData = data?.homeData ?? { title: null, subTitle: null, description: null };
 
   return (
     <div className={homeContainer}>
-      {/* Hero Section */}
-      <section className={heroSection}>
-        <div className={heroContent}>
-          <h1 className={heroTitle}>{data?.homeData.title}</h1>
-          <p className={heroSubtitle}>{data?.homeData.subTitle}</p>
-          <p className={heroDescription}>
-            Built with the power of React 19, TanStack Start, and Sanity CMS.
-            Experience lightning-fast performance, real-time content preview, and a delightful developer experience.
-          </p>
-
-          <div className={logoContainer}>
-            <div style={{ display:'flex', alignItems:'center', gap:'3rem' }}>
-              <TanStackLogo height={40} className={logo} />
-              <span className={logoSeparator}>×</span>
-              <SanityLogo height={40} className={logo} />
-            </div>
-          </div>
-
-          {/* Feature Cards */}
-          <div className={featureGrid}>
-            <div className={featureCard}>
-              <div className={featureIcon}>⚡</div>
-              <h3 className={featureTitle}>Lightning Fast</h3>
-              <p className={featureDescription}>Server-side rendering with instant client-side navigation</p>
-            </div>
-            <div className={featureCard}>
-              <div className={featureIcon}>👁️</div>
-              <h3 className={featureTitle}>Live Preview</h3>
-              <p className={featureDescription}>Real-time content updates with Sanity's visual editing</p>
-            </div>
-            <div className={featureCard}>
-              <div className={featureIcon}>🎨</div>
-              <h3 className={featureTitle}>Beautiful UI</h3>
-              <p className={featureDescription}>Clean, modern design inspired by Apple's aesthetics</p>
-            </div>
-            <div className={featureCard}>
-              <div className={featureIcon}>📱</div>
-              <h3 className={featureTitle}>Fully Responsive</h3>
-              <p className={featureDescription}>Perfect experience on any device, any screen size</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      <HeroSection
+        title={homeData.title}
+        subTitle={homeData.subTitle}
+        description={homeData.description || undefined}
+      />
       <div className={divider} />
-
-      {/* Categories Section */}
-      <section className={section}>
-        <h2 className={sectionTitle}>Explore Categories</h2>
-        <CategoryPillList categories={categories} />
-      </section>
-
+      <CategoriesSection categories={categories} />
       <div className={divider} />
-
-      {/* Posts Section */}
-      <section className={section}>
-        <h2 className={sectionTitle}>Latest Posts</h2>
-        <div className={container}>
-          {posts.map((post) => (
-            <PostCard
-              key={post?.fullSlug ?? post?._id}
-              fullSlug={post?.fullSlug}
-              title={post?.title}
-              description={post?.ingress}
-              mainImage={post?.mainImage}
-            />
-          ))}
-          <ClientOnly>
-            {!isPreview && hasNextPage && (
-              <button className={loadMoreButton} onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
-                {isFetchingNextPage ? 'Loading...' : 'Load More'}
-              </button>
-            )}
-          </ClientOnly>
-        </div>
-      </section>
-
+      <PostsSection
+        posts={posts}
+        isPreview={isPreview}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
+      />
       <div className={divider} />
-
-      {/* Highlights Section */}
-      <section className={section} aria-labelledby="highlights-heading">
-        <div className={subtleHeading} id="highlights-heading">Highlights</div>
-        <div className={highlightsGrid}>
-          <div className={highlightCard}>
-            <span className={highlightIcon}>🧩</span>
-            <h4 className={highlightTitle}>Composable</h4>
-            <p className={highlightText}>A modular approach lets you swap or extend data layers & UI without friction.</p>
-          </div>
-          <div className={highlightCard}>
-            <span className={highlightIcon}>🛰️</span>
-            <h4 className={highlightTitle}>Edge Ready</h4>
-            <p className={highlightText}>Built on modern primitives that thrive in distributed & edge environments.</p>
-          </div>
-          <div className={highlightCard}>
-            <span className={highlightIcon}>🔄</span>
-            <h4 className={highlightTitle}>Reactive Preview</h4>
-            <p className={highlightText}>Instant visual updates while you edit structured content in Sanity.</p>
-          </div>
-          <div className={highlightCard}>
-            <span className={highlightIcon}>🛡️</span>
-            <h4 className={highlightTitle}>Type Safe</h4>
-            <p className={highlightText}>End‑to‑end TypeScript models keep refactors safe & confident.</p>
-          </div>
-        </div>
-      </section>
-
+      <HighlightsSection />
       <div className={divider} />
-
-      {/* Architecture Section */}
-      <section className={wideSection} aria-labelledby="architecture-heading">
-        <div className={subtleHeading} id="architecture-heading">Architecture</div>
-        <div className={twoCol}>
-          <div>
-            <p className={paragraph}>
-              Santan Starter combines <strong>TanStack Start</strong> for routing & data synchronization, <strong>React 19</strong> for
-              modern rendering semantics, and <strong>Sanity</strong> for structured, real‑time content authoring. The result is a
-              fluid authoring→publishing loop with minimal glue code.
-            </p>
-            <p className={paragraph}>
-              Content queries are organized, cached, and invalidated intelligently. Preview mode uses a reactive store to switch
-              data sources without a full page reload.
-            </p>
-            <div className={miniBadgeRow}>
-              <span className={miniBadge}>React 19</span>
-              <span className={miniBadge}>TanStack Start</span>
-              <span className={miniBadge}>TypeScript</span>
-              <span className={miniBadge}>Sanity</span>
-              <span className={miniBadge}>Edge Friendly</span>
-            </div>
-          </div>
-          <div className={callout}>
-            <div style={{fontWeight:600, fontSize:'0.85rem', letterSpacing:'0.08em', textTransform:'uppercase', color:'#005bb5'}}>Data Flow</div>
-            <pre className={codeBlock} aria-label="Data flow example"><code>{`Client Request
-   │
-   ├─ Route Loader (decides preview vs published)
-   │    ├─ Preview: reactive store + live query
-   │    └─ Published: cached query via TanStack Query
-   │
-   └─ Component hydrates with adaptive source`}</code></pre>
-            <p className={paragraph} style={{fontSize:'0.85rem'}}>
-              Clear separation of preview vs published pathways keeps production lean while enabling instant editorial feedback.
-            </p>
-          </div>
-        </div>
-      </section>
-
+      <ArchitectureSection badges={[ 'React 19', 'TanStack Start', 'TypeScript', 'Sanity', 'Edge Friendly' ]} />
       <div className={divider} />
-
-      {/* Developer Experience Section */}
-      <section className={wideSection} aria-labelledby="devexp-heading">
-        <div className={subtleHeading} id="devexp-heading">Developer Experience</div>
-        <div className={twoCol}>
-          <div>
-            <p className={paragraph}>
-              The stack emphasizes fast iteration: portable query helpers, reusable layout primitives, and co-located types reduce
-              friction. Vanilla Extract ensures design tokens stay type safe and themeable.
-            </p>
-            <p className={paragraph}>
-              You can extend this starter with auth, comments, multi‑tenant spaces or edge personalization without reworking the
-              fundamentals.
-            </p>
-          </div>
-          <div className={callout}>
-            <div style={{fontWeight:600, fontSize:'0.85rem', letterSpacing:'0.08em', textTransform:'uppercase', color:'#005bb5'}}>Why It Feels Fast</div>
-            <ul style={{margin:0, padding:'0 0 0 1.1rem', fontSize:'0.85rem', lineHeight:1.6, color:'rgba(0,0,0,0.7)'}}>
-              <li>Granular route loaders</li>
-              <li>Selective live preview hydration</li>
-              <li>Edge‑friendly query patterns</li>
-              <li>Progressive image loading</li>
-              <li>Minimal global JS</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
+      <DevExpSection />
       <div className={divider} />
-
-      {/* CTA Section */}
       <CTA />
-
       <div className={divider} />
     </div>
   );

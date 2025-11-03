@@ -4,35 +4,25 @@ import type { PortableText as PortableTextType } from '@/types/sanitySchemas';
 import { types } from '@/components/PortableText/types';
 import { block } from '@/components/PortableText/block';
 import { marks } from '@/components/PortableText/marks';
-import { list } from '@/components/PortableText/list';
+import { list, listItem } from '@/components/PortableText/list';
 
 const BlockContent = ({ value }: { value?: PortableTextType }) => {
   const components = React.useMemo(
     () => ({
       types,
-      list,
       block,
+      list,
+      listItem,
       marks,
     }),
     [],
   );
 
-  const componentTypeKeys = React.useMemo(() => Object.keys(components.types), [components.types]);
+  // Hvis ingen value eller tom array – returner null
+  if (!value || value.length === 0) return null;
 
-  const filteredComponents = React.useMemo(
-    () =>
-      value?.filter(
-        (component) =>
-          [...componentTypeKeys, 'block', 'span'].includes(component._type) && typeof component._type !== 'undefined',
-      ),
-    [value, componentTypeKeys],
-  );
-
-  if (!filteredComponents || filteredComponents.length === 0) {
-    return null;
-  }
-
-  return <PortableText value={filteredComponents} components={components} />;
+  // Send original value direkte til PortableText (unødvendig filtrering fjernet)
+  return <PortableText value={value} components={components} />;
 };
 
 export default BlockContent;
