@@ -1,7 +1,7 @@
 {
   "name": "santan-monorepo",
   "private": true,
-  "packageManager": "npm@10.2.4",
+  "packageManager": "npm@11.3.0",
   "license": "UNLICENSED",
   "scripts": {
     "dev": "echo '🚀 Starting development servers...' && turbo run dev",
@@ -21,7 +21,6 @@
     "packages/*"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   }
 }
-

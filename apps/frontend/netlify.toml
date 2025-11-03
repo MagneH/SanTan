@@ -4,5 +4,5 @@ publish = "dist/client"
 functions = "netlify/functions"
 
 [build.environment]
-NODE_VERSION = "22"
-# TanStack Start packages require >=22.12; Netlify will pick a 22.x fulfilling requirement.
+NODE_VERSION = "24"
+# Upgraded to Node 24 (satisfies TanStack >=22.12 engines).
