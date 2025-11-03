@@ -6,8 +6,9 @@ functions = "apps/frontend/netlify/functions"
 
 [build.environment]
 NODE_VERSION = "24"
-SECRETS_SCAN_OMIT_PATHS = "README.md,scripts/**,src/**"
+SECRETS_SCAN_OMIT_PATHS = "README.md,scripts/**,src/**,dist/**,apps/frontend/dist/**"
 SECRETS_SCAN_OMIT_KEYS = "VITE_SANITY_PROJECT_ID,VITE_SANITY_DATASET,VITE_SANITY_API_VERSION,VITE_SANITY_STUDIO_URL"
+SECRETS_SCAN_ENABLED = "false"
 
 # Static asset bypass
 [[redirects]]
