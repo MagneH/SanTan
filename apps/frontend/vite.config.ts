@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin';
 import { devtools } from '@tanstack/devtools-vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
+import netlify from '@netlify/vite-plugin-tanstack-start'
 import type { ConfigEnv } from 'vite';
 
 export default ({ mode }: ConfigEnv) => {
@@ -23,6 +24,7 @@ export default ({ mode }: ConfigEnv) => {
       tanstackStart(),
       viteReact(),
       vanillaExtractPlugin(),
+      netlify(),
     ],
   });
 };
