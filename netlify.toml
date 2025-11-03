@@ -1,0 +1,23 @@
+[build]
+base = "apps/frontend"
+command = "npm run build:full"
+publish = "apps/frontend/dist/client"
+functions = "netlify/functions"
+
+# Static asset bypass
+[[redirects]]
+from = "/assets/*"
+to = "/assets/:splat"
+status = 200
+
+[[redirects]]
+from = "/favicon.ico"
+to = "/favicon.ico"
+status = 200
+
+# All other routes -> SSR
+[[redirects]]
+from = "/*"
+to = "/.netlify/functions/ssr"
+status = 200
+

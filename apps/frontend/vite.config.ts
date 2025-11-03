@@ -3,10 +3,10 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
-import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin';
 import { devtools } from '@tanstack/devtools-vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import netlify from '@netlify/vite-plugin-tanstack-start'
+import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin';
 import type { ConfigEnv } from 'vite';
 
 export default ({ mode }: ConfigEnv) => {
@@ -14,17 +14,13 @@ export default ({ mode }: ConfigEnv) => {
   Object.assign(process.env, loadEnv(mode, process.cwd(), ''));
   return defineConfig({
     plugins: [
-      devtools(),
-      nitroV2Plugin({ preset: 'node-server' }),
-      // this is the plugin that enables path aliases
-      viteTsConfigPaths({
-        projects: ['./tsconfig.json'],
-      }),
-      tailwindcss(),
-      tanstackStart(),
+      tanstackStart({ ssr: true }),
+      nitroV2Plugin({ preset: 'node-server', output: { dir: '.output' } }),
+      viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       viteReact(),
+      tailwindcss(),
       vanillaExtractPlugin(),
-      netlify(),
+      devtools(),
     ],
   });
 };
