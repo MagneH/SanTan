@@ -1,6 +1,7 @@
 import urlBuilder from '@sanity/image-url';
-import { container, missingImage } from './MainImage.css.ts';
+import { container } from './MainImage.css.ts';
 import { aspectWrapper, imgActual, skeleton, portraitWrapper, portraitImg } from './MainImage.css.ts';
+import { placeholderWrapper, placeholderInner } from './MainImage.css.ts';
 import { useState, useRef, useEffect } from 'react';
 
 import type { SanityImageType } from '@/types/image.ts';
@@ -25,7 +26,16 @@ export function MainImage({ image, encodeDataAttribute }: MainImageProps) {
   if (!image) {
     return (
       <div className={container}>
-        <div className={missingImage}>Missing Record art</div>
+        <div className={placeholderWrapper} data-sanity={encodeDataAttribute}>
+          <div className={placeholderInner}>
+            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="14" rx="2" ry="2" />
+              <circle cx="8" cy="8" r="2" />
+              <path d="M3 17l4.5-4.5a2 2 0 0 1 2.8 0L17 17" />
+              <path d="M14 14l3-3 4 4" />
+            </svg>
+          </div>
+        </div>
       </div>
     );
   }

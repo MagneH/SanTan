@@ -88,3 +88,39 @@ export const portraitImg = style({
   objectFit: 'contain',
   display: 'block',
 });
+
+export const placeholderWrapper = style({
+  position: 'relative',
+  width: '100%',
+  paddingBottom: '56.25%', // 16:9
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: `linear-gradient(135deg, ${vars.color.bgSoft} 0%, ${vars.color.bgAlt} 100%)`,
+  color: vars.color.textDim,
+  overflow: 'hidden',
+  border: `1px dashed ${vars.color.borderSoft}`,
+  selectors: {
+    '[data-theme="dark"] &': {
+      background: `linear-gradient(135deg, ${vars.color.surfaceElevated} 0%, ${vars.color.bgAlt} 100%)`,
+      color: '#B8C2CC',
+      border: `1px dashed ${vars.color.border}`,
+    },
+  },
+});
+
+export const placeholderInner = style({
+  position: 'absolute',
+  inset: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0.75rem',
+  fontSize: '0.75rem',
+  letterSpacing: '0.08em',
+  fontWeight: 600,
+  textTransform: 'uppercase',
+  userSelect: 'none',
+  opacity: 0.85,
+});
