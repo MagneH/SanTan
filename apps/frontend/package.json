@@ -54,8 +54,7 @@
     "tailwindcss": "^4.1.16",
     "vite-tsconfig-paths": "^5.1.4",
     "xstate": "^5.18.0",
-    "zod": "^4.1.12",
-    "@santan/shared": "workspace:*"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
