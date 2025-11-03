@@ -5,7 +5,6 @@ import viteTsConfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
-import { nitro } from 'nitro/vite';
 import type { ConfigEnv } from 'vite';
 
 export default ({ mode }: ConfigEnv) => {
@@ -25,8 +24,6 @@ export default ({ mode }: ConfigEnv) => {
     plugins: [
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       tanstackStart({ srcDirectory: 'src' }),
-      // Only use Nitro in production to avoid breaking dev/test
-      isProduction ? nitro() : null,
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       viteReact(),
       tailwindcss(),
