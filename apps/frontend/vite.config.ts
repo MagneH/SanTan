@@ -14,12 +14,7 @@ export default ({ mode }: ConfigEnv) => {
 
   return defineConfig({
     ssr: {
-      noExternal: ['@santan/shared']
-    },
-    build: {
-      rollupOptions: {
-        external: []
-      }
+      noExternal: ['@santan/shared', 'xstate', 'tslib', '@emotion/is-prop-valid', '@emotion/unitless']
     },
     optimizeDeps: {
       include: ['@santan/shared', 'xstate']
