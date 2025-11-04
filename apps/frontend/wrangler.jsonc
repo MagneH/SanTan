@@ -1,7 +1,7 @@
 {
   "name": "santan-frontend",
   "compatibility_date": "2025-11-04",
-  "main": "src/cloudflare-worker.ts",
+  "main": "src/server.ts",
   "assets": {
     "directory": "dist/client"
   }
