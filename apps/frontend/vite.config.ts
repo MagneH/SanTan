@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import netlifyPlugin from '@netlify/vite-plugin-tanstack-start';
+import { nitro } from 'nitro/vite';
 import type { ConfigEnv } from 'vite';
 
 export default ({ mode }: ConfigEnv) => {
@@ -21,7 +22,8 @@ export default ({ mode }: ConfigEnv) => {
       tanstackStart({ srcDirectory: 'src' }),
       // Conditionally load platform-specific plugin
       isProduction && platform === 'netlify' ? netlifyPlugin() : null,
-      // Cloudflare uses default Nitro output (no plugin needed)
+      // Cloudflare uses Nitro with cloudflare-pages preset
+      isProduction && platform === 'cloudflare' ? nitro() : null,
       viteReact(),
       tailwindcss(),
       vanillaExtractPlugin(),
