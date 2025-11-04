@@ -1,9 +1,9 @@
 {
   "name": "santan-frontend",
   "compatibility_date": "2025-11-04",
-  "main": "src/server.ts",
+  "main": "apps/frontend/src/server.ts",
   "assets": {
-    "directory": "dist/client"
+    "directory": "apps/frontend/dist/client"
   }
 }
 
