@@ -13,17 +13,23 @@ export default ({ mode }: ConfigEnv) => {
   Object.assign(process.env, loadEnv(mode, process.cwd(), ''));
 
   const isProduction = mode === 'production';
+  const platform = process.env.DEPLOY_TARGET || 'netlify'; // 'netlify' | 'cloudflare'
 
   return defineConfig({
     plugins: [
       viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
       tanstackStart({ srcDirectory: 'src' }),
-      // Netlify plugin handles SSR deployment automatically in production
-      isProduction ? netlifyPlugin() : null,
+      // Conditionally load platform-specific plugin
+      isProduction && platform === 'netlify' ? netlifyPlugin() : null,
+      // Cloudflare uses default Nitro output (no plugin needed)
       viteReact(),
       tailwindcss(),
       vanillaExtractPlugin(),
       devtools(),
     ],
+    ssr: {
+      // Externalize node-only modules for edge compatibility
+      noExternal: process.env.DEPLOY_TARGET === 'cloudflare' ? true : undefined,
+    },
   });
 };

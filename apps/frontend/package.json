@@ -7,7 +7,11 @@
     "dev": "vite dev --port 3000",
     "prebuild": "cd ../../packages/shared && npm run build",
     "build": "vite build",
+    "build:netlify": "DEPLOY_TARGET=netlify vite build",
+    "build:cloudflare": "DEPLOY_TARGET=cloudflare vite build",
     "serve": "vite preview",
+    "serve:cloudflare": "wrangler pages dev .output/public",
+    "deploy:cloudflare": "wrangler pages deploy .output/public",
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{css,less,sass,scss,html,md,graphql,gql,json,ts,tsx,js,jsx,yml,yaml}\"",
@@ -78,7 +82,8 @@
     "typescript": "^5.7.2",
     "vite": "^7.1.12",
     "vitest": "^4.0.6",
-    "web-vitals": "^5.1.0"
+    "web-vitals": "^5.1.0",
+    "wrangler": "^4.45.4"
   },
   "optionalDependencies": {
     "lightningcss-linux-arm64-musl": "^1.30.2",
