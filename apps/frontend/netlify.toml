@@ -6,11 +6,3 @@ publish = "dist/client"
 NODE_VERSION = "24"
 SECRETS_SCAN_ENABLED = "false"
 
-# Proxy /studio to standalone Sanity Studio site
-# Replace STUDIO_SITE_NAME with your actual studio site name
-[[redirects]]
-from = "/studio/*"
-to = "https://STUDIO_SITE_NAME.netlify.app/:splat"
-status = 200
-force = true
-
