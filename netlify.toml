@@ -1,0 +1,54 @@
+# Root Netlify configuration for monorepo
+# Defines per-site settings using context overrides.
+# Create two Netlify sites pointing to this repo:
+# 1. Frontend site (Base directory: apps/frontend)
+# 2. Studio site   (Base directory: apps/studio)
+# Each site can override command/publish via UI OR use deployment contexts below.
+
+############################################
+# Default (used if no context override applies)
+############################################
+[build]
+# Safe default: do nothing. Each site should override in UI or via context blocks below.
+command = "echo 'Set build command in site settings or use context blocks'"
+publish = "dist"
+
+[build.environment]
+NODE_VERSION = "24"
+# Disable secrets scanning globally only if intentional; keep false for now.
+SECRETS_SCAN_ENABLED = "false"
+
+############################################
+# Frontend site context (set site to use e.g. production context)
+# Netlify assigns contexts: production (main branch) & deploy-preview (PRs)
+############################################
+[context.frontend-build]
+  [context.frontend-build.build]
+  base = "apps/frontend"
+  command = "npm run build"
+  publish = "dist/client"
+
+  [context.frontend-build.environment]
+  NODE_VERSION = "24"
+  SECRETS_SCAN_ENABLED = "false"
+
+############################################
+# Studio site context
+############################################
+[context.studio-build]
+  [context.studio-build.build]
+  base = "apps/studio"
+  command = "npm run build"
+  publish = "dist"
+
+  [context.studio-build.environment]
+  NODE_VERSION = "24"
+
+############################################
+# Notes:
+# - Assign the proper context name to a branch (e.g. name a branch `frontend-build` or `studio-build`) to auto-use these.
+# - Alternatively, ignore contexts and configure each site in Netlify UI: set Base directory + Build command + Publish dir.
+# - This file is read by both sites; unused contexts are ignored.
+# - Remove old netlify.toml files inside subfolders; only root netlify.toml is honored.
+############################################
+
