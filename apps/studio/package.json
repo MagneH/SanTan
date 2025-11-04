@@ -8,6 +8,7 @@
     "dev": "sanity dev",
     "start": "sanity start",
     "build": "sanity build",
+    "build:studio": "npm run build",
     "deploy": "sanity deploy",
     "generate-types": "sanity schema extract && sanity typegen generate && npm run extract-zod-literals",
     "extract-zod-literals": "npx ts-node src/scripts/extractZodLiterals.ts",
