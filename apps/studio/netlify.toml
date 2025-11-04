@@ -6,5 +6,5 @@ publish = "dist"
 NODE_VERSION = "24"
 
 # This is the standalone Sanity Studio deployment
-# It will be proxied from the main frontend app at /studio
+# Deployed as a separate Netlify site (not proxied from frontend)
 
