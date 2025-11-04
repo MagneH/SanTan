@@ -25,7 +25,8 @@
     "type-check": "tsc --noEmit",
     "lint": "echo 'No lint configured'",
     "format": "prettier --write \"**/*.{ts,tsx,json}\"",
-    "clean": "rm -rf dist .turbo"
+    "clean": "rm -rf dist .turbo",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
@@ -36,4 +37,3 @@
     "zod": "^4.1.12"
   }
 }
-
