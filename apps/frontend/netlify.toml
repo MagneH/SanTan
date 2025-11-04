@@ -1,8 +1,0 @@
-[build]
-command = "npm run build"
-publish = "dist/client"
-
-[build.environment]
-NODE_VERSION = "24"
-SECRETS_SCAN_ENABLED = "false"
-
