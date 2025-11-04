@@ -11,7 +11,7 @@
     "build:cloudflare": "DEPLOY_TARGET=cloudflare vite build",
     "serve": "vite preview",
     "serve:cloudflare": "wrangler pages dev .output/public",
-    "deploy:cloudflare": "wrangler pages deploy .output/public",
+    "deploy:cloudflare": "wrangler pages deploy .output/public --project-name=santan-frontend",
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{css,less,sass,scss,html,md,graphql,gql,json,ts,tsx,js,jsx,yml,yaml}\"",

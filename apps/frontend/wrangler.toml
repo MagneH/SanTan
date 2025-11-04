@@ -1,34 +1,15 @@
-# Cloudflare Workers / Pages configuration
+# Cloudflare Pages configuration for TanStack Start
 name = "santan-frontend"
 compatibility_date = "2025-11-04"
-compatibility_flags = ["nodejs_compat"]
 
-# Pages configuration (preferred for TanStack Start SSR + static assets)
-pages_build_output_dir = ".output/public"
+# Note: For Cloudflare Pages, deploy with:
+# npm run deploy:cloudflare
+# or: wrangler pages deploy .output/public --project-name=santan-frontend
 
 # Environment variables (non-sensitive, public values)
+# Set in Cloudflare Dashboard -> Pages -> Settings -> Environment variables
 [vars]
 VITE_BASE_PATH = "/"
-
-# Bindings (add as needed: KV, R2, D1, etc.)
-# [[kv_namespaces]]
-# binding = "CACHE"
-# id = "your_kv_namespace_id"
-
-# [[r2_buckets]]
-# binding = "ASSETS"
-# bucket_name = "your_bucket_name"
-
-# Observability
-[observability]
-enabled = true
-
-[observability.logs]
-enabled = true
-
-# Build configuration (optional, if using wrangler pages deploy)
-# [build]
-# command = "npm run build"
 
 # Local development
 [dev]
