@@ -10,6 +10,8 @@
     "prebuild": "npm --workspace=packages/shared run build",
     "build": "echo '🏗️  Building all packages...' && turbo run build",
     "build:frontend": "npm --workspace=@santan/frontend run build",
+    "build:netlify": "npm --workspace=@santan/frontend run build:netlify",
+    "build:cloudflare": "npm --workspace=@santan/frontend run build:cloudflare",
     "build:studio": "npm --workspace=@santan/shared run build && npm --workspace=@santan/studio run build",
     "lint": "echo '🔍 Linting code...' && turbo run lint",
     "type-check": "echo '✅ Type checking. ..' && turbo run type-check",
