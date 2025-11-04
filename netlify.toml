@@ -1,19 +1,22 @@
 # Root Netlify configuration for monorepo
-# Each Netlify site points to this repo and MUST set its own build command & publish directory in the Netlify UI:
+# NOTE: Each Netlify site (frontend, studio) MUST set its own build settings in the Netlify UI.
+# Recommended site settings:
 #   Frontend site:
-#     Build command: npm run build:frontend
-#     Publish directory: apps/frontend/dist/client
+#     Base directory: apps/frontend
+#     Build command:  npm run build
+#     Publish dir:    apps/frontend/dist/client
 #   Studio site:
-#     Build command: npm run build:studio
-#     Publish directory: apps/studio/dist
-# This file intentionally does not auto-build anything to avoid cross-workspace coupling.
+#     Base directory: apps/studio
+#     Build command:  npm run build
+#     Publish dir:    apps/studio/dist
+# This file intentionally omits a build.command so the UI settings take precedence.
 
 [build]
-command = "echo 'Configure build per site: npm run build:frontend OR npm run build:studio'"
-publish = "dist"  # Placeholder; each site overrides in UI.
+# No build command here on purpose; set per site in UI.
+publish = "dist"  # Placeholder; UI overrides.
 
 [build.environment]
 NODE_VERSION = "24"
-SECRETS_SCAN_ENABLED = "false"  # Set to true if you want Netlify secret scanning to fail on exposed public vars.
+SECRETS_SCAN_ENABLED = "false"
 
 # Add shared redirects/headers here if BOTH sites need them. Otherwise use per-site _redirects/_headers in each workspace.
