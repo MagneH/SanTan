@@ -17,6 +17,7 @@ SECRETS_SCAN_ENABLED = "false"  # Set to true if you want secret scanning active
 # Add shared redirects/headers here ONLY if both sites need them.
 
 [functions]
-directory = ".netlify/v1/functions"
-# Let Netlify use the already-built ESM function; do not re-bundle.
-node_bundler = "none"
+# Frontend build (base=apps/frontend) generates functions in apps/frontend/.netlify/v1/functions
+# Use root-relative path so Netlify can find server.mjs
+directory = "apps/frontend/.netlify/v1/functions"
+# Allow default bundler (remove explicit node_bundler override)
