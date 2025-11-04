@@ -1,7 +1,8 @@
 {
   "name": "santan-frontend",
   "compatibility_date": "2025-11-04",
-  "main": "apps/frontend/src/server.ts",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "apps/frontend/dist/server/server.js",
   "assets": {
     "directory": "apps/frontend/dist/client"
   }
