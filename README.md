@@ -298,7 +298,7 @@ npm run type-check --workspace=@santan/shared
 ## Documentation
 
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Detailed hosting & deployment strategies
-- **[apps/frontend/CLOUDFLARE.md](apps/frontend/CLOUDFLARE.md)** - Cloudflare Pages deployment guide
+- **[apps/frontend/CLOUDFLARE.md](apps/frontend/CLOUDFLARE.md)** - Cloudflare Workers deployment guide
 - **[TYPE_MIGRATION.md](TYPE_MIGRATION.md)** - Complete type generation and migration guide
 - **[packages/shared/TYPES_README.md](packages/shared/TYPES_README.md)** - Detailed shared package documentation
 - **[packages/shared/PRODUCTION_READY.md](packages/shared/PRODUCTION_READY.md)** - Production deployment guide
@@ -604,3 +604,4 @@ Do NOT commit:
 
 **Status**: ✅ Production Ready  
 **Last Updated**: October 30, 2025
+
