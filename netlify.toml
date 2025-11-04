@@ -1,54 +1,19 @@
 # Root Netlify configuration for monorepo
-# Defines per-site settings using context overrides.
-# Create two Netlify sites pointing to this repo:
-# 1. Frontend site (Base directory: apps/frontend)
-# 2. Studio site   (Base directory: apps/studio)
-# Each site can override command/publish via UI OR use deployment contexts below.
+# Each Netlify site points to this repo and MUST set its own build command & publish directory in the Netlify UI:
+#   Frontend site:
+#     Build command: npm run build:frontend
+#     Publish directory: apps/frontend/dist/client
+#   Studio site:
+#     Build command: npm run build:studio
+#     Publish directory: apps/studio/dist
+# This file intentionally does not auto-build anything to avoid cross-workspace coupling.
 
-############################################
-# Default (used if no context override applies)
-############################################
 [build]
-# Safe default: do nothing. Each site should override in UI or via context blocks below.
-command = "echo 'Set build command in site settings or use context blocks'"
-publish = "dist"
+command = "echo 'Configure build per site: npm run build:frontend OR npm run build:studio'"
+publish = "dist"  # Placeholder; each site overrides in UI.
 
 [build.environment]
 NODE_VERSION = "24"
-# Disable secrets scanning globally only if intentional; keep false for now.
-SECRETS_SCAN_ENABLED = "false"
+SECRETS_SCAN_ENABLED = "false"  # Set to true if you want Netlify secret scanning to fail on exposed public vars.
 
-############################################
-# Frontend site context (set site to use e.g. production context)
-# Netlify assigns contexts: production (main branch) & deploy-preview (PRs)
-############################################
-[context.frontend-build]
-  [context.frontend-build.build]
-  base = "apps/frontend"
-  command = "npm run build"
-  publish = "dist/client"
-
-  [context.frontend-build.environment]
-  NODE_VERSION = "24"
-  SECRETS_SCAN_ENABLED = "false"
-
-############################################
-# Studio site context
-############################################
-[context.studio-build]
-  [context.studio-build.build]
-  base = "apps/studio"
-  command = "npm run build"
-  publish = "dist"
-
-  [context.studio-build.environment]
-  NODE_VERSION = "24"
-
-############################################
-# Notes:
-# - Assign the proper context name to a branch (e.g. name a branch `frontend-build` or `studio-build`) to auto-use these.
-# - Alternatively, ignore contexts and configure each site in Netlify UI: set Base directory + Build command + Publish dir.
-# - This file is read by both sites; unused contexts are ignored.
-# - Remove old netlify.toml files inside subfolders; only root netlify.toml is honored.
-############################################
-
+# Add shared redirects/headers here if BOTH sites need them. Otherwise use per-site _redirects/_headers in each workspace.
