@@ -11,8 +11,9 @@ COPY package.json package-lock.json* ./
 COPY apps/frontend/package.json ./apps/frontend/
 COPY packages/shared/package.json ./packages/shared/
 
-# Install dependencies
-RUN npm ci
+# Install dependencies (using npm install instead of npm ci to workaround optional dependencies bug)
+# See: https://github.com/npm/cli/issues/4828
+RUN npm install
 
 # Build the application
 FROM base AS builder

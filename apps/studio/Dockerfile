@@ -13,8 +13,9 @@ COPY package.json package-lock.json* ./
 COPY apps/studio/package.json ./apps/studio/
 COPY packages/shared/package.json ./packages/shared/
 
-# Install all dependencies (including workspace dependencies)
-RUN npm ci
+# Install all dependencies (using npm install instead of npm ci to workaround optional dependencies bug)
+# See: https://github.com/npm/cli/issues/4828
+RUN npm install
 
 # Build shared package first
 FROM base AS shared-builder
