@@ -106,6 +106,8 @@ export const GlobalLayout = () => {
       <head>
         <title>SanTan Starter</title>
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {/* Inject runtime environment variables for client-side access */}
+        <script dangerouslySetInnerHTML={{__html:`window.__SANITY_STUDIO_URL__="${process.env.SANITY_STUDIO_URL || process.env.VITE_SANITY_STUDIO_URL || 'http://localhost:3333'}";`}} />
         {/* Set ui-ready class as soon as possible after stylesheets load */}
         <script dangerouslySetInnerHTML={{__html:`(function(){var check=function(){if(document.styleSheets.length>0){document.documentElement.classList.add('ui-ready');}else{setTimeout(check,50);}};if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',check);}else{check();}})();`}} />
         {/* Early theme bootstrap - runs before any paint */}
