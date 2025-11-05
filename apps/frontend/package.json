@@ -53,6 +53,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
+    "@eslint/js": "^9.39.1",
     "@tanstack/devtools-vite": "^0.3.11",
     "@tanstack/eslint-config": "^0.3.0",
     "@testing-library/dom": "^10.4.0",
@@ -61,11 +62,21 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.1.0",
+    "eslint": "^9.39.1",
     "jsdom": "^27.1.0",
     "prettier": "^3.5.3",
     "typescript": "^5.7.2",
+    "typescript-eslint": "^8.46.3",
     "vite": "^7.1.12",
     "vitest": "^4.0.6",
     "web-vitals": "^5.1.0"
+  },
+  "optionalDependencies": {
+    "lightningcss-linux-arm64-musl": "^1.30.2",
+    "lightningcss-linux-x64-gnu": "^1.30.2",
+    "lightningcss-linux-x64-musl": "^1.30.2",
+    "@tailwindcss/oxide-linux-arm64-musl": "^4.1.16",
+    "@tailwindcss/oxide-linux-x64-musl": "^4.1.16",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.1.16"
   }
 }

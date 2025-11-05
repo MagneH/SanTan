@@ -1,0 +1,135 @@
+name: Deploy Studio to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+      - production
+    paths:
+      - 'apps/studio/**'
+      - 'packages/shared/**'
+      - '.github/workflows/deploy-studio.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: europe-west1
+  SERVICE_NAME: santan-studio
+
+jobs:
+  deploy:
+    name: Deploy Studio to Cloud Run
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment }}
+      url: ${{ steps.get-url.outputs.url }}
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Authenticate to Google Cloud (WIF)
+        if: ${{ secrets.WIF_PROVIDER != '' }}
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Authenticate to Google Cloud (Service Account Key)
+        if: ${{ secrets.WIF_PROVIDER == '' }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest \
+            -f apps/studio/Dockerfile \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 3 \
+            --timeout 300 \
+            --concurrency 80 \
+            --set-env-vars NODE_ENV=production,SANITY_STUDIO_FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+
+      - name: Get Service URL
+        id: get-url
+        run: |
+          SERVICE_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --format 'value(status.url)')
+          echo "url=$SERVICE_URL" >> $GITHUB_OUTPUT
+          echo "Studio deployed to: $SERVICE_URL"
+
+      - name: Update Frontend with Studio URL
+        run: |
+          echo "⚠️ Remember to update frontend deployment with Studio URL:"
+          echo "Add to GitHub Secrets: SANITY_STUDIO_URL=${{ steps.get-url.outputs.url }}"
+          echo "Or run: gcloud run services update santan-frontend --set-env-vars VITE_SANITY_STUDIO_URL=${{ steps.get-url.outputs.url }}"
+
+      - name: Create deployment summary
+        run: |
+          echo "## 🎨 Studio Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Studio URL:** ${{ steps.get-url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Region:** ${{ env.REGION }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Add Studio URL to GitHub Secrets:" >> $GITHUB_STEP_SUMMARY
+          echo "   - Name: \`SANITY_STUDIO_URL\`" >> $GITHUB_STEP_SUMMARY
+          echo "   - Value: \`${{ steps.get-url.outputs.url }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "2. Redeploy frontend or update manually:" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "gcloud run services update santan-frontend \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --set-env-vars VITE_SANITY_STUDIO_URL=${{ steps.get-url.outputs.url }} \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --region ${{ env.REGION }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "3. Update Studio config to allow frontend origin" >> $GITHUB_STEP_SUMMARY
+

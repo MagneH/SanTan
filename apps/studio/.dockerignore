@@ -1,0 +1,21 @@
+# Ignore everything by default
+*
+
+# Include necessary files for build
+!package.json
+!package-lock.json
+!turbo.json
+!apps/studio/
+!packages/shared/
+
+# Exclude files we don't need in the image
+.git/
+.turbo/
+node_modules/
+.env*
+!.env.example
+*.log
+dist/
+.output/
+.DS_Store
+

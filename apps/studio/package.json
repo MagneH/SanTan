@@ -20,12 +20,12 @@
     "sanity"
   ],
   "dependencies": {
-    "@sanity/vision": "^4.12.0",
-    "lucide-react": "^0.546.0",
+    "@sanity/vision": "^4.13.0",
+    "lucide-react": "^0.552.0",
     "react": "^19.1",
     "react-dom": "^19.1",
-    "sanity": "^4.12.0",
-    "sanity-plugin-documents-pane": "^3.0.0",
+    "sanity": "^4.13.0",
+    "sanity-plugin-documents-pane": "^3.0.1",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {

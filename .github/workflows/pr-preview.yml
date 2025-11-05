@@ -1,0 +1,268 @@
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+# Add permissions for GitHub token
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: europe-west1
+
+jobs:
+  deploy-preview:
+    name: Deploy Preview Environment
+    runs-on: ubuntu-latest
+    environment: preview
+
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Set PR number
+        id: pr
+        run: echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+
+      # Deploy Studio Preview first
+      - name: Build Studio Docker image
+        run: |
+          docker build \
+            -t europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            -f apps/studio/Dockerfile \
+            .
+
+      - name: Push Studio Docker image
+        run: |
+          docker push europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }}
+
+      - name: Deploy Studio Preview
+        id: deploy-studio
+        run: |
+          gcloud run deploy santan-studio-pr-${{ steps.pr.outputs.number }} \
+            --image europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 1 \
+            --timeout 60 \
+            --tag pr-${{ steps.pr.outputs.number }} \
+            --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01
+          
+          STUDIO_URL=$(gcloud run services describe santan-studio-pr-${{ steps.pr.outputs.number }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --format 'value(status.url)')
+          echo "url=$STUDIO_URL" >> $GITHUB_OUTPUT
+          echo "Studio deployed to: $STUDIO_URL"
+
+      # Deploy Frontend Preview
+      - name: Build Frontend Docker image
+        run: |
+          docker build \
+            -t europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            -f apps/frontend/Dockerfile \
+            .
+
+      - name: Push Frontend Docker image
+        run: |
+          docker push europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }}
+
+      - name: Deploy Frontend Preview
+        id: deploy-frontend
+        run: |
+          gcloud run deploy santan-frontend-pr-${{ steps.pr.outputs.number }} \
+            --image europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 1 \
+            --timeout 60 \
+            --tag pr-${{ steps.pr.outputs.number }} \
+            --set-env-vars NODE_ENV=production,VITE_SANITY_PROJECT_ID=88hgbtze,VITE_SANITY_DATASET=production,VITE_SANITY_API_VERSION=2024-01-01,VITE_SANITY_STUDIO_URL=${{ steps.deploy-studio.outputs.url }},SANITY_PROJECT_ID=88hgbtze,SANITY_DATASET=production,SANITY_API_VERSION=2024-01-01,SANITY_STUDIO_URL=${{ steps.deploy-studio.outputs.url }} \
+            --update-secrets=SANITY_READ_TOKEN=sanity-api-read-token:latest,SANITY_SESSION_SECRET=session-secret:latest
+          
+          FRONTEND_URL=$(gcloud run services describe santan-frontend-pr-${{ steps.pr.outputs.number }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --format 'value(status.url)')
+          echo "url=$FRONTEND_URL" >> $GITHUB_OUTPUT
+          echo "Frontend deployed to: $FRONTEND_URL"
+
+      # Update Studio with Frontend URL for Presentation Tool
+      - name: Update Studio with Frontend URL
+        run: |
+          gcloud run services update santan-studio-pr-${{ steps.pr.outputs.number }} \
+            --region ${{ env.REGION }} \
+            --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01,SANITY_STUDIO_FRONTEND_URL=${{ steps.deploy-frontend.outputs.url }}
+
+      # Add Studio and Frontend URLs to Sanity CORS whitelist using Management API
+      - name: Add preview URLs to Sanity CORS whitelist
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: |
+          STUDIO_URL="${{ steps.deploy-studio.outputs.url }}"
+          FRONTEND_URL="${{ steps.deploy-frontend.outputs.url }}"
+          PROJECT_ID="88hgbtze"
+          
+          echo "📋 Adding preview URLs to Sanity CORS whitelist..."
+          echo "  - Studio: $STUDIO_URL"
+          echo "  - Frontend: $FRONTEND_URL"
+          
+          if [ -z "$SANITY_AUTH_TOKEN" ]; then
+            echo "⚠️ SANITY_AUTH_TOKEN not set - skipping automatic CORS update"
+            echo "💡 To enable automatic CORS updates:"
+            echo "   1. Go to https://www.sanity.io/manage/personal/tokens"
+            echo "   2. Create a token with 'Project Admin' permissions"
+            echo "   3. Add it as SANITY_AUTH_TOKEN in GitHub Secrets"
+            echo ""
+            echo "🔧 Manual CORS setup required:"
+            echo "   - Go to https://www.sanity.io/manage/project/88hgbtze/api"
+            echo "   - Add these origins:"
+            echo "     * $STUDIO_URL"
+            echo "     * $FRONTEND_URL"
+            exit 0
+          fi
+          
+          # Add Studio URL
+          echo "➕ Adding Studio URL..."
+          STUDIO_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.sanity.io/v2021-06-07/projects/${PROJECT_ID}/cors" \
+            -H "Authorization: Bearer ${SANITY_AUTH_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"origin\": \"${STUDIO_URL}\", \"allowCredentials\": true}")
+          STUDIO_CODE=$(echo "$STUDIO_RESPONSE" | tail -1)
+          if [ "$STUDIO_CODE" = "200" ] || [ "$STUDIO_CODE" = "201" ]; then
+            echo "   ✅ Studio URL added successfully"
+          elif [ "$STUDIO_CODE" = "409" ]; then
+            echo "   ℹ️  Studio URL already exists in CORS whitelist"
+          else
+            echo "   ⚠️  Status code: $STUDIO_CODE"
+          fi
+          
+          # Add Frontend URL
+          echo "➕ Adding Frontend URL..."
+          FRONTEND_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.sanity.io/v2021-06-07/projects/${PROJECT_ID}/cors" \
+            -H "Authorization: Bearer ${SANITY_AUTH_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"origin\": \"${FRONTEND_URL}\", \"allowCredentials\": true}")
+          FRONTEND_CODE=$(echo "$FRONTEND_RESPONSE" | tail -1)
+          if [ "$FRONTEND_CODE" = "200" ] || [ "$FRONTEND_CODE" = "201" ]; then
+            echo "   ✅ Frontend URL added successfully"
+          elif [ "$FRONTEND_CODE" = "409" ]; then
+            echo "   ℹ️  Frontend URL already exists in CORS whitelist"
+          else
+            echo "   ⚠️  Status code: $FRONTEND_CODE"
+          fi
+          
+          echo ""
+          echo "✅ CORS configuration completed"
+        continue-on-error: true
+
+      # Comment on PR with preview URLs
+      - name: Comment PR with preview URLs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('🚀 Preview Environment')
+            );
+            
+            const body = `## 🚀 Preview Environment Ready!
+            
+            ### Frontend
+            **URL:** ${{ steps.deploy-frontend.outputs.url }}
+            
+            ### Studio
+            **URL:** ${{ steps.deploy-studio.outputs.url }}
+            
+            ---
+            
+            **Details:**
+            - **PR:** #${{ steps.pr.outputs.number }}
+            - **Commit:** \`${{ github.sha }}\`
+            - **Built at:** ${new Date().toISOString()}
+            
+            <details>
+            <summary>Preview Configuration</summary>
+            
+            - **Region:** ${{ env.REGION }}
+            - **Resources:** 512Mi memory, 1 CPU
+            - **Min instances:** 0 (scales to zero)
+            - **Max instances:** 1
+            
+            Both frontend and studio are configured to work together:
+            - Frontend knows about Studio URL
+            - Studio Presentation Tool points to Frontend
+            
+            </details>
+            
+            ⚠️ These preview URLs will be automatically deleted when this PR is closed.`;
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+              });
+            }
+
+      - name: Create deployment summary
+        run: |
+          echo "## 🚀 Preview Environment Deployed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Frontend:** ${{ steps.deploy-frontend.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Studio:** ${{ steps.deploy-studio.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Preview for PR #${{ steps.pr.outputs.number }}" >> $GITHUB_STEP_SUMMARY
+

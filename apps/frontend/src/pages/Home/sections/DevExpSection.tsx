@@ -1,4 +1,4 @@
-import { callout, paragraph, subtleHeading, twoCol, wideSection, devExpList } from '../Home.css.ts';
+import { callout, devExpList, paragraph, subtleHeading, twoCol, wideSection } from '../Home.css.ts';
 
 export function DevExpSection() {
   return (

@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { stegaClean } from '@sanity/client/stega';
 import { useEffect, useRef, useState } from 'react';
-import { pill, pillAnimated, pillDescription, pillEmoji, pillGridFallback, pillListWrapper, pillScroller, pillTitle, srOnly, pillIn } from './CategoryPill.css.ts';
+import { pill, pillAnimated, pillDescription, pillEmoji, pillGridFallback, pillIn, pillListWrapper, pillScroller, pillTitle, srOnly } from './CategoryPill.css.ts';
 import type { CategoryStub } from '@/types/category.ts';
 import { Route as FullSlugRoute } from '@/routes/$.tsx';
 
