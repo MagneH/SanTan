@@ -10,11 +10,19 @@ on:
       - main
       - develop
 
+# Add permissions for GitHub token
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   # Detect which apps changed
   changes:
     name: Detect Changes
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read  # Required for dorny/paths-filter
     outputs:
       shared: ${{ steps.filter.outputs.shared }}
       frontend: ${{ steps.filter.outputs.frontend }}
