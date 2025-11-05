@@ -18,23 +18,33 @@ const getFrontendUrl = () => {
     return (window as any).__FRONTEND_URL__;
   }
 
-  // In production (Cloud Run), infer Frontend URL from Studio URL pattern
-  if (typeof window !== 'undefined' && window.location.hostname.includes('run.app')) {
-    // Studio URL pattern: santan-studio-pr-X-xxxxx.europe-west1.run.app
-    // Frontend URL pattern: santan-frontend-pr-X-xxxxx.europe-west1.run.app
-    const studioHostname = window.location.hostname;
-    const frontendHostname = studioHostname.replace('santan-studio-pr-', 'santan-frontend-pr-');
-    return `${window.location.protocol}//${frontendHostname}`;
-  }
-
-  // Studio runs in browser via Vite, so use import.meta.env for build-time config
+  // Production: Check for explicit environment variable first
+  // This should be set for real production deployments with custom domains
   if (typeof import.meta !== 'undefined' && import.meta.env?.SANITY_STUDIO_FRONTEND_URL) {
     return import.meta.env.SANITY_STUDIO_FRONTEND_URL;
   }
 
-  // Fallback to process.env (for build-time context)
   if (typeof process !== 'undefined' && process.env?.SANITY_STUDIO_FRONTEND_URL) {
     return process.env.SANITY_STUDIO_FRONTEND_URL;
+  }
+
+  // Preview deployments (Cloud Run PR previews): Infer Frontend URL from Studio URL pattern
+  // This only works for our PR preview pattern: santan-studio-pr-X vs santan-frontend-pr-X
+  if (typeof window !== 'undefined' && window.location.hostname.includes('run.app')) {
+    const studioHostname = window.location.hostname;
+
+    // Only infer if it matches our preview pattern
+    if (studioHostname.includes('santan-studio-pr-')) {
+      const frontendHostname = studioHostname.replace('santan-studio-pr-', 'santan-frontend-pr-');
+      return `${window.location.protocol}//${frontendHostname}`;
+    }
+
+    // If it's on run.app but not preview pattern, it's likely a different deployment
+    // Fall through to use explicit config (should be set via env var)
+    console.warn(
+      'Studio running on Cloud Run without SANITY_STUDIO_FRONTEND_URL set and no preview pattern detected. ' +
+        'Please set SANITY_STUDIO_FRONTEND_URL environment variable.'
+    );
   }
 
   // Default to localhost for development
