@@ -79,7 +79,7 @@ jobs:
             --max-instances 1 \
             --timeout 60 \
             --tag pr-${{ steps.pr.outputs.number }} \
-            --set-env-vars SANITY_STUDIO_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }},SANITY_STUDIO_DATASET=${{ secrets.SANITY_DATASET }},SANITY_STUDIO_API_VERSION=2024-01-01
+            --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01
           
           STUDIO_URL=$(gcloud run services describe santan-studio-pr-${{ steps.pr.outputs.number }} \
             --platform managed \
@@ -115,9 +115,8 @@ jobs:
             --max-instances 1 \
             --timeout 60 \
             --tag pr-${{ steps.pr.outputs.number }} \
-            --set-env-vars NODE_ENV=preview \
-            --update-secrets=SANITY_READ_TOKEN=sanity-api-read-token:latest,SANITY_SESSION_SECRET=session-secret:latest \
-            --set-env-vars VITE_SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }},VITE_SANITY_DATASET=${{ secrets.SANITY_DATASET }},VITE_SANITY_API_VERSION=2024-01-01,VITE_SANITY_STUDIO_URL=${{ steps.deploy-studio.outputs.url }}
+            --set-env-vars NODE_ENV=preview,VITE_SANITY_PROJECT_ID=88hgbtze,VITE_SANITY_DATASET=production,VITE_SANITY_API_VERSION=2024-01-01,VITE_SANITY_STUDIO_URL=${{ steps.deploy-studio.outputs.url }} \
+            --update-secrets=SANITY_READ_TOKEN=sanity-api-read-token:latest,SANITY_SESSION_SECRET=session-secret:latest
           
           FRONTEND_URL=$(gcloud run services describe santan-frontend-pr-${{ steps.pr.outputs.number }} \
             --platform managed \
