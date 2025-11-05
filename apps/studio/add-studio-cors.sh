@@ -5,7 +5,7 @@
 set -e
 
 STUDIO_URL=$1
-PROJECT_ID=${2:-88hgbtze}
+PROJECT_ID=${2:-qzo347ei}
 
 if [ -z "$STUDIO_URL" ]; then
     echo "❌ Error: Studio URL is required"
@@ -44,4 +44,3 @@ echo "✅ Done! Studio URL added to CORS whitelist"
 echo ""
 echo "📋 Updated CORS origins:"
 sanity cors list --project $PROJECT_ID
-

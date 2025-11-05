@@ -2,7 +2,7 @@
 const isServer = typeof window === 'undefined';
 
 // Fallback values for production
-const FALLBACK_PROJECT_ID = '88hgbtze';
+const FALLBACK_PROJECT_ID = 'qzo347ei';
 const FALLBACK_DATASET = 'production';
 const FALLBACK_API_VERSION = '2024-01-01';
 

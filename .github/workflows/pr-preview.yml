@@ -79,7 +79,7 @@ jobs:
             --max-instances 1 \
             --timeout 60 \
             --tag pr-${{ steps.pr.outputs.number }} \
-            --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01
+            --set-env-vars SANITY_STUDIO_PROJECT_ID=qzo347ei,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01
           
           STUDIO_URL=$(gcloud run services describe santan-studio-pr-${{ steps.pr.outputs.number }} \
             --platform managed \
@@ -115,7 +115,7 @@ jobs:
             --max-instances 1 \
             --timeout 60 \
             --tag pr-${{ steps.pr.outputs.number }} \
-            --set-env-vars NODE_ENV=production,VITE_SANITY_PROJECT_ID=88hgbtze,VITE_SANITY_DATASET=production,VITE_SANITY_API_VERSION=2024-01-01,VITE_SANITY_STUDIO_URL=${{ steps.deploy-studio.outputs.url }},SANITY_PROJECT_ID=88hgbtze,SANITY_DATASET=production,SANITY_API_VERSION=2024-01-01,SANITY_STUDIO_URL=${{ steps.deploy-studio.outputs.url }} \
+            --set-env-vars NODE_ENV=production,VITE_SANITY_PROJECT_ID=qzo347ei,VITE_SANITY_DATASET=production,VITE_SANITY_API_VERSION=2024-01-01,VITE_SANITY_STUDIO_URL=${{ steps.deploy-studio.outputs.url }},SANITY_PROJECT_ID=qzo347ei,SANITY_DATASET=production,SANITY_API_VERSION=2024-01-01,SANITY_STUDIO_URL=${{ steps.deploy-studio.outputs.url }} \
             --update-secrets=SANITY_READ_TOKEN=sanity-api-read-token:latest,SANITY_SESSION_SECRET=session-secret:latest
           
           FRONTEND_URL=$(gcloud run services describe santan-frontend-pr-${{ steps.pr.outputs.number }} \
@@ -130,7 +130,7 @@ jobs:
         run: |
           gcloud run services update santan-studio-pr-${{ steps.pr.outputs.number }} \
             --region ${{ env.REGION }} \
-            --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01,SANITY_STUDIO_FRONTEND_URL=${{ steps.deploy-frontend.outputs.url }}
+            --set-env-vars SANITY_STUDIO_PROJECT_ID=qzo347ei,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01,SANITY_STUDIO_FRONTEND_URL=${{ steps.deploy-frontend.outputs.url }}
 
       # Add Studio and Frontend URLs to Sanity CORS whitelist using Management API
       - name: Add preview URLs to Sanity CORS whitelist
@@ -139,7 +139,7 @@ jobs:
         run: |
           STUDIO_URL="${{ steps.deploy-studio.outputs.url }}"
           FRONTEND_URL="${{ steps.deploy-frontend.outputs.url }}"
-          PROJECT_ID="88hgbtze"
+          PROJECT_ID="qzo347ei"
           
           echo "📋 Adding preview URLs to Sanity CORS whitelist..."
           echo "  - Studio: $STUDIO_URL"
@@ -153,7 +153,7 @@ jobs:
             echo "   3. Add it as SANITY_AUTH_TOKEN in GitHub Secrets"
             echo ""
             echo "🔧 Manual CORS setup required:"
-            echo "   - Go to https://www.sanity.io/manage/project/88hgbtze/api"
+            echo "   - Go to https://www.sanity.io/manage/project/qzo347ei/api"
             echo "   - Add these origins:"
             echo "     * $STUDIO_URL"
             echo "     * $FRONTEND_URL"
@@ -265,4 +265,3 @@ jobs:
           echo "**Studio:** ${{ steps.deploy-studio.outputs.url }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Preview for PR #${{ steps.pr.outputs.number }}" >> $GITHUB_STEP_SUMMARY
-

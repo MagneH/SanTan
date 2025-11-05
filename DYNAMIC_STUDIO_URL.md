@@ -51,7 +51,7 @@ npm run deploy
 
 **Frontend .env.production:**
 ```env
-VITE_SANITY_PROJECT_ID=88hgbtze
+VITE_SANITY_PROJECT_ID=qzo347ei
 VITE_SANITY_DATASET=production
 VITE_SANITY_API_VERSION=2024-01-01
 # VITE_SANITY_STUDIO_URL ikke nødvendig!
@@ -59,7 +59,7 @@ VITE_SANITY_API_VERSION=2024-01-01
 
 **Resultat:**
 - Development: `http://localhost:3333`
-- Production: `https://88hgbtze.sanity.studio` (automatisk)
+- Production: `https://qzo347ei.sanity.studio` (automatisk)
 
 ### Scenario 2: Custom Studio på Cloud Run
 
@@ -71,7 +71,7 @@ gh workflow run deploy-studio.yml
 
 **Frontend .env.production:**
 ```env
-VITE_SANITY_PROJECT_ID=88hgbtze
+VITE_SANITY_PROJECT_ID=qzo347ei
 VITE_SANITY_DATASET=production
 VITE_SANITY_API_VERSION=2024-01-01
 VITE_SANITY_STUDIO_URL=https://santan-studio-xyz.run.app
@@ -87,7 +87,7 @@ PR previews bruker automatisk official Sanity hosting siden `VITE_SANITY_STUDIO_
 
 **Resultat:**
 - Frontend preview: `https://santan-frontend-pr-42-xyz.run.app`
-- Studio (automatisk): `https://88hgbtze.sanity.studio`
+- Studio (automatisk): `https://qzo347ei.sanity.studio`
 
 ## 🔧 Deployment Konfiguration
 
@@ -138,7 +138,7 @@ echo "VITE_SANITY_STUDIO_URL=https://your-studio-url.com" >> .env.production
 ### Production (default)
 - Frontend: Deployet til Cloud Run
 - Studio: `https://<project-id>.sanity.studio` (Sanity hosting)
-- Auto-detektert: `https://88hgbtze.sanity.studio` ✅
+- Auto-detektert: `https://qzo347ei.sanity.studio` ✅
 
 ### Production (custom Studio)
 - Frontend: Deployet til Cloud Run
@@ -148,7 +148,7 @@ echo "VITE_SANITY_STUDIO_URL=https://your-studio-url.com" >> .env.production
 ### Staging/Preview
 - Frontend: PR preview deployment
 - Studio: Official Sanity hosting (kan bruke staging dataset)
-- Auto-detektert: `https://88hgbtze.sanity.studio` ✅
+- Auto-detektert: `https://qzo347ei.sanity.studio` ✅
 
 ## 🔒 Sikkerhet
 
@@ -322,4 +322,3 @@ Med denne implementeringen:
 - ✅ **Godt dokumentert** med eksempler
 
 Frontend finner alltid riktig Studio, uansett hvor den er hostet! 🚀
-

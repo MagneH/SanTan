@@ -7,29 +7,19 @@
  */
 
 import { createClient } from '@sanity/client';
-import { config } from 'dotenv';
-import crypto from 'crypto';
+import { loadPreviewEnvironment, getSanityClientConfig, ensureTokenOrExit } from './utils/previewEnv.js';
 
-config();
+const { token } = loadPreviewEnvironment();
 
-const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || process.env.VITE_SANITY_PROJECT_ID,
-  dataset: process.env.SANITY_DATASET || process.env.VITE_SANITY_DATASET || 'production',
-  apiVersion: process.env.SANITY_API_VERSION || process.env.VITE_SANITY_API_VERSION || '2024-01-01',
-  token: process.env.SANITY_API_TOKEN,
-  useCdn: false,
-});
+const client = createClient({ ...getSanityClientConfig(), token, useCdn: false });
+
+ensureTokenOrExit(client.config().token, 'Proper secret creation');
 
 async function createProperSecret() {
   console.log('🔐 Creating properly configured preview secret...\n');
   console.log('Project ID:', client.config().projectId);
   console.log('Dataset:', client.config().dataset);
   console.log('');
-
-  if (!client.config().token) {
-    console.error('❌ Error: SANITY_API_TOKEN is required (needs Editor permissions)');
-    process.exit(1);
-  }
 
   try {
     // Generate a random secret

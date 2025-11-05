@@ -8,14 +8,54 @@
 
 import { createClient } from '@sanity/client';
 import dotenv from 'dotenv';
+import path from 'path';
+import fs from 'fs';
 
 dotenv.config();
+
+const loadEnv = () => {
+  const cwd = process.cwd();
+  const scriptDir = path.dirname(new URL(import.meta.url).pathname);
+  const appDir = path.join(scriptDir, '..');
+  const files = [
+    path.join(cwd, '.env.local'),
+    path.join(cwd, '.env'),
+    path.join(cwd, 'apps', 'frontend', '.env.local'),
+    path.join(cwd, 'apps', 'frontend', '.env'),
+    path.join(appDir, '.env.local'),
+    path.join(appDir, '.env'),
+  ];
+  const loaded = [];
+  for (const f of files) {
+    if (fs.existsSync(f)) {
+      dotenv.config({ path: f });
+      loaded.push(f);
+    }
+  }
+  if (process.env.PREVIEW_SECRET_DEBUG === '1') {
+    console.log('[preview-secret] Loaded env files:', loaded.length ? loaded : '(none)');
+  }
+};
+
+loadEnv();
+
+const token = [
+  process.env.SANITY_API_TOKEN,
+  process.env.SANITY_READ_TOKEN,
+  process.env.SANITY_STUDIO_API_TOKEN,
+  process.env.VITE_SANITY_API_TOKEN,
+  process.env.VITE_SANITY_READ_TOKEN,
+].find(Boolean);
+
+if (process.env.PREVIEW_SECRET_DEBUG === '1') {
+  console.log('[preview-secret] Using token:', token ? 'present' : 'NONE');
+}
 
 const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID || process.env.VITE_SANITY_PROJECT_ID,
   dataset: process.env.SANITY_DATASET || process.env.VITE_SANITY_DATASET || 'production',
   apiVersion: process.env.SANITY_API_VERSION || process.env.VITE_SANITY_API_VERSION || '2024-01-01',
-  token: process.env.SANITY_API_TOKEN,
+  token,
   useCdn: false,
 });
 
@@ -27,10 +67,8 @@ async function getPreviewSecret() {
   console.log('');
 
   if (!client.config().token) {
-    console.error('❌ Error: SANITY_READ_TOKEN is required');
-    console.error('Add it to your .env file or set it in environment');
-    console.error('\nGet a token from:');
-    console.error(`https://sanity.io/manage/project/${client.config().projectId}/api#tokens`);
+    console.error('❌ Error: SANITY_READ_TOKEN or SANITY_API_TOKEN is required');
+    console.error('Add one to your env or run inline: SANITY_READ_TOKEN=xxx npm run get:preview-secret');
     process.exit(1);
   }
 

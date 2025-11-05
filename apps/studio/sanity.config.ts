@@ -13,19 +13,27 @@ const slugAwareTypes = ['category', 'post'];
 
 // Get frontend URL from environment
 const getFrontendUrl = () => {
+  const normalizeUrl = (url: string) => {
+    if (!url) return url;
+    // If protocol missing, default to http://
+    if (!/^https?:\/\//i.test(url)) {
+      return `http://${url}`;
+    }
+    return url;
+  };
+
   // Try to get runtime value from window (for future extensibility)
   if (typeof window !== 'undefined' && (window as any).__FRONTEND_URL__) {
-    return (window as any).__FRONTEND_URL__;
+    return normalizeUrl((window as any).__FRONTEND_URL__);
   }
 
   // Production: Check for explicit environment variable first
   // This should be set for real production deployments with custom domains
-  if (typeof import.meta !== 'undefined' && import.meta.env?.SANITY_STUDIO_FRONTEND_URL) {
-    return import.meta.env.SANITY_STUDIO_FRONTEND_URL;
-  }
-
-  if (typeof process !== 'undefined' && process.env?.SANITY_STUDIO_FRONTEND_URL) {
-    return process.env.SANITY_STUDIO_FRONTEND_URL;
+  const envVar = (typeof import.meta !== 'undefined' && import.meta.env?.SANITY_STUDIO_FRONTEND_URL)
+    ? import.meta.env.SANITY_STUDIO_FRONTEND_URL
+    : (typeof process !== 'undefined' ? process.env?.SANITY_STUDIO_FRONTEND_URL : undefined);
+  if (envVar) {
+    return normalizeUrl(envVar);
   }
 
   // Preview deployments (Cloud Run PR previews): Infer Frontend URL from Studio URL pattern
@@ -36,7 +44,7 @@ const getFrontendUrl = () => {
     // Only infer if it matches our preview pattern
     if (studioHostname.includes('santan-studio-pr-')) {
       const frontendHostname = studioHostname.replace('santan-studio-pr-', 'santan-frontend-pr-');
-      return `${window.location.protocol}//${frontendHostname}`;
+      return normalizeUrl(`${window.location.protocol}//${frontendHostname}`);
     }
 
     // If it's on run.app but not preview pattern, it's likely a different deployment

@@ -7,33 +7,17 @@
  */
 
 import { createClient } from '@sanity/client';
-import dotenv from 'dotenv';
+import { loadPreviewEnvironment, getSanityClientConfig, ensureTokenOrExit } from './utils/previewEnv.js';
 
-dotenv.config();
-
-const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || process.env.VITE_SANITY_PROJECT_ID,
-  dataset: process.env.SANITY_DATASET || process.env.VITE_SANITY_DATASET || 'production',
-  apiVersion: process.env.SANITY_API_VERSION || process.env.VITE_SANITY_API_VERSION || '2024-01-01',
-  token: process.env.SANITY_API_TOKEN || process.env.SANITY_READ_TOKEN,
-  useCdn: false,
-});
+const { token } = loadPreviewEnvironment();
+const client = createClient({ ...getSanityClientConfig(), token, useCdn: false });
+ensureTokenOrExit(client.config().token, 'Preview secret cleanup');
 
 async function cleanupSecrets() {
   console.log('🧹 Cleaning up preview secrets...\n');
   console.log('Project ID:', client.config().projectId);
   console.log('Dataset:', client.config().dataset);
   console.log('');
-
-  if (!client.config().token) {
-    console.error('❌ Error: SANITY_API_TOKEN or SANITY_READ_TOKEN is required');
-    console.error('This script needs Editor permissions to delete documents.');
-    console.error('');
-    console.error('Set one of these in your .env file:');
-    console.error('  SANITY_API_TOKEN=your-token-with-editor-permissions');
-    console.error('  (or upgrade SANITY_READ_TOKEN to have Editor permissions)');
-    process.exit(1);
-  }
 
   try {
     // Fetch all preview secrets

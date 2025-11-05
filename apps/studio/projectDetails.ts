@@ -24,7 +24,7 @@ const getEnvValue = (viteKey: string, processKey: string, fallback: string): str
   return fallback;
 };
 
-const projectId = getEnvValue('SANITY_STUDIO_PROJECT_ID', 'SANITY_STUDIO_PROJECT_ID', '88hgbtze');
+const projectId = getEnvValue('SANITY_STUDIO_PROJECT_ID', 'SANITY_STUDIO_PROJECT_ID', 'qzo347ei');
 const dataset = getEnvValue('SANITY_STUDIO_DATASET', 'SANITY_STUDIO_DATASET', 'production');
 const apiVersion = getEnvValue('SANITY_STUDIO_API_VERSION', 'SANITY_STUDIO_API_VERSION', '2024-01-01');
 

@@ -10,32 +10,18 @@
  */
 
 import { createClient } from '@sanity/client';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { loadPreviewEnvironment, getSanityClientConfig, ensureTokenOrExit } from './utils/previewEnv.js';
 
 const SECRET = process.argv[2] || 'preview-secret-santan-2024-asdazcxhuialsdkcv';
-
-const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || process.env.VITE_SANITY_PROJECT_ID,
-  dataset: process.env.SANITY_DATASET || process.env.VITE_SANITY_DATASET || 'production',
-  apiVersion: process.env.SANITY_API_VERSION || process.env.VITE_SANITY_API_VERSION || '2024-01-01',
-  token: process.env.SANITY_API_TOKEN,
-  useCdn: false,
-});
+const { token } = loadPreviewEnvironment();
+const client = createClient({ ...getSanityClientConfig(), token, useCdn: false });
+ensureTokenOrExit(client.config().token, 'Preview secret creation');
 
 async function createPreviewSecret() {
   console.log('Creating preview secret in Sanity...');
   console.log('Project ID:', client.config().projectId);
   console.log('Dataset:', client.config().dataset);
   console.log('Secret:', SECRET);
-
-  if (!client.config().token) {
-    console.error('❌ Error: SANITY_API_TOKEN is required');
-    console.error('Get a token with "Editor" permissions from:');
-    console.error(`https://sanity.io/manage/project/${client.config().projectId}/api#tokens`);
-    process.exit(1);
-  }
 
   try {
     // Check if secret already exists

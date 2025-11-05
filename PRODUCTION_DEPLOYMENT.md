@@ -12,7 +12,7 @@ gcloud run deploy santan-studio-production \
   --image europe-west1-docker.pkg.dev/PROJECT_ID/docker/santan-studio:latest \
   --region europe-west1 \
   --allow-unauthenticated \
-  --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01,SANITY_STUDIO_FRONTEND_URL=https://www.santan.no
+  --set-env-vars SANITY_STUDIO_PROJECT_ID=qzo347ei,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01,SANITY_STUDIO_FRONTEND_URL=https://www.santan.no
 ```
 
 **Viktig:** `SANITY_STUDIO_FRONTEND_URL` må settes eksplisitt for produksjon!
@@ -25,7 +25,7 @@ gcloud run deploy santan-frontend-production \
   --image europe-west1-docker.pkg.dev/PROJECT_ID/docker/santan-frontend:latest \
   --region europe-west1 \
   --allow-unauthenticated \
-  --set-env-vars NODE_ENV=production,SANITY_PROJECT_ID=88hgbtze,SANITY_DATASET=production,SANITY_API_VERSION=2024-01-01,SANITY_STUDIO_URL=https://studio.santan.no \
+  --set-env-vars NODE_ENV=production,SANITY_PROJECT_ID=qzo347ei,SANITY_DATASET=production,SANITY_API_VERSION=2024-01-01,SANITY_STUDIO_URL=https://studio.santan.no \
   --update-secrets=SANITY_READ_TOKEN=sanity-api-read-token:latest,SANITY_SESSION_SECRET=session-secret:latest
 ```
 
@@ -173,7 +173,7 @@ jobs:
             --cpu 1 \
             --min-instances 0 \
             --max-instances 10 \
-            --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01,SANITY_STUDIO_FRONTEND_URL=${{ env.PRODUCTION_FRONTEND_URL }}
+            --set-env-vars SANITY_STUDIO_PROJECT_ID=qzo347ei,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01,SANITY_STUDIO_FRONTEND_URL=${{ env.PRODUCTION_FRONTEND_URL }}
 
       # Build and deploy Frontend
       - name: Build Frontend Docker image
@@ -201,7 +201,7 @@ jobs:
             --cpu 2 \
             --min-instances 1 \
             --max-instances 10 \
-            --set-env-vars NODE_ENV=production,SANITY_PROJECT_ID=88hgbtze,SANITY_DATASET=production,SANITY_API_VERSION=2024-01-01,SANITY_STUDIO_URL=${{ env.PRODUCTION_STUDIO_URL }} \
+            --set-env-vars NODE_ENV=production,SANITY_PROJECT_ID=qzo347ei,SANITY_DATASET=production,SANITY_API_VERSION=2024-01-01,SANITY_STUDIO_URL=${{ env.PRODUCTION_STUDIO_URL }} \
             --update-secrets=SANITY_READ_TOKEN=sanity-api-read-token:latest,SANITY_SESSION_SECRET=session-secret:latest
 
       - name: Create deployment summary
@@ -261,12 +261,12 @@ Legg til production domains i Sanity CORS whitelist:
 
 ```bash
 # Via CLI
-sanity cors add https://studio.santan.no --project 88hgbtze --credentials true
-sanity cors add https://www.santan.no --project 88hgbtze --credentials true
+sanity cors add https://studio.santan.no --project qzo347ei --credentials true
+sanity cors add https://www.santan.no --project qzo347ei --credentials true
 ```
 
 Eller via Dashboard:
-https://www.sanity.io/manage/project/88hgbtze/api
+https://www.sanity.io/manage/project/qzo347ei/api
 
 ---
 
@@ -348,7 +348,7 @@ docker build \
 # Run Frontend
 docker run -p 8081:8080 \
   -e SANITY_STUDIO_URL=https://studio.santan.no \
-  -e SANITY_PROJECT_ID=88hgbtze \
+  -e SANITY_PROJECT_ID=qzo347ei \
   -e SANITY_DATASET=production \
   santan-frontend:test
 ```
@@ -378,4 +378,3 @@ docker run -p 8081:8080 \
 **Production:** Må alltid sette `SANITY_STUDIO_FRONTEND_URL` eksplisitt ⚠️
 
 **Hvorfor?** Custom domains kan ikke inferres fra hostname-mønster!
-

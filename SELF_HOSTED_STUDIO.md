@@ -43,7 +43,7 @@ gcloud run deploy santan-studio \
   --memory 512Mi \
   --min-instances 0 \
   --max-instances 3 \
-  --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01
+  --set-env-vars SANITY_STUDIO_PROJECT_ID=qzo347ei,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01
 
 # Få Studio URL
 STUDIO_URL=$(gcloud run services describe santan-studio \
@@ -59,7 +59,7 @@ echo "Studio deployed to: $STUDIO_URL"
 docker build -f apps/studio/Dockerfile -t santan-studio .
 
 # Test lokalt
-docker run -p 8080:8080 -e SANITY_STUDIO_PROJECT_ID=88hgbtze santan-studio
+docker run -p 8080:8080 -e SANITY_STUDIO_PROJECT_ID=qzo347ei santan-studio
 ```
 
 ### 2. Legg til GitHub Secrets
@@ -158,7 +158,7 @@ gcloud run services update santan-studio \
 
 **Lokal development (.env):**
 ```env
-VITE_SANITY_PROJECT_ID=88hgbtze
+VITE_SANITY_PROJECT_ID=qzo347ei
 VITE_SANITY_DATASET=production
 VITE_SANITY_API_VERSION=2024-01-01
 # VITE_SANITY_STUDIO_URL auto-detects to localhost:3333
@@ -166,7 +166,7 @@ VITE_SANITY_API_VERSION=2024-01-01
 
 **Production (.env.production):**
 ```env
-VITE_SANITY_PROJECT_ID=88hgbtze
+VITE_SANITY_PROJECT_ID=qzo347ei
 VITE_SANITY_DATASET=production
 VITE_SANITY_API_VERSION=2024-01-01
 VITE_SANITY_STUDIO_URL=https://santan-studio-abc123-ew.a.run.app
@@ -452,7 +452,7 @@ git push origin main
 
 ### ❌ DON'T:
 
-1. ❌ Hardkode URL-er i kode
+1. ❌ Hardcode URL-er i kode
 2. ❌ Commit .env-filer med faktiske verdier
 3. ❌ Glem å oppdatere GitHub Secrets når URL-er endres
 4. ❌ Deploy frontend uten Studio URL
@@ -470,4 +470,3 @@ Med self-hosted Studio:
 - ✅ **Kostnadseffektivt** (~$10-35/måned)
 
 Din Studio kjører nå på din egen infrastruktur! 🚀
-

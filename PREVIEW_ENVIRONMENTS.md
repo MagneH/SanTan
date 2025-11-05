@@ -39,9 +39,9 @@ Legg til disse secrets i preview environment:
 
 | Secret Name | Value | Beskrivelse |
 |-------------|-------|-------------|
-| `SANITY_PROJECT_ID` | `88hgbtze` | Sanity prosjekt-ID |
+| `SANITY_PROJECT_ID` | `qzo347ei` | Sanity prosjekt-ID |
 | `SANITY_DATASET` | `production` | Dataset (eller `staging` hvis du har det) |
-| `VITE_SANITY_PROJECT_ID` | `88hgbtze` | Sanity prosjekt-ID (public) |
+| `VITE_SANITY_PROJECT_ID` | `qzo347ei` | Sanity prosjekt-ID (public) |
 | `VITE_SANITY_DATASET` | `production` | Dataset (public) |
 
 ### 2. Verifiser Repository Secrets
@@ -133,7 +133,7 @@ Both frontend and studio are configured to work together:
 ```bash
 gcloud run deploy santan-studio-pr-42 \
   --image gcr.io/PROJECT/santan-studio-pr-42:COMMIT_SHA \
-  --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze
+  --set-env-vars SANITY_STUDIO_PROJECT_ID=qzo347ei
 ```
 
 **Output:** Studio URL (f.eks. `https://santan-studio-pr-42-abc.run.app`)
@@ -302,7 +302,7 @@ Filter på:
 ### Environment Variables
 
 **Preview environments bruker:**
-- ✅ Same Sanity project som production (`88hgbtze`)
+- ✅ Same Sanity project som production (`qzo347ei`)
 - ✅ Same dataset (`production`)
 - ✅ Same secrets fra Secret Manager
 - ⚠️ `NODE_ENV=preview` (ikke `production`)
@@ -363,4 +363,3 @@ Med preview environments får du:
 - ✅ **Klar til bruk** - bare opprett en PR!
 
 Start testing nå ved å opprette din første PR! 🚀
-

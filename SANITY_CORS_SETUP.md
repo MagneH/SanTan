@@ -40,7 +40,7 @@ Når en PR deployes:
 
 Hvis `SANITY_AUTH_TOKEN` ikke er satt, må du legge til URLs manuelt:
 
-1. Gå til [Sanity Project API Settings](https://www.sanity.io/manage/project/88hgbtze/api)
+1. Gå til [Sanity Project API Settings](https://www.sanity.io/manage/project/qzo347ei/api)
 2. Scroll ned til **CORS Origins**
 3. Klikk **Add CORS origin**
 4. Legg til begge preview URLs:
@@ -67,19 +67,19 @@ Scriptet vil:
 
 **Via Sanity Dashboard:**
 ```
-https://www.sanity.io/manage/project/88hgbtze/api
+https://www.sanity.io/manage/project/qzo347ei/api
 ```
 
 **Via Sanity CLI:**
 ```bash
 cd apps/studio
-sanity cors list --project 88hgbtze
+sanity cors list --project qzo347ei
 ```
 
 **Via Management API:**
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://api.sanity.io/v2021-06-07/projects/88hgbtze/cors
+  https://api.sanity.io/v2021-06-07/projects/qzo347ei/cors
 ```
 
 ### 📊 Workflow Detaljer
@@ -101,7 +101,7 @@ Workflow-steget som håndterer CORS:
 #### CORS-feil i browser console
 
 ```
-Access to fetch at 'https://88hgbtze.api.sanity.io/...' from origin 
+Access to fetch at 'https://qzo347ei.api.sanity.io/...' from origin 
 'https://santan-studio-pr-2-xxx.run.app' has been blocked by CORS policy
 ```
 
@@ -144,10 +144,10 @@ Når en PR lukkes:
 
 ```bash
 # List alle CORS origins
-sanity cors list --project 88hgbtze
+sanity cors list --project qzo347ei
 
 # Slett en origin
-sanity cors delete <ID> --project 88hgbtze
+sanity cors delete <ID> --project qzo347ei
 ```
 
 Eller via Dashboard → API Settings → CORS Origins → Delete
@@ -183,7 +183,7 @@ Eller via Dashboard → API Settings → CORS Origins → Delete
 - [Sanity CORS Documentation](https://www.sanity.io/docs/cors)
 - [Sanity Management API](https://www.sanity.io/docs/management-api)
 - [Sanity Personal Tokens](https://www.sanity.io/manage/personal/tokens)
-- [Project API Settings](https://www.sanity.io/manage/project/88hgbtze/api)
+- [Project API Settings](https://www.sanity.io/manage/project/qzo347ei/api)
 
 ---
 
@@ -206,4 +206,3 @@ open https://github.com/YOUR_USERNAME/SanTan/settings/secrets/actions
 ```
 
 **Ferdig! 🎉**
-

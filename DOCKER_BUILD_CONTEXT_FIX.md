@@ -99,7 +99,7 @@ docker build -f apps/studio/Dockerfile -t santan-studio-test .
 
 # Test at den bygger
 docker run -p 8080:8080 \
-  -e SANITY_STUDIO_PROJECT_ID=88hgbtze \
+  -e SANITY_STUDIO_PROJECT_ID=qzo347ei \
   -e SANITY_STUDIO_DATASET=production \
   santan-studio-test
 
@@ -248,4 +248,3 @@ git commit -m "Update package-lock.json"
 ✅ **Lokal testing guide inkludert**  
 
 Build context-problemet er løst! 🎉
-

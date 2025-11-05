@@ -1,17 +1,11 @@
 #!/usr/bin/env node
 
 import { createClient } from '@sanity/client';
-import dotenv from 'dotenv';
+import { loadPreviewEnvironment, getSanityClientConfig, ensureTokenOrExit } from './utils/previewEnv.js';
 
-dotenv.config();
-
-const client = createClient({
-  projectId: process.env.VITE_SANITY_PROJECT_ID,
-  dataset: process.env.VITE_SANITY_DATASET,
-  apiVersion: process.env.VITE_SANITY_API_VERSION,
-  token: process.env.SANITY_READ_TOKEN,
-  useCdn: false,
-});
+const { token } = loadPreviewEnvironment();
+const client = createClient({ ...getSanityClientConfig(), token, useCdn: false });
+ensureTokenOrExit(client.config().token, 'Secret publish');
 
 async function publishSecret() {
   // Get the most recent secret

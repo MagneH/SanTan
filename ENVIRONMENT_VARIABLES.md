@@ -31,7 +31,7 @@ Disse eksponeres til browseren og kan leses på client-side:
 
 **Eksempel:**
 ```env
-VITE_SANITY_PROJECT_ID=88hgbtze
+VITE_SANITY_PROJECT_ID=qzo347ei
 VITE_SANITY_DATASET=production
 VITE_SANITY_API_VERSION=2024-02-13
 VITE_SANITY_STUDIO_URL=  # Valgfri - auto-detekteres
@@ -106,7 +106,7 @@ Disse brukes av Sanity Studio:
 
 **Eksempel:**
 ```env
-SANITY_STUDIO_PROJECT_ID=88hgbtze
+SANITY_STUDIO_PROJECT_ID=qzo347ei
 SANITY_STUDIO_DATASET=production
 SANITY_STUDIO_API_VERSION=2025-10-15
 SANITY_STUDIO_FRONTEND_URL=  # Valgfri - auto-detekteres
@@ -328,4 +328,3 @@ npm run build
 - ❌ Ingen! Hver app har sine egne .env-filer
 
 Alle environment variables er nå ryddet opp og dokumentert! 🚀
-

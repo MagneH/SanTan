@@ -7,19 +7,16 @@
  */
 
 import { createClient } from '@sanity/client';
-import { config } from 'dotenv';
-
-config();
+import path from 'path';
+import fs from 'fs';
+import { loadPreviewEnvironment, getSanityClientConfig, ensureTokenOrExit } from './utils/previewEnv.js';
 
 const SECRET = process.argv[2] || 'NzQwNGNlY2YyZmM2MWY5YTRlNDNlZTM5ZDJlZjNmNmI';
 
-const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || process.env.VITE_SANITY_PROJECT_ID,
-  dataset: process.env.SANITY_DATASET || process.env.VITE_SANITY_DATASET || 'production',
-  apiVersion: process.env.SANITY_API_VERSION || process.env.VITE_SANITY_API_VERSION || '2024-01-01',
-  token: process.env.SANITY_READ_TOKEN || process.env.SANITY_STUDIO_API_TOKEN,
-  useCdn: false,
-});
+const { token } = loadPreviewEnvironment();
+const client = createClient({ ...getSanityClientConfig(), token, useCdn: false });
+
+ensureTokenOrExit(client.config().token, 'Secret verification');
 
 async function verifySecret() {
   console.log('🔍 Verifying preview secret structure...\n');
@@ -27,11 +24,6 @@ async function verifySecret() {
   console.log('Project ID:', client.config().projectId);
   console.log('Dataset:', client.config().dataset);
   console.log('');
-
-  if (!client.config().token) {
-    console.error('❌ Error: Token is required');
-    process.exit(1);
-  }
 
   try {
     // Query for this specific secret
