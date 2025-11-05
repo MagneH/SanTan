@@ -49,13 +49,20 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      # Deploy Studio Preview first - use Cloud Build
-      - name: Build Studio Docker image with Cloud Build
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker gcr.io
+
+      # Deploy Studio Preview first
+      - name: Build Studio Docker image
         run: |
-          gcloud builds submit \
-            --tag gcr.io/${{ env.PROJECT_ID }}/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
-            --dockerfile apps/studio/Dockerfile \
+          docker build \
+            -t gcr.io/${{ env.PROJECT_ID }}/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            -f apps/studio/Dockerfile \
             .
+
+      - name: Push Studio Docker image
+        run: |
+          docker push gcr.io/${{ env.PROJECT_ID }}/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }}
 
       - name: Deploy Studio Preview
         id: deploy-studio
@@ -81,13 +88,17 @@ jobs:
           echo "url=$STUDIO_URL" >> $GITHUB_OUTPUT
           echo "Studio deployed to: $STUDIO_URL"
 
-      # Deploy Frontend Preview - use Cloud Build
-      - name: Build Frontend Docker image with Cloud Build
+      # Deploy Frontend Preview
+      - name: Build Frontend Docker image
         run: |
-          gcloud builds submit \
-            --tag gcr.io/${{ env.PROJECT_ID }}/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
-            --dockerfile apps/frontend/Dockerfile \
+          docker build \
+            -t gcr.io/${{ env.PROJECT_ID }}/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            -f apps/frontend/Dockerfile \
             .
+
+      - name: Push Frontend Docker image
+        run: |
+          docker push gcr.io/${{ env.PROJECT_ID }}/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }}
 
       - name: Deploy Frontend Preview
         id: deploy-frontend
