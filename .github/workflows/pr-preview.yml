@@ -130,7 +130,69 @@ jobs:
         run: |
           gcloud run services update santan-studio-pr-${{ steps.pr.outputs.number }} \
             --region ${{ env.REGION }} \
-            --set-env-vars SANITY_STUDIO_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }},SANITY_STUDIO_DATASET=${{ secrets.SANITY_DATASET }},SANITY_STUDIO_API_VERSION=2024-01-01,SANITY_STUDIO_FRONTEND_URL=${{ steps.deploy-frontend.outputs.url }}
+            --set-env-vars SANITY_STUDIO_PROJECT_ID=88hgbtze,SANITY_STUDIO_DATASET=production,SANITY_STUDIO_API_VERSION=2024-01-01,SANITY_STUDIO_FRONTEND_URL=${{ steps.deploy-frontend.outputs.url }}
+
+      # Add Studio and Frontend URLs to Sanity CORS whitelist using Management API
+      - name: Add preview URLs to Sanity CORS whitelist
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: |
+          STUDIO_URL="${{ steps.deploy-studio.outputs.url }}"
+          FRONTEND_URL="${{ steps.deploy-frontend.outputs.url }}"
+          PROJECT_ID="88hgbtze"
+          
+          echo "📋 Adding preview URLs to Sanity CORS whitelist..."
+          echo "  - Studio: $STUDIO_URL"
+          echo "  - Frontend: $FRONTEND_URL"
+          
+          if [ -z "$SANITY_AUTH_TOKEN" ]; then
+            echo "⚠️ SANITY_AUTH_TOKEN not set - skipping automatic CORS update"
+            echo "💡 To enable automatic CORS updates:"
+            echo "   1. Go to https://www.sanity.io/manage/personal/tokens"
+            echo "   2. Create a token with 'Project Admin' permissions"
+            echo "   3. Add it as SANITY_AUTH_TOKEN in GitHub Secrets"
+            echo ""
+            echo "🔧 Manual CORS setup required:"
+            echo "   - Go to https://www.sanity.io/manage/project/88hgbtze/api"
+            echo "   - Add these origins:"
+            echo "     * $STUDIO_URL"
+            echo "     * $FRONTEND_URL"
+            exit 0
+          fi
+          
+          # Add Studio URL
+          echo "➕ Adding Studio URL..."
+          STUDIO_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.sanity.io/v2021-06-07/projects/${PROJECT_ID}/cors" \
+            -H "Authorization: Bearer ${SANITY_AUTH_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"origin\": \"${STUDIO_URL}\", \"allowCredentials\": true}")
+          STUDIO_CODE=$(echo "$STUDIO_RESPONSE" | tail -1)
+          if [ "$STUDIO_CODE" = "200" ] || [ "$STUDIO_CODE" = "201" ]; then
+            echo "   ✅ Studio URL added successfully"
+          elif [ "$STUDIO_CODE" = "409" ]; then
+            echo "   ℹ️  Studio URL already exists in CORS whitelist"
+          else
+            echo "   ⚠️  Status code: $STUDIO_CODE"
+          fi
+          
+          # Add Frontend URL
+          echo "➕ Adding Frontend URL..."
+          FRONTEND_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.sanity.io/v2021-06-07/projects/${PROJECT_ID}/cors" \
+            -H "Authorization: Bearer ${SANITY_AUTH_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"origin\": \"${FRONTEND_URL}\", \"allowCredentials\": true}")
+          FRONTEND_CODE=$(echo "$FRONTEND_RESPONSE" | tail -1)
+          if [ "$FRONTEND_CODE" = "200" ] || [ "$FRONTEND_CODE" = "201" ]; then
+            echo "   ✅ Frontend URL added successfully"
+          elif [ "$FRONTEND_CODE" = "409" ]; then
+            echo "   ℹ️  Frontend URL already exists in CORS whitelist"
+          else
+            echo "   ⚠️  Status code: $FRONTEND_CODE"
+          fi
+          
+          echo ""
+          echo "✅ CORS configuration completed"
+        continue-on-error: true
 
       # Comment on PR with preview URLs
       - name: Comment PR with preview URLs
