@@ -1,5 +1,6 @@
 import groq from 'groq';
 import { queryOptions } from '@tanstack/react-query';
+import { sanityTypeLiterals } from '@santan/shared/types';
 import type { UnfilteredResponseQueryOptions } from '@sanity/client';
 import type { DocumentType } from '@/types/documentType.ts';
 import { postZ } from '@/types/post.ts';
@@ -7,7 +8,6 @@ import { client } from '@/sanity/client.ts';
 import { STUDIO_BASEPATH } from '@/sanity/constants.ts';
 import { CATEGORY_QUERY_FIELDS } from '@/sanity/queries/categoryQuery.ts';
 import { POST_QUERY_FIELDS } from '@/sanity/queries/postQuery.ts';
-import { sanityTypeLiterals } from '@santan/shared/types';
 import { categoryZ } from '@/types/category.ts';
 
 // GROQ query

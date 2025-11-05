@@ -1,8 +1,6 @@
 import urlBuilder from '@sanity/image-url';
-import { container } from './MainImage.css.ts';
-import { aspectWrapper, imgActual, skeleton, portraitWrapper, portraitImg } from './MainImage.css.ts';
-import { placeholderWrapper, placeholderInner } from './MainImage.css.ts';
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { aspectWrapper, container, imgActual, placeholderInner, placeholderWrapper, portraitImg , portraitWrapper, skeleton  } from './MainImage.css.ts';
 
 import type { SanityImageType } from '@/types/image.ts';
 import { dataset, projectId } from '@/sanity/projectDetails.ts';

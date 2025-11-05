@@ -1,5 +1,5 @@
-import type { DocumentType } from '@/types/documentType.ts';
 import { sanityTypeLiterals } from '@santan/shared/types';
+import type { DocumentType } from '@/types/documentType.ts';
 import { postMeta } from '@/pages/Post/meta.ts';
 import { categoryMeta } from '@/pages/Category/meta.ts';
 

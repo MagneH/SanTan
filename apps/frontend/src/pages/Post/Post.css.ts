@@ -217,14 +217,6 @@ globalStyle(`${portableTextContainer} > :last-child`, {
   marginBottom: '0 !important',
 });
 
-export const authorBlock = style({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '0.75rem',
-  marginTop: '1.25rem',
-  marginBottom: '1.25rem',
-});
-
 export const authorAvatar = style({
   width: '44px',
   height: '44px',

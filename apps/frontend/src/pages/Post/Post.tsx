@@ -1,4 +1,4 @@
-import { container, ingress as ingressStyle, portableTextContainer, textContainer, authorAvatar, authorBlock, metaBar, metaItem, metaSeparator } from './Post.css.ts';
+import { authorAvatar, container, ingress as ingressStyle, metaBar, metaItem, metaSeparator, portableTextContainer, textContainer } from './Post.css.ts';
 import type { PostDocument } from '@/types/post.ts';
 import type { PageProps } from '@/types/PageProps.ts';
 import { MainImage } from '@/components/MainImage/MainImage.tsx';
@@ -46,7 +46,7 @@ export const PostPage = ({ data, encodeDataAttribute }: PageProps<PostDocument>)
     publisher: {
       '@type': 'Organization',
       name: siteName,
-      logo: publisherLogo ? { '@type': 'ImageObject', url: publisherLogo } : undefined,
+      logo: { '@type': 'ImageObject', url: publisherLogo },
     },
     description: ingress || undefined,
     articleSection: categoriesList[0] || undefined,
