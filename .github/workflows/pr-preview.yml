@@ -116,7 +116,7 @@ jobs:
             --timeout 60 \
             --tag pr-${{ steps.pr.outputs.number }} \
             --set-env-vars NODE_ENV=preview \
-            --set-secrets=SANITY_READ_TOKEN=sanity-api-read-token:latest,SANITY_SESSION_SECRET=session-secret:latest \
+            --update-secrets=SANITY_READ_TOKEN=sanity-api-read-token:latest,SANITY_SESSION_SECRET=session-secret:latest \
             --set-env-vars VITE_SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }},VITE_SANITY_DATASET=${{ secrets.SANITY_DATASET }},VITE_SANITY_API_VERSION=2024-01-01,VITE_SANITY_STUDIO_URL=${{ steps.deploy-studio.outputs.url }}
           
           FRONTEND_URL=$(gcloud run services describe santan-frontend-pr-${{ steps.pr.outputs.number }} \
