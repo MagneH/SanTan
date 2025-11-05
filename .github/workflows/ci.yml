@@ -100,8 +100,13 @@ jobs:
           name: shared-build
           path: packages/shared/dist
 
-      - name: Run linting
-        run: npm run lint
+      - name: Run linting (Frontend)
+        if: needs.changes.outputs.frontend == 'true'
+        run: npm run lint --workspace=@santan/frontend
+
+      - name: Run linting (Studio)
+        if: needs.changes.outputs.studio == 'true'
+        run: npm run lint --workspace=@santan/studio
 
   type-check:
     name: Type Check
@@ -128,8 +133,13 @@ jobs:
           name: shared-build
           path: packages/shared/dist
 
-      - name: Run type checking
-        run: npm run type-check
+      - name: Run type checking (Frontend)
+        if: needs.changes.outputs.frontend == 'true'
+        run: npm run type-check --workspace=@santan/frontend
+
+      - name: Run type checking (Studio)
+        if: needs.changes.outputs.studio == 'true'
+        run: npm run type-check --workspace=@santan/studio
 
   build-frontend:
     name: Build Frontend
