@@ -36,3 +36,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Netlify local/plugin output (SSR functions, deploy metadata)
+.netlify
+apps/frontend/.netlify
+apps/studio/.netlify
