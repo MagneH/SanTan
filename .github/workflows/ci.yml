@@ -62,8 +62,13 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
+      - name: Workaround for npm optional dependencies bug
+        run: |
+          # Workaround for https://github.com/npm/cli/issues/4828
+          rm -rf node_modules package-lock.json
+
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build shared package
         run: npm run build --workspace=@santan/shared
