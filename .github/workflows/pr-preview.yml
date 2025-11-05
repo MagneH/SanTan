@@ -49,26 +49,26 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker gcr.io
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker europe-west1-docker.pkg.dev
 
       # Deploy Studio Preview first
       - name: Build Studio Docker image
         run: |
           docker build \
-            -t gcr.io/${{ env.PROJECT_ID }}/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            -t europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
             -f apps/studio/Dockerfile \
             .
 
       - name: Push Studio Docker image
         run: |
-          docker push gcr.io/${{ env.PROJECT_ID }}/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }}
+          docker push europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }}
 
       - name: Deploy Studio Preview
         id: deploy-studio
         run: |
           gcloud run deploy santan-studio-pr-${{ steps.pr.outputs.number }} \
-            --image gcr.io/${{ env.PROJECT_ID }}/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            --image europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-studio-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
             --platform managed \
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
@@ -92,19 +92,19 @@ jobs:
       - name: Build Frontend Docker image
         run: |
           docker build \
-            -t gcr.io/${{ env.PROJECT_ID }}/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            -t europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
             -f apps/frontend/Dockerfile \
             .
 
       - name: Push Frontend Docker image
         run: |
-          docker push gcr.io/${{ env.PROJECT_ID }}/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }}
+          docker push europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }}
 
       - name: Deploy Frontend Preview
         id: deploy-frontend
         run: |
           gcloud run deploy santan-frontend-pr-${{ steps.pr.outputs.number }} \
-            --image gcr.io/${{ env.PROJECT_ID }}/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
+            --image europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/santan-frontend-pr-${{ steps.pr.outputs.number }}:${{ github.sha }} \
             --platform managed \
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
