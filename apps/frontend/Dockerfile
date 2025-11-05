@@ -1,11 +1,12 @@
 # Multi-stage build for optimal image size
+# Build context should be repository root: docker build -f apps/frontend/Dockerfile .
 FROM node:22-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
 WORKDIR /app
 
-# Copy root package files
+# Copy root package files (from repository root)
 COPY package.json package-lock.json* ./
 COPY apps/frontend/package.json ./apps/frontend/
 COPY packages/shared/package.json ./packages/shared/
