@@ -1,19 +1,38 @@
 // Studio runs in browser via Vite, which uses import.meta.env
-// Fallback to process.env for build-time/server contexts
-const projectId =
-  (typeof import.meta !== 'undefined' && import.meta.env?.SANITY_STUDIO_PROJECT_ID) ||
-  process.env.SANITY_STUDIO_PROJECT_ID ||
-  '88hgbtze'; // Fallback to hardcoded value
+// In production, Vite replaces import.meta.env.* at build time
+// If they're not set during build, they become undefined at runtime
 
-const dataset =
-  (typeof import.meta !== 'undefined' && import.meta.env?.SANITY_STUDIO_DATASET) ||
-  process.env.SANITY_STUDIO_DATASET ||
-  'production'; // Fallback to hardcoded value
+// Helper to safely get env value
+const getEnvValue = (viteKey: string, processKey: string, fallback: string): string => {
+  // Try import.meta.env first (Vite - available at build time)
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    const viteValue = import.meta.env[viteKey];
+    if (viteValue && typeof viteValue === 'string' && viteValue.length > 0) {
+      return viteValue;
+    }
+  }
 
-const apiVersion =
-  (typeof import.meta !== 'undefined' && import.meta.env?.SANITY_STUDIO_API_VERSION) ||
-  process.env.SANITY_STUDIO_API_VERSION ||
-  '2024-01-01'; // Fallback to hardcoded value
+  // Try process.env (Node.js context)
+  if (typeof process !== 'undefined' && process.env) {
+    const processValue = process.env[processKey];
+    if (processValue && typeof processValue === 'string' && processValue.length > 0) {
+      return processValue;
+    }
+  }
+
+  // Fallback to hardcoded value
+  return fallback;
+};
+
+const projectId = getEnvValue('SANITY_STUDIO_PROJECT_ID', 'SANITY_STUDIO_PROJECT_ID', '88hgbtze');
+const dataset = getEnvValue('SANITY_STUDIO_DATASET', 'SANITY_STUDIO_DATASET', 'production');
+const apiVersion = getEnvValue('SANITY_STUDIO_API_VERSION', 'SANITY_STUDIO_API_VERSION', '2024-01-01');
+
+// Debug logging to help troubleshoot
+if (typeof window !== 'undefined') {
+  console.log('[Studio] Project Details:', { projectId, dataset, apiVersion });
+  console.log('[Studio] import.meta.env:', typeof import.meta !== 'undefined' ? import.meta.env : 'not available');
+}
 
 export { apiVersion, dataset, projectId };
 
