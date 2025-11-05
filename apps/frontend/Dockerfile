@@ -18,10 +18,8 @@ RUN npm ci
 FROM base AS builder
 WORKDIR /app
 
-# Copy dependencies from deps stage
+# Copy root node_modules (npm workspaces installs all dependencies here)
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/frontend/node_modules ./apps/frontend/node_modules
-COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
 
 # Copy source code
 COPY . .

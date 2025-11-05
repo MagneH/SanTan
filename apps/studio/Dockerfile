@@ -20,8 +20,9 @@ RUN npm ci
 FROM base AS shared-builder
 WORKDIR /app
 
+# Copy root node_modules (npm workspaces installs everything here)
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+# Copy shared package source
 COPY packages/shared ./packages/shared
 
 WORKDIR /app/packages/shared
@@ -31,9 +32,8 @@ RUN npm run build
 FROM base AS builder
 WORKDIR /app
 
-# Copy dependencies
+# Copy root node_modules (npm workspaces installs everything here)
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/studio/node_modules ./apps/studio/node_modules
 
 # Copy shared package build
 COPY --from=shared-builder /app/packages/shared ./packages/shared
