@@ -1,0 +1,121 @@
+name: Cleanup PR Preview
+
+on:
+  pull_request:
+    types: [closed]
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: europe-west1
+
+jobs:
+  cleanup-frontend:
+    name: Delete Frontend Preview
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Generate preview service name
+        id: preview-name
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          SERVICE_NAME="santan-frontend-pr-${PR_NUMBER}"
+          echo "service_name=${SERVICE_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Delete Cloud Run service
+        run: |
+          if gcloud run services describe ${{ steps.preview-name.outputs.service_name }} \
+             --region ${{ env.REGION }} &>/dev/null; then
+            echo "Deleting frontend preview service: ${{ steps.preview-name.outputs.service_name }}"
+            gcloud run services delete ${{ steps.preview-name.outputs.service_name }} \
+              --region ${{ env.REGION }} \
+              --quiet
+            echo "✅ Frontend preview service deleted"
+          else
+            echo "ℹ️ Frontend preview service not found, nothing to delete"
+          fi
+
+      - name: Delete Docker images
+        run: |
+          # List and delete all images for this PR
+          if gcloud container images list-tags gcr.io/${{ env.PROJECT_ID }}/${{ steps.preview-name.outputs.service_name }} \
+            --format='get(digest)' 2>/dev/null | grep -q .; then
+            gcloud container images list-tags gcr.io/${{ env.PROJECT_ID }}/${{ steps.preview-name.outputs.service_name }} \
+              --format='get(digest)' | \
+            while read digest; do
+              echo "Deleting image: gcr.io/${{ env.PROJECT_ID }}/${{ steps.preview-name.outputs.service_name }}@${digest}"
+              gcloud container images delete "gcr.io/${{ env.PROJECT_ID }}/${{ steps.preview-name.outputs.service_name }}@${digest}" \
+                --quiet || true
+            done
+            echo "✅ Docker images cleaned up"
+          else
+            echo "ℹ️ No Docker images found for this PR"
+          fi
+
+  cleanup-studio:
+    name: Delete Studio Artifacts
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Generate preview info
+        id: preview-info
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "artifact_name=studio-preview-${PR_NUMBER}" >> $GITHUB_OUTPUT
+
+      - name: Cleanup info
+        run: |
+          echo "ℹ️ Studio artifacts (studio-preview-${{ steps.preview-info.outputs.pr_number }}) will be automatically deleted after 7 days"
+          echo "✅ Studio cleanup noted"
+
+  comment-cleanup:
+    name: Comment Cleanup Complete
+    runs-on: ubuntu-latest
+    needs: [cleanup-frontend, cleanup-studio]
+    if: always()
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const frontendResult = '${{ needs.cleanup-frontend.result }}';
+            const studioResult = '${{ needs.cleanup-studio.result }}';
+            
+            let commentBody = '🧹 Preview deployments have been cleaned up.\n\n';
+            
+            if (frontendResult === 'success') {
+              commentBody += '- ✅ Frontend preview deleted\n';
+            } else {
+              commentBody += '- ℹ️ Frontend preview cleanup completed\n';
+            }
+            
+            if (studioResult === 'success') {
+              commentBody += '- ✅ Studio artifacts will expire automatically\n';
+            }
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody
+            });
+

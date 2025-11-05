@@ -1,0 +1,68 @@
+# Multi-stage build for Sanity Studio
+FROM node:22-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+WORKDIR /app
+
+# Copy root package files
+COPY package.json package-lock.json* ./
+COPY apps/studio/package.json ./apps/studio/
+COPY packages/shared/package.json ./packages/shared/
+
+# Install dependencies
+RUN npm ci
+
+# Build shared package first
+FROM base AS shared-builder
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY packages/shared ./packages/shared
+
+WORKDIR /app/packages/shared
+RUN npm run build
+
+# Build the studio
+FROM base AS builder
+WORKDIR /app
+
+# Copy dependencies
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/studio/node_modules ./apps/studio/node_modules
+
+# Copy shared package build
+COPY --from=shared-builder /app/packages/shared ./packages/shared
+
+# Copy studio source
+COPY apps/studio ./apps/studio
+
+# Build studio
+WORKDIR /app/apps/studio
+RUN npm run build
+
+# Production image - serve with simple http server
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=8080
+
+# Install serve
+RUN npm install -g serve
+
+# Don't run as root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
+
+# Copy built studio
+COPY --from=builder --chown=nodejs:nodejs /app/apps/studio/dist /app/dist
+
+USER nodejs
+
+EXPOSE 8080
+
+# Serve the static files
+CMD ["serve", "-s", "dist", "-l", "8080"]
+

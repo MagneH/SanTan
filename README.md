@@ -4,7 +4,7 @@ A production-ready monorepo combining a React frontend with Sanity Studio, power
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
 [![Turborepo](https://img.shields.io/badge/Turborepo-2.3-red)](https://turbo.build/repo)
-[![Node.js](https://img.shields.io/badge/Node.js-≥18-green)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-≥22_LTS-green)](https://nodejs.org/)
 
 ---
 
@@ -57,7 +57,7 @@ This monorepo combines a React frontend and Sanity Studio into a single, optimiz
 
 ### Prerequisites
 
-- **Node.js** ≥ 18
+- **Node.js** ≥ 22 (LTS)
 - **npm** (comes with Node.js)
 - **Sanity account** with a configured project
 
@@ -216,14 +216,45 @@ This builds all packages in the correct order:
 - **Studio**: `apps/studio/dist/` (Sanity Studio build)
 - **Shared**: `packages/shared/dist/` (Compiled types)
 
-### Deployment
+### Deployment Options
 
-**Frontend (Vercel/Netlify):**
-- Root directory: `apps/frontend`
-- Build command: `npm run build`
-- Output directory: `apps/frontend/.output` or `apps/frontend/dist`
+#### 🚀 Google Cloud Run (Recommended)
 
-**Studio (Sanity):**
+**Quick Start:**
+```bash
+cd apps/frontend
+./deploy.sh production
+```
+
+**Full Guide:** See [QUICKSTART_CLOUD_RUN.md](QUICKSTART_CLOUD_RUN.md)
+
+Features:
+- ✅ Auto-scaling and load balancing
+- ✅ HTTPS out of the box
+- ✅ Pay only for what you use
+- ✅ ~15 minutes to first deployment
+
+#### 🔄 CI/CD with GitHub Actions
+
+Automatic deployment on every push to `main`:
+
+**Setup:**
+```bash
+# Run the setup script
+./setup-github-ci.sh
+```
+
+**Full Guide:** See [GITHUB_CI_SETUP.md](GITHUB_CI_SETUP.md)
+
+Features:
+- ✅ Automatic testing and building
+- ✅ Deploy on merge to main
+- ✅ PR preview deployments
+- ✅ Automatic cleanup
+
+#### 🎨 Sanity Studio
+
+Deploy Studio to Sanity's hosting:
 ```bash
 cd apps/studio
 npm run deploy
@@ -234,7 +265,14 @@ Or from root:
 npm run deploy --workspace=@santan/studio
 ```
 
-**See [`packages/shared/PRODUCTION_READY.md`](packages/shared/PRODUCTION_READY.md) for complete deployment guide.**
+#### 📚 Other Platforms
+
+**Frontend (Vercel/Netlify):**
+- Root directory: `apps/frontend`
+- Build command: `npm run build`
+- Output directory: `apps/frontend/.output`
+
+**See [`packages/shared/PRODUCTION_READY.md`](packages/shared/PRODUCTION_READY.md) for additional deployment options.**
 
 ---
 
@@ -297,12 +335,23 @@ npm run type-check --workspace=@santan/shared
 
 ## Documentation
 
+### Deployment & CI/CD
+- **[QUICKSTART_CLOUD_RUN.md](QUICKSTART_CLOUD_RUN.md)** - Quick guide to deploy to Google Cloud Run (~15 min)
+- **[CLOUD_RUN_DEPLOYMENT.md](CLOUD_RUN_DEPLOYMENT.md)** - Complete Cloud Run deployment guide with advanced options
+- **[GITHUB_CI_SETUP.md](GITHUB_CI_SETUP.md)** - Setup GitHub Actions for automatic testing and deployment
+- **[MONOREPO_CI_CD.md](MONOREPO_CI_CD.md)** - How CI/CD handles the monorepo structure (frontend + studio)
+
+### Development
 - **[TYPE_MIGRATION.md](TYPE_MIGRATION.md)** - Complete type generation and migration guide
 - **[packages/shared/TYPES_README.md](packages/shared/TYPES_README.md)** - Detailed shared package documentation
-- **[packages/shared/PRODUCTION_READY.md](packages/shared/PRODUCTION_READY.md)** - Production deployment guide
 - **[GETTING_STARTED.md](GETTING_STARTED.md)** - Detailed setup instructions
+
+### Content Management
 - **[docs/FULLSLUG_SYSTEM.md](docs/FULLSLUG_SYSTEM.md)** - Sanity fullSlug system for hierarchical URLs
 - **[docs/INDEX.md](docs/INDEX.md)** - Complete documentation index
+
+### Production
+- **[packages/shared/PRODUCTION_READY.md](packages/shared/PRODUCTION_READY.md)** - Production deployment guide for various platforms
 
 ---
 

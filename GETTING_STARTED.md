@@ -6,9 +6,9 @@ This guide provides step-by-step instructions for setting up and running the mon
 
 ## Prerequisites
 
-Before you begin, ensure you have:
+Before you begin, ensure you have the following installed:
 
-- ✅ **Node.js** >= 18 ([Download](https://nodejs.org/))
+- ✅ **Node.js** >= 22 (LTS) ([Download](https://nodejs.org/))
 - ✅ **npm** (comes with Node.js)
 - ✅ **Sanity account** with a configured project ([Sign up](https://www.sanity.io/))
 - ✅ **Git** installed
@@ -393,9 +393,9 @@ Now that you're set up:
 
 **Welcome to the Santan Monorepo! Happy coding! 🚀**
 
-## Prerequisites
+## 📋 What You'll Need
 
-- **Node.js** >= 18
+- **Node.js** >= 22 (LTS)
 - **npm** (comes with Node.js)
 - **Sanity account** with a configured project
 

@@ -1,0 +1,288 @@
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: europe-west1
+
+jobs:
+  # Detect which apps changed
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      shared: ${{ steps.filter.outputs.shared }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      studio: ${{ steps.filter.outputs.studio }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            shared:
+              - 'packages/shared/**'
+            frontend:
+              - 'apps/frontend/**'
+              - 'packages/shared/**'
+            studio:
+              - 'apps/studio/**'
+              - 'packages/shared/**'
+
+  # Build shared package first
+  build-shared:
+    name: Build Shared Package
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.shared == 'true' || needs.changes.outputs.frontend == 'true' || needs.changes.outputs.studio == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared package
+        run: npm run build --workspace=@santan/shared
+
+      - name: Upload shared build
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist
+          retention-days: 1
+
+  preview-frontend:
+    name: Deploy Frontend Preview
+    runs-on: ubuntu-latest
+    needs: [changes, build-shared]
+    if: needs.changes.outputs.frontend == 'true'
+    outputs:
+      url: ${{ steps.get-url.outputs.url }}
+
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
+
+      - name: Generate preview service name
+        id: preview-name
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          SERVICE_NAME="santan-frontend-pr-${PR_NUMBER}"
+          echo "service_name=${SERVICE_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t gcr.io/${{ env.PROJECT_ID }}/${{ steps.preview-name.outputs.service_name }}:${{ github.sha }} \
+            -f apps/frontend/Dockerfile \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ steps.preview-name.outputs.service_name }}:${{ github.sha }}
+
+      - name: Deploy frontend preview to Cloud Run
+        run: |
+          gcloud run deploy ${{ steps.preview-name.outputs.service_name }} \
+            --image gcr.io/${{ env.PROJECT_ID }}/${{ steps.preview-name.outputs.service_name }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --port 8080 \
+            --memory 512Mi \
+            --cpu 1 \
+            --min-instances 0 \
+            --max-instances 1 \
+            --timeout 60 \
+            --tag pr-${{ github.event.pull_request.number }} \
+            --set-env-vars NODE_ENV=preview \
+            --set-secrets=SANITY_API_READ_TOKEN=sanity-api-read-token:latest,SESSION_SECRET=session-secret:latest \
+            --set-env-vars VITE_SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }},VITE_SANITY_DATASET=${{ secrets.SANITY_DATASET }},VITE_SANITY_API_VERSION=2024-01-01
+
+      - name: Get preview URL
+        id: get-url
+        run: |
+          FRONTEND_URL=$(gcloud run services describe ${{ steps.preview-name.outputs.service_name }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --format 'value(status.url)')
+          echo "url=${FRONTEND_URL}" >> $GITHUB_OUTPUT
+
+  preview-studio:
+    name: Deploy Studio Preview
+    runs-on: ubuntu-latest
+    needs: [changes, build-shared]
+    if: needs.changes.outputs.studio == 'true'
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Download shared build
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build studio
+        run: npm run build --workspace=@santan/studio
+        env:
+          NODE_ENV: production
+
+      - name: Generate preview info
+        id: preview-info
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "commit_sha=${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
+
+      - name: Upload studio build
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-preview-${{ steps.preview-info.outputs.pr_number }}
+          path: apps/studio/dist
+          retention-days: 7
+
+      - name: Set studio preview info
+        id: studio-info
+        run: |
+          echo "message=Studio built successfully. Deploy manually to Sanity if needed." >> $GITHUB_OUTPUT
+
+  comment-on-pr:
+    name: Comment Preview URLs
+    runs-on: ubuntu-latest
+    needs: [changes, preview-frontend, preview-studio]
+    if: always() && (needs.changes.outputs.frontend == 'true' || needs.changes.outputs.studio == 'true')
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Preview deployments')
+            );
+            
+            let commentBody = `## 🚀 Preview deployments\n\n`;
+            
+            const frontendChanged = '${{ needs.changes.outputs.frontend }}' === 'true';
+            const studioChanged = '${{ needs.changes.outputs.studio }}' === 'true';
+            const frontendUrl = '${{ needs.preview-frontend.outputs.url }}';
+            const frontendSuccess = '${{ needs.preview-frontend.result }}' === 'success';
+            const studioSuccess = '${{ needs.preview-studio.result }}' === 'success';
+            
+            if (frontendChanged) {
+              if (frontendSuccess && frontendUrl) {
+                commentBody += `### ✅ Frontend\n`;
+                commentBody += `**Preview URL:** ${frontendUrl}\n\n`;
+              } else {
+                commentBody += `### ❌ Frontend\n`;
+                commentBody += `Failed to deploy. Check workflow logs for details.\n\n`;
+              }
+            }
+            
+            if (studioChanged) {
+              if (studioSuccess) {
+                commentBody += `### ✅ Studio\n`;
+                commentBody += `Build successful. Artifacts available for download.\n`;
+                commentBody += `Deploy to Sanity manually if needed:\n`;
+                commentBody += `\`\`\`bash\n`;
+                commentBody += `cd apps/studio\n`;
+                commentBody += `npm run deploy\n`;
+                commentBody += `\`\`\`\n\n`;
+              } else {
+                commentBody += `### ❌ Studio\n`;
+                commentBody += `Build failed. Check workflow logs for details.\n\n`;
+              }
+            }
+            
+            commentBody += `---\n`;
+            commentBody += `**Changes detected:**\n`;
+            if (frontendChanged) commentBody += `- 🌐 Frontend\n`;
+            if (studioChanged) commentBody += `- 🎨 Studio\n`;
+            commentBody += `\n`;
+            commentBody += `<details>\n`;
+            commentBody += `<summary>Preview details</summary>\n\n`;
+            commentBody += `- **Commit:** \`${{ github.sha }}\`\n`;
+            commentBody += `- **Built at:** ${new Date().toISOString()}\n`;
+            commentBody += `- **PR:** #${{ github.event.pull_request.number }}\n`;
+            commentBody += `\n</details>\n\n`;
+            commentBody += `*Preview deployments will be automatically cleaned up when this PR is closed.*`;
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody
+              });
+            }
+

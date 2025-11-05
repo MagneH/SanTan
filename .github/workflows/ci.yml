@@ -1,0 +1,269 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  # Detect which apps changed
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      shared: ${{ steps.filter.outputs.shared }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      studio: ${{ steps.filter.outputs.studio }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            shared:
+              - 'packages/shared/**'
+            frontend:
+              - 'apps/frontend/**'
+              - 'packages/shared/**'
+            studio:
+              - 'apps/studio/**'
+              - 'packages/shared/**'
+
+  # Build shared package first (required by both apps)
+  build-shared:
+    name: Build Shared Package
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.shared == 'true' || needs.changes.outputs.frontend == 'true' || needs.changes.outputs.studio == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared package
+        run: npm run build --workspace=@santan/shared
+
+      - name: Upload shared build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist
+          retention-days: 1
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: [changes, build-shared]
+    if: always() && (needs.changes.outputs.frontend == 'true' || needs.changes.outputs.studio == 'true' || needs.changes.outputs.shared == 'true')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download shared build
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist
+
+      - name: Run linting
+        run: npm run lint
+
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    needs: [changes, build-shared]
+    if: always() && (needs.changes.outputs.frontend == 'true' || needs.changes.outputs.studio == 'true' || needs.changes.outputs.shared == 'true')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download shared build
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist
+
+      - name: Run type checking
+        run: npm run type-check
+
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    needs: [changes, build-shared]
+    if: needs.changes.outputs.frontend == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download shared build
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist
+
+      - name: Build frontend
+        run: npm run build --workspace=@santan/frontend
+        env:
+          NODE_ENV: production
+
+      - name: Upload frontend build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: apps/frontend/.output
+          retention-days: 7
+
+  build-studio:
+    name: Build Studio
+    runs-on: ubuntu-latest
+    needs: [changes, build-shared]
+    if: needs.changes.outputs.studio == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download shared build
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist
+
+      - name: Build studio
+        run: npm run build --workspace=@santan/studio
+        env:
+          NODE_ENV: production
+
+      - name: Upload studio build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-build
+          path: apps/studio/dist
+          retention-days: 7
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: [changes, build-shared]
+    if: always() && (needs.changes.outputs.frontend == 'true' || needs.changes.outputs.studio == 'true' || needs.changes.outputs.shared == 'true')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download shared build
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist
+
+      - name: Run tests
+        run: npm test --if-present
+
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [changes, build-shared, lint, type-check, build-frontend, build-studio, test]
+    if: always()
+
+    steps:
+      - name: Check CI status
+        run: |
+          # Check if any job failed
+          if [ "${{ contains(needs.*.result, 'failure') }}" == "true" ]; then
+            echo "❌ CI failed"
+            exit 1
+          fi
+          
+          # Check if any job was cancelled
+          if [ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]; then
+            echo "⚠️ CI was cancelled"
+            exit 1
+          fi
+          
+          echo "✅ CI passed"
+
+      - name: Create CI summary
+        run: |
+          echo "## ✅ CI Pipeline Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All checks passed:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Shared package built" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Linting" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Type checking" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.changes.outputs.frontend }}" == "true" ]; then
+            echo "- ✅ Frontend build" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.changes.outputs.studio }}" == "true" ]; then
+            echo "- ✅ Studio build" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "- ✅ Tests" >> $GITHUB_STEP_SUMMARY
+
