@@ -1,16 +1,19 @@
 # Multi-stage build for Sanity Studio
+# Build context should be repository root: docker build -f apps/studio/Dockerfile .
 FROM node:22-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
 WORKDIR /app
 
-# Copy root package files
+# Copy root package files (from repository root)
 COPY package.json package-lock.json* ./
+
+# Copy workspace package.json files
 COPY apps/studio/package.json ./apps/studio/
 COPY packages/shared/package.json ./packages/shared/
 
-# Install dependencies
+# Install all dependencies (including workspace dependencies)
 RUN npm ci
 
 # Build shared package first

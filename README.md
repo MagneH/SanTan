@@ -260,10 +260,13 @@ Features:
 
 #### 🎨 Sanity Studio (Self-Hosted)
 
-Studio is self-hosted on Cloud Run:
+Studio is self-hosted on Cloud Run (deploy from repository root):
 ```bash
-cd apps/studio
-gcloud run deploy santan-studio --source . --region europe-west1
+# From repository root (important for monorepo!)
+gcloud run deploy santan-studio \
+  --source . \
+  --dockerfile apps/studio/Dockerfile \
+  --region europe-west1
 ```
 
 Or deploy automatically via GitHub Actions when you push changes to `apps/studio/`.
