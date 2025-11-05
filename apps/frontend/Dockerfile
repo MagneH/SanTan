@@ -18,6 +18,10 @@ COPY . .
 # This ensures proper hoisting for ESM imports like @tailwindcss/vite
 RUN npm install
 
+# Build shared package first (required by frontend)
+WORKDIR /app/packages/shared
+RUN npm run build
+
 # Build the frontend application
 WORKDIR /app/apps/frontend
 RUN npm run build
