@@ -245,11 +245,15 @@ jobs:
             if (studioChanged) {
               if (studioSuccess) {
                 commentBody += `### ✅ Studio\n`;
-                commentBody += `Build successful. Artifacts available for download.\n`;
-                commentBody += `Deploy to Sanity manually if needed:\n`;
+                commentBody += `Build successful. Self-hosted Studio artifacts available.\n`;
+                commentBody += `\n`;
+                commentBody += `**Note:** Studio is self-hosted on Cloud Run in production.\n`;
+                commentBody += `For PR previews, deploy manually if needed:\n`;
                 commentBody += `\`\`\`bash\n`;
-                commentBody += `cd apps/studio\n`;
-                commentBody += `npm run deploy\n`;
+                commentBody += `# Deploy Studio preview (optional)\n`;
+                commentBody += `gcloud run deploy santan-studio-pr-${{ github.event.pull_request.number }} \\\n`;
+                commentBody += `  --source=apps/studio \\\n`;
+                commentBody += `  --region=europe-west1\n`;
                 commentBody += `\`\`\`\n\n`;
               } else {
                 commentBody += `### ❌ Studio\n`;

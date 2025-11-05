@@ -1,6 +1,14 @@
-name: Deploy Studio to Cloud Run (Optional)
+name: Deploy Studio to Cloud Run
 
 on:
+  push:
+    branches:
+      - main
+      - production
+    paths:
+      - 'apps/studio/**'
+      - 'packages/shared/**'
+      - '.github/workflows/deploy-studio.yml'
   workflow_dispatch:
     inputs:
       environment:
@@ -85,7 +93,7 @@ jobs:
             --max-instances 3 \
             --timeout 300 \
             --concurrency 80 \
-            --set-env-vars NODE_ENV=production
+            --set-env-vars NODE_ENV=production,SANITY_STUDIO_FRONTEND_URL=${{ secrets.FRONTEND_URL }}
 
       - name: Get Service URL
         id: get-url
@@ -97,6 +105,12 @@ jobs:
           echo "url=$SERVICE_URL" >> $GITHUB_OUTPUT
           echo "Studio deployed to: $SERVICE_URL"
 
+      - name: Update Frontend with Studio URL
+        run: |
+          echo "⚠️ Remember to update frontend deployment with Studio URL:"
+          echo "Add to GitHub Secrets: SANITY_STUDIO_URL=${{ steps.get-url.outputs.url }}"
+          echo "Or run: gcloud run services update santan-frontend --set-env-vars VITE_SANITY_STUDIO_URL=${{ steps.get-url.outputs.url }}"
+
       - name: Create deployment summary
         run: |
           echo "## 🎨 Studio Deployment Successful!" >> $GITHUB_STEP_SUMMARY
@@ -105,6 +119,17 @@ jobs:
           echo "**Region:** ${{ env.REGION }}" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "⚠️ **Note:** This is a self-hosted Studio deployment." >> $GITHUB_STEP_SUMMARY
-          echo "Consider using Sanity's official hosting with \`sanity deploy\` for better integration." >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Add Studio URL to GitHub Secrets:" >> $GITHUB_STEP_SUMMARY
+          echo "   - Name: \`SANITY_STUDIO_URL\`" >> $GITHUB_STEP_SUMMARY
+          echo "   - Value: \`${{ steps.get-url.outputs.url }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "2. Redeploy frontend or update manually:" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "gcloud run services update santan-frontend \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --set-env-vars VITE_SANITY_STUDIO_URL=${{ steps.get-url.outputs.url }} \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --region ${{ env.REGION }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "3. Update Studio config to allow frontend origin" >> $GITHUB_STEP_SUMMARY
 

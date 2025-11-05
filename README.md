@@ -222,16 +222,22 @@ This builds all packages in the correct order:
 
 **Quick Start:**
 ```bash
-cd apps/frontend
+# 1. Deploy Studio (self-hosted)
+cd apps/studio
+gcloud run deploy santan-studio --source . --region europe-west1
+
+# 2. Deploy Frontend
+cd ../frontend
 ./deploy.sh production
 ```
 
-**Full Guide:** See [QUICKSTART_CLOUD_RUN.md](QUICKSTART_CLOUD_RUN.md)
+**Full Guide:** See [SELF_HOSTED_STUDIO.md](SELF_HOSTED_STUDIO.md)
 
 Features:
 - ✅ Auto-scaling and load balancing
 - ✅ HTTPS out of the box
 - ✅ Pay only for what you use
+- ✅ Full control over Studio hosting
 - ✅ ~15 minutes to first deployment
 
 #### 🔄 CI/CD with GitHub Actions
@@ -252,18 +258,17 @@ Features:
 - ✅ PR preview deployments
 - ✅ Automatic cleanup
 
-#### 🎨 Sanity Studio
+#### 🎨 Sanity Studio (Self-Hosted)
 
-Deploy Studio to Sanity's hosting:
+Studio is self-hosted on Cloud Run:
 ```bash
 cd apps/studio
-npm run deploy
+gcloud run deploy santan-studio --source . --region europe-west1
 ```
 
-Or from root:
-```bash
-npm run deploy --workspace=@santan/studio
-```
+Or deploy automatically via GitHub Actions when you push changes to `apps/studio/`.
+
+See [SELF_HOSTED_STUDIO.md](SELF_HOSTED_STUDIO.md) for complete setup guide.
 
 #### 📚 Other Platforms
 
@@ -336,6 +341,7 @@ npm run type-check --workspace=@santan/shared
 ## Documentation
 
 ### Deployment & CI/CD
+- **[SELF_HOSTED_STUDIO.md](SELF_HOSTED_STUDIO.md)** - Complete guide for self-hosting Sanity Studio on Cloud Run
 - **[QUICKSTART_CLOUD_RUN.md](QUICKSTART_CLOUD_RUN.md)** - Quick guide to deploy to Google Cloud Run (~15 min)
 - **[CLOUD_RUN_DEPLOYMENT.md](CLOUD_RUN_DEPLOYMENT.md)** - Complete Cloud Run deployment guide with advanced options
 - **[GITHUB_CI_SETUP.md](GITHUB_CI_SETUP.md)** - Setup GitHub Actions for automatic testing and deployment

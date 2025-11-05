@@ -1,10 +1,11 @@
 // Security middleware for TanStack Start
+import { getSanityStudioUrl } from '@/constants/config';
 
 export const securityHeaders = async ({ next }: { request: Request; next: () => Promise<Response> }) => {
   const response = await next();
 
   // Allow embedding in Sanity Studio for preview mode
-  const studioUrl = process.env.VITE_SANITY_STUDIO_URL || 'http://localhost:3333';
+  const studioUrl = getSanityStudioUrl();
   const studioOrigin = new URL(studioUrl).origin;
 
   // Content Security Policy

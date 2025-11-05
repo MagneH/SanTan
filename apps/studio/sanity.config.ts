@@ -11,6 +11,25 @@ import { defaultDocumentNode, structure } from './src/structure';
 
 const slugAwareTypes = ['category', 'post'];
 
+// Get frontend URL from environment
+const getFrontendUrl = () => {
+  // In production, use environment variable
+  const productionUrl = process.env.SANITY_STUDIO_FRONTEND_URL;
+  if (productionUrl) {
+    return productionUrl;
+  }
+  // Default to localhost for development
+  return 'http://localhost:3000';
+};
+
+const frontendUrl = getFrontendUrl();
+
+// Allowed origins for CORS
+const allowedOrigins = [
+  'http://localhost:*', // Development
+  frontendUrl, // Production frontend
+];
+
 export default defineConfig({
   name: 'default',
   title: 'Santan Studio',
@@ -31,12 +50,12 @@ export default defineConfig({
     presentationTool({
       resolve,
       previewUrl: {
-        initial: 'http://localhost:3000',
+        initial: frontendUrl,
         previewMode: {
-          enable: 'http://localhost:3000/api/preview',
+          enable: `${frontendUrl}/api/preview`,
         },
       },
-      allowOrigins: ['http://localhost:*'],
+      allowOrigins: allowedOrigins,
     }),
   ],
 

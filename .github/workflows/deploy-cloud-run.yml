@@ -84,6 +84,8 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
+          # Deploy frontend to Cloud Run
+          # VITE_SANITY_STUDIO_URL points to self-hosted Studio on Cloud Run
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
             --platform managed \
@@ -98,7 +100,7 @@ jobs:
             --concurrency 80 \
             --set-env-vars NODE_ENV=production \
             --set-secrets=SANITY_API_READ_TOKEN=sanity-api-read-token:latest,SANITY_API_WRITE_TOKEN=sanity-api-write-token:latest,SESSION_SECRET=session-secret:latest \
-            --set-env-vars VITE_SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }},VITE_SANITY_DATASET=${{ secrets.SANITY_DATASET }},VITE_SANITY_API_VERSION=2024-01-01
+            --set-env-vars VITE_SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }},VITE_SANITY_DATASET=${{ secrets.SANITY_DATASET }},VITE_SANITY_API_VERSION=2024-01-01,VITE_SANITY_STUDIO_URL=${{ secrets.SANITY_STUDIO_URL }}
 
       - name: Get Service URL
         id: get-url
