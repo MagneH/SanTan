@@ -6,6 +6,12 @@ on:
     branches:
       - main
 
+# Add permissions for GitHub token
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: europe-west1
