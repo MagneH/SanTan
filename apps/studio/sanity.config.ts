@@ -13,11 +13,30 @@ const slugAwareTypes = ['category', 'post'];
 
 // Get frontend URL from environment
 const getFrontendUrl = () => {
-  // In production, use environment variable
-  const productionUrl = process.env.SANITY_STUDIO_FRONTEND_URL;
-  if (productionUrl) {
-    return productionUrl;
+  // Try to get runtime value from window (for future extensibility)
+  if (typeof window !== 'undefined' && (window as any).__FRONTEND_URL__) {
+    return (window as any).__FRONTEND_URL__;
   }
+
+  // In production (Cloud Run), infer Frontend URL from Studio URL pattern
+  if (typeof window !== 'undefined' && window.location.hostname.includes('run.app')) {
+    // Studio URL pattern: santan-studio-pr-X-xxxxx.europe-west1.run.app
+    // Frontend URL pattern: santan-frontend-pr-X-xxxxx.europe-west1.run.app
+    const studioHostname = window.location.hostname;
+    const frontendHostname = studioHostname.replace('santan-studio-pr-', 'santan-frontend-pr-');
+    return `${window.location.protocol}//${frontendHostname}`;
+  }
+
+  // Studio runs in browser via Vite, so use import.meta.env for build-time config
+  if (typeof import.meta !== 'undefined' && import.meta.env?.SANITY_STUDIO_FRONTEND_URL) {
+    return import.meta.env.SANITY_STUDIO_FRONTEND_URL;
+  }
+
+  // Fallback to process.env (for build-time context)
+  if (typeof process !== 'undefined' && process.env?.SANITY_STUDIO_FRONTEND_URL) {
+    return process.env.SANITY_STUDIO_FRONTEND_URL;
+  }
+
   // Default to localhost for development
   return 'http://localhost:3000';
 };
