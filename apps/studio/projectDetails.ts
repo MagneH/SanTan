@@ -28,12 +28,6 @@ const projectId = getEnvValue('SANITY_STUDIO_PROJECT_ID', 'SANITY_STUDIO_PROJECT
 const dataset = getEnvValue('SANITY_STUDIO_DATASET', 'SANITY_STUDIO_DATASET', 'production');
 const apiVersion = getEnvValue('SANITY_STUDIO_API_VERSION', 'SANITY_STUDIO_API_VERSION', '2024-01-01');
 
-// Debug logging to help troubleshoot
-if (typeof window !== 'undefined') {
-  console.log('[Studio] Project Details:', { projectId, dataset, apiVersion });
-  console.log('[Studio] import.meta.env:', typeof import.meta !== 'undefined' ? import.meta.env : 'not available');
-}
-
 export { apiVersion, dataset, projectId };
 
 export const projectDetails = () => ({
