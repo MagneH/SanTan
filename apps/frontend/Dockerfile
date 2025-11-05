@@ -2,28 +2,21 @@
 # Build context should be repository root: docker build -f apps/frontend/Dockerfile .
 FROM node:22-alpine AS base
 
-# Install dependencies only when needed
-FROM base AS deps
-WORKDIR /app
-
-# Copy root package files (from repository root)
-COPY package.json package-lock.json* ./
-COPY apps/frontend/package.json ./apps/frontend/
-COPY packages/shared/package.json ./packages/shared/
-
-# Install dependencies (using npm install instead of npm ci to workaround optional dependencies bug)
-# See: https://github.com/npm/cli/issues/4828
-RUN npm install
-
 # Build the application
 FROM base AS builder
 WORKDIR /app
 
-# Copy root node_modules (npm workspaces installs all dependencies here)
-COPY --from=deps /app/node_modules ./node_modules
+# Copy package files first
+COPY package.json package-lock.json* ./
+COPY apps/frontend/package.json ./apps/frontend/
+COPY packages/shared/package.json ./packages/shared/
 
 # Copy source code
 COPY . .
+
+# Install ALL dependencies (including optional) in builder stage
+# This ensures proper hoisting for ESM imports like @tailwindcss/vite
+RUN npm install
 
 # Build the frontend application
 WORKDIR /app/apps/frontend
