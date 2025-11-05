@@ -43,7 +43,7 @@ const getFrontendUrl = () => {
     // Fall through to use explicit config (should be set via env var)
     console.warn(
       'Studio running on Cloud Run without SANITY_STUDIO_FRONTEND_URL set and no preview pattern detected. ' +
-        'Please set SANITY_STUDIO_FRONTEND_URL environment variable.'
+        'Please set SANITY_STUDIO_FRONTEND_URL environment variable.',
     );
   }
 
@@ -67,9 +67,9 @@ export default defineConfig({
   dataset: projectDetails().dataset,
   apiVersion: projectDetails().apiVersion,
   document: {
-    actions: (prev, context) =>
+    actions: (prev: any, context: any) =>
       slugAwareTypes.includes(context.schemaType)
-        ? prev.map((a) => (a.action === 'publish' ? fullSlugPublishAction(a) : a))
+        ? prev.map((a: any) => (a.action === 'publish' ? fullSlugPublishAction(a) : a))
         : prev,
   },
 
