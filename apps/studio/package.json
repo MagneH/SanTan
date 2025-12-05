@@ -15,8 +15,7 @@
     "lint": "eslint . --fix",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist .turbo",
-    "import-posts": "ts-node src/scripts/importPosts.ts",
-    "import-authors": "ts-node src/scripts/importAuthors.ts"
+    "prebuild": "npm --workspace=@santan/shared run build"
   },
   "keywords": [
     "sanity"
@@ -28,7 +27,8 @@
     "react-dom": "^19.1",
     "sanity": "^4.20.3",
     "sanity-plugin-documents-pane": "^3.0.1",
-    "styled-components": "^6.1.18"
+    "styled-components": "^6.1.18",
+    "@santan/shared": "file:../../packages/shared"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
@@ -44,5 +44,9 @@
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8"
+  },
+  "optionalDependencies": {
+    "lightningcss-linux-arm64-musl": "^1.30.2",
+    "lightningcss-linux-x64-gnu": "^1.30.2"
   }
 }
