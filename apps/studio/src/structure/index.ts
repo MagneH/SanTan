@@ -40,5 +40,5 @@ const defaultDocumentViews = (S: StructureBuilder, documentType: sanityTypeLiter
           params: { id: `_id` },
           options: { perspective: 'drafts' },
         })
-        .title('Dokumenter som refererer til dette'),
+        .title('Documents that reference this'),
     ]);

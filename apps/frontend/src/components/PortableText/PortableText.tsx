@@ -18,10 +18,10 @@ const BlockContent = ({ value }: { value?: PortableTextType }) => {
     [],
   );
 
-  // Hvis ingen value eller tom array – returner null
+  // If no value or an empty array, return null
   if (!value || value.length === 0) return null;
 
-  // Send original value direkte til PortableText (unødvendig filtrering fjernet)
+  // Send the original value directly to PortableText (unnecessary filtering removed)
   return <PortableText value={value} components={components} />;
 };
 

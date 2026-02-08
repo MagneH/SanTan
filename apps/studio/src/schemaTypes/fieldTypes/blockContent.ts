@@ -12,7 +12,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
  *  }
  */
 export const blockContent = defineType({
-  title: 'Blokkinhold',
+  title: 'Block content',
   name: 'blockContent',
   type: 'array',
   icon: BlockContentIcon,
@@ -33,16 +33,16 @@ export const blockContent = defineType({
         { title: 'Quote', value: 'blockquote' },
       ],
       lists: [
-        { title: 'Punkt', value: 'bullet' },
-        { title: 'Nummerert', value: 'number' },
+        { title: 'Bullet', value: 'bullet' },
+        { title: 'Numbered', value: 'number' },
       ],
       // Marks let you mark up inline text in the block editor.
       marks: {
         // Decorators usually describe a single property – e.g. a typographic
         // preference or highlighting by editors.
         decorators: [
-          { title: 'Fet', value: 'strong' },
-          { title: 'Uthev', value: 'em' },
+          { title: 'Bold', value: 'strong' },
+          { title: 'Emphasis', value: 'em' },
         ],
         // Annotations can be any object index – e.g. a link or a footnote.
         annotations: [
@@ -61,13 +61,13 @@ export const blockContent = defineType({
           {
             name: 'phoneNumberLink',
             type: 'object',
-            title: 'Telefon-lenke',
+            title: 'Phone link',
             icon: MobileDeviceIcon,
             fields: [
               {
                 name: 'phoneNumber',
                 type: 'string',
-                title: 'Telefonnummer',
+                title: 'Phone number',
                 description: 'e.g., 1234567890',
               },
             ],
@@ -79,17 +79,17 @@ export const blockContent = defineType({
     // primitive types such as 'string' and 'number' in the same array
     // as a block type.
     defineArrayMember({
-      title: 'Beriket bilde',
+      title: 'Enriched image',
       name: 'enrichedImage',
       type: 'enrichedImage',
     }),
     defineArrayMember({
-      title: 'Akkordion',
+      title: 'Accordion',
       name: 'accordion',
       type: 'accordion',
     }),
     defineArrayMember({
-      title: 'Bilde-karusell',
+      title: 'Image carousel',
       name: 'imageCarousel',
       type: 'imageCarousel',
     }),

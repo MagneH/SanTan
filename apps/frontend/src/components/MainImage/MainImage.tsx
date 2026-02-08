@@ -25,7 +25,7 @@ export function MainImage({ image, encodeDataAttribute }: MainImageProps) {
 
   useEffect(() => {
     if (imgRef.current && imgRef.current.complete) {
-      // Bildet var allerede i cache ved render
+      // The image was already cached at render time
       setLoaded(true);
     }
   }, []);
@@ -88,7 +88,7 @@ export function MainImage({ image, encodeDataAttribute }: MainImageProps) {
 
   // Fallback ratio 16:9 if missing
   const ratio = originalWidth && originalHeight ? originalHeight / originalWidth : 9 / 16;
-  const isPortrait = ratio > 1.05; // litt margin for nesten-kvadrat
+  const isPortrait = ratio > 1.05; // slight margin for near-square
 
   const builder = createImageUrlBuilder({ projectId, dataset }).image(image);
   // Generate responsive widths
@@ -103,7 +103,7 @@ export function MainImage({ image, encodeDataAttribute }: MainImageProps) {
   const largestHeight = Math.round(largestWidth * ratio);
   const largest = builder.width(largestWidth).height(largestHeight).auto('format').url();
 
-  // Low quality placeholder (LQIP) var tidligere brukt men fjernet nå
+  // Low quality placeholder (LQIP) was previously used but is removed now
   // const lqipWidth = 40;
   // const lqipHeight = Math.max(1, Math.round(lqipWidth * ratio));
   // const lqip = builder.width(lqipWidth).height(lqipHeight).blur(50).auto('format').url();

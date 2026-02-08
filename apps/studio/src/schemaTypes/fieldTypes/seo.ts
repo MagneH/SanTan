@@ -3,22 +3,22 @@ import { defineField, defineType } from 'sanity';
 
 export const seo = defineType({
   name: 'seo',
-  title: 'Søkemotoroptimalisering (SEO)',
+  title: 'Search engine optimization (SEO)',
   type: 'object',
   icon: SearchCodeIcon,
   fields: [
     defineField({
       name: 'description',
-      title: 'Beskrivelse',
-      description: 'Meta-beskrivelse for søkemotorer, deling på sosiale medier osv.',
+      title: 'Description',
+      description: 'Meta description for search engines, social media sharing, etc.',
       type: 'string',
     }),
     defineField({
       name: 'keywords',
-      title: 'Nøkkelord',
+      title: 'Keywords',
       type: 'array',
       of: [{ type: 'string' }],
-      description: 'Legg til nøkkelord for SEO, separert som individuelle strenger',
+      description: 'Add keywords for SEO, each as a separate string',
     }),
   ],
 });

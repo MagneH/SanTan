@@ -3,25 +3,25 @@ import { defineField, defineType } from 'sanity';
 
 export const home = defineType({
   name: 'home',
-  title: 'Hjemmeside',
+  title: 'Homepage',
   type: 'document',
   icon: Home,
   fields: [
     defineField({
       name: 'title',
-      title: 'Tittel',
-      description: 'Tittelen som brukes på førstesiden',
+      title: 'Title',
+      description: 'The title used on the front page',
       type: 'string',
     }),
     defineField({
       name: 'subTitle',
-      title: 'Undertittel',
+      title: 'Subtitle',
       type: 'string',
     }),
     defineField({
       name: 'description',
-      title: 'Beskrivelse',
-      description: 'En kort beskrivelse som vises under undertittel på forsiden. (Valgfri)',
+      title: 'Description',
+      description: 'A short description displayed below the subtitle on the front page. (Optional)',
       type: 'array',
       of: [{ type: 'block' }],
     }),

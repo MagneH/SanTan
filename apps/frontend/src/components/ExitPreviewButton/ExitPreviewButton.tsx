@@ -7,12 +7,12 @@ export function ExitPreviewButton() {
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
-    // Sjekk om vi har preview cookie men IKKE er i iframe
+    // Check if we have the preview cookie but are NOT in an iframe
     if (typeof window !== 'undefined') {
       const hasCookie = document.cookie.includes(`${PREVIEW_SESSION_NAME}=`);
       const isInIframe = window.self !== window.top;
 
-      // Vis knappen kun hvis vi har cookie men ikke er i iframe
+      // Show the button only if we have the cookie and are not in an iframe
       setShowButton(hasCookie && !isInIframe);
     }
   }, []);
@@ -26,7 +26,7 @@ export function ExitPreviewButton() {
 
   return (
     <div className={exitButton}>
-      <p className={warningText}>⚠️ Preview mode er aktivert utenfor Sanity Studio. Appen kan oppføre seg feil.</p>
+      <p className={warningText}>⚠️ Preview mode is enabled outside Sanity Studio. The app may behave unexpectedly.</p>
       <button onClick={handleExitPreview} className={exitButtonInner} aria-label="Exit preview mode">
         <X size={16} />
         <span>Exit Preview</span>

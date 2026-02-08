@@ -44,7 +44,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   showAllLink = true,
 }) => {
   if (!categories.length) {
-    return <div className={emptyState}>Ingen kategorier tilgjengelig.</div>;
+    return <div className={emptyState}>No categories available.</div>;
   }
   const sliced = categories.slice(0, limit);
   return (
@@ -52,8 +52,8 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
       <div className={headerRow}>
         <h3 className={heading}>{headingText}</h3>
         {showAllLink && categories.length > limit && (
-          <Link to={FullSlugRoute.to} params={{ _splat: '' }} className={allLink} aria-label="Se alle kategorier">
-            Se alle
+          <Link to={FullSlugRoute.to} params={{ _splat: '' }} className={allLink} aria-label="See all categories">
+            See all
           </Link>
         )}
       </div>

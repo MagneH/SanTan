@@ -3,13 +3,13 @@ import { defineField, defineType } from 'sanity';
 
 export const person = defineType({
   name: 'person',
-  title: 'Forfatter',
+  title: 'Author',
   type: 'document',
   icon: UserIcon,
   fields: [
     defineField({
       name: 'name',
-      title: 'Navn',
+      title: 'Name',
       type: 'string',
     }),
     defineField({
@@ -23,7 +23,7 @@ export const person = defineType({
     }),
     defineField({
       name: 'image',
-      title: 'Bilde',
+      title: 'Image',
       type: 'image',
       options: {
         hotspot: true,
@@ -44,7 +44,7 @@ export const person = defineType({
     }),
     defineField({
       name: 'email',
-      title: 'E-post',
+      title: 'Email',
       type: 'string',
     }),
   ],

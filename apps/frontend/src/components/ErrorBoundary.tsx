@@ -35,8 +35,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       return (
         <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <h1>Noe gikk galt</h1>
-          <p>Beklager, det oppstod en feil. Vennligst prøv å laste siden på nytt.</p>
+          <h1>Something went wrong</h1>
+          <p>Sorry, an error occurred. Please try reloading the page.</p>
           <button
             onClick={() => window.location.reload()}
             style={{
@@ -45,11 +45,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               cursor: 'pointer',
             }}
           >
-            Last inn på nytt
+            Reload
           </button>
           {process.env.NODE_ENV === 'development' && this.state.error && (
             <details style={{ marginTop: '2rem', textAlign: 'left' }}>
-              <summary>Feildetaljer (kun synlig i utviklingsmodus)</summary>
+              <summary>Error details (visible in development only)</summary>
               <pre style={{ overflow: 'auto', padding: '1rem', background: '#f5f5f5' }}>
                 {this.state.error.toString()}
                 {this.state.error.stack}

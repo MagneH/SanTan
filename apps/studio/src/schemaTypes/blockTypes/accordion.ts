@@ -4,20 +4,20 @@ import { defineField, defineType } from 'sanity';
 export const accordion = defineType({
   name: 'accordion',
   type: 'object',
-  title: 'Akkordion',
+  title: 'Accordion',
   icon: ExpandIcon,
   fields: [
     defineField({
       name: 'content',
       type: 'array',
-      title: 'Innhold',
-      description: 'Innholdet i akkordionen',
+      title: 'Content',
+      description: 'The content of the accordion',
       of: [
         {
           type: 'object',
           fields: [
-            defineField({ name: 'title', type: 'string', title: 'Tittel' }),
-            defineField({ name: 'accordionContent', type: 'array', title: 'Innhold', of: [{ type: 'block' }] }),
+            defineField({ name: 'title', type: 'string', title: 'Title' }),
+            defineField({ name: 'accordionContent', type: 'array', title: 'Content', of: [{ type: 'block' }] }),
           ],
         },
       ],

@@ -113,7 +113,7 @@ export const GlobalLayout = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Sjekk om vi kjører i et iframe (Sanity Studio preview-pane)
+      // Check if we are running in an iframe (Sanity Studio preview pane)
       const embedded = window.self !== window.top;
       setIsEmbeddedStudio(embedded);
     }
@@ -168,7 +168,7 @@ export const GlobalLayout = () => {
   }, []);
 
   return (
-    <html lang="no">
+    <html lang="en">
       <head>
         <title>SanTan Starter</title>
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -179,7 +179,7 @@ export const GlobalLayout = () => {
       <body>
         <a
           href="#app-root"
-          aria-label="Hopp til hovedinnhold"
+          aria-label="Skip to main content"
           style={{
             position: 'absolute',
             left: '-999px',
@@ -199,7 +199,7 @@ export const GlobalLayout = () => {
             e.currentTarget.style.top = '-999px';
           }}
         >
-          Hopp til innhold
+          Skip to content
         </a>
         <ErrorBoundary>
           <Header />
@@ -295,7 +295,7 @@ export const GlobalLayout = () => {
                 </Suspense>
               </>
             )}
-            {/* Exit Preview button - vises kun når preview cookie er aktiv utenfor Studio iframe */}
+            {/* Exit Preview button - only shown when preview cookie is active outside the Studio iframe */}
             <ExitPreviewButton />
           </ClientOnly>
         </ErrorBoundary>

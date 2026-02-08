@@ -14,7 +14,7 @@ export const category = defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Tittel',
+      title: 'Title',
       type: 'string',
     }),
     defineField({
@@ -29,24 +29,24 @@ export const category = defineType({
     }),
     defineField({
       name: 'parent',
-      title: 'Parent-kategori',
-      description: 'Velg en overordnet kategori hvis aktuelt',
+      title: 'Parent category',
+      description: 'Select a parent category if applicable',
       type: 'reference',
       to: { type: 'category' },
     }),
     defineField({
       name: 'fullSlug',
-      title: 'Full adresse',
+      title: 'Full path',
       type: 'string',
       readOnly: true,
-      description: 'Auto-generert ved publisering basert på slug og forelderkategori',
+      description: 'Automatically generated on publish based on slug and parent category',
       components: {
         input: FullSlugInput, // Your custom input component
       },
     }),
     defineField({
       name: 'mainImage',
-      title: 'Hovedbilde',
+      title: 'Main image',
       type: 'image',
       options: {
         hotspot: true,
@@ -54,12 +54,12 @@ export const category = defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Beskrivelse',
+      title: 'Description',
       type: 'text',
     }),
     defineField({
       name: 'seo',
-      title: 'SEO-innstillinger',
+      title: 'SEO settings',
       type: 'seo',
     }),
   ],

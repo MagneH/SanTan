@@ -12,7 +12,7 @@ globalStyle('body', {
 });
 
 globalStyle('[data-theme="dark"] body', {
-  background: vars.color.bg, // marineblå fra darkTheme
+  background: vars.color.bg, // navy blue from darkTheme
   color: vars.color.text,
 });
 

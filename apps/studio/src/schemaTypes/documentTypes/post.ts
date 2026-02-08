@@ -6,13 +6,13 @@ import { isUniqueAcrossDocumentTypes } from '../../utils/isUnique';
 
 export const post = defineType({
   name: 'post',
-  title: 'Bloggpost',
+  title: 'Blog post',
   type: 'document',
   icon: Newspaper,
   fields: [
     defineField({
       name: 'title',
-      title: 'Tittel',
+      title: 'Title',
       type: 'string',
     }),
     defineField({
@@ -27,30 +27,30 @@ export const post = defineType({
     }),
     defineField({
       name: 'parent',
-      title: 'Parent-kategori',
-      description: 'Velg en overordnet kategori hvis aktuelt',
+      title: 'Parent category',
+      description: 'Select a parent category if applicable',
       type: 'reference',
       to: { type: 'category' },
     }),
     defineField({
       name: 'fullSlug',
-      title: 'Full adresse',
+      title: 'Full path',
       type: 'string',
       readOnly: true,
-      description: 'Auto-generert ved publisering basert på slug og forelderkategori',
+      description: 'Automatically generated on publish based on slug and parent category',
       components: {
         input: FullSlugInput,
       },
     }),
     defineField({
       name: 'author',
-      title: 'Forfatter',
+      title: 'Author',
       type: 'reference',
       to: { type: 'person' },
     }),
     defineField({
       name: 'mainImage',
-      title: 'Hovedbilde',
+      title: 'Main image',
       type: 'image',
       options: {
         hotspot: true,
@@ -58,19 +58,19 @@ export const post = defineType({
     }),
     defineField({
       name: 'categories',
-      title: 'Kategorier',
+      title: 'Categories',
       type: 'array',
       of: [{ type: 'reference', to: { type: 'category' } }],
     }),
     defineField({
       name: 'publishedAt',
-      title: 'Tid for publisering',
+      title: 'Publish time',
       type: 'datetime',
       validation: (R) => R.required(),
     }),
     defineField({
       name: 'ingress',
-      title: 'Ingress',
+      title: 'Intro',
       type: 'string',
     }),
     defineField({
@@ -80,7 +80,7 @@ export const post = defineType({
     }),
     defineField({
       name: 'seo',
-      title: 'SEO-innstillinger',
+      title: 'SEO settings',
       type: 'seo',
     }),
   ],

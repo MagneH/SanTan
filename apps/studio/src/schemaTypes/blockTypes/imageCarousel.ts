@@ -4,24 +4,24 @@ import { defineField, defineType } from 'sanity';
 export const imageCarousel = defineType({
   name: 'imageCarousel',
   type: 'object',
-  title: 'Bilde-karusell',
+  title: 'Image carousel',
   icon: ImagesIcon,
   fields: [
     defineField({
       name: 'images',
-      title: 'Bilder',
-      description: 'Legg til bilder for karusellen',
+      title: 'Images',
+      description: 'Add images for the carousel',
       type: 'array',
       of: [{ type: 'enrichedImage' }],
-      validation: (Rule) => Rule.min(1).error('Karusellen må inneholde minst ett bilde.'),
+      validation: (Rule) => Rule.min(1).error('The carousel must contain at least one image.'),
     }),
     defineField({
       name: 'numberOfImagesToShow',
-      title: 'Antall bilder å vise samtidig',
-      description: 'Velg hvor mange bilder som skal vises samtidig i karusellen',
+      title: 'Number of images to display at once',
+      description: 'Choose how many images should be displayed at once in the carousel',
       type: 'number',
       initialValue: 1,
-      validation: (Rule) => Rule.min(1).max(5).error('Karusellen må vise mellom ett og fem bilder.'),
+      validation: (Rule) => Rule.min(1).max(5).error('The carousel must display between one and five images.'),
     }),
   ],
 });
