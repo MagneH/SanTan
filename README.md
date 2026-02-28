@@ -404,6 +404,8 @@ Turborepo should handle this automatically with the `^build` dependency.
 - **TanStack Router**: https://tanstack.com/router
 - **Vite**: https://vitejs.dev
 
+## Powering **ShareScan**: https://sharescan.io
+
 ---
 
 ## License
